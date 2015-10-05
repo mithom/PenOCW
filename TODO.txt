@@ -1,0 +1,7 @@
+gitignores maken met:
+1)webstorm
+2)idle
+3)pycharm
+4)eclipse
+5)linux
+6)windows

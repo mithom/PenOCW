@@ -5,3 +5,18 @@ gitignores maken met:
 4)eclipse
 5)linux
 6)windows
+
+inleiding tot ssh keys maken
+
+sourcetree op usb stick
+
+git uitleg youtube of forumpost terug vinden
+
+mikTeX installeren
+
+voor sever:
+
+1) tekstjes toevogen/verbeteren
+2) foto's knoppen opzoeken
+3) classes toevoegen voor active/passive
+4) controleren of wrkt met flask

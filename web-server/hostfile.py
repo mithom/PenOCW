@@ -1,6 +1,6 @@
 from flask import Flask,render_template
 
-app = Flask('__autocar__')
+app = Flask(__name__)
 
 @app.route('/')
 def index():
@@ -8,3 +8,8 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
+
+"""
+om je eigen ip adress te vinden gebruik je in command prompt ipconfig
+en je neetm iPv4.
+"""

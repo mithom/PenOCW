@@ -6,7 +6,7 @@ gitignores maken met:
 5)linux
 6)windows
 
-inleiding tot ssh keys maken
+inleiding tot ssh keys maken (en basis git)
 
 sourcetree op usb stick
 

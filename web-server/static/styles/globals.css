@@ -38,15 +38,39 @@ button{
     background: url(arrow-up.png);
     background-size: 100%;
 }
+
+#upA {
+    background: url(arrow-up-active.png);
+    background-size: 100%;
+}
+
 #downB {
     background: url(arrow-down.png);
     background-size: 100%;
 }
+
+#downA {
+    background: url(arrow-down-active.png);
+    background-size: 100%;
+}
+
 #leftB {
     background: url(arrow-left.png);
     background-size: 100%;
 }
+
+#leftA {
+    background: url(arrow-left-active.png);
+    background-size: 100%;
+}
+
 #rightB {
     background: url(arrow-right.png);
     background-size: 100%;
 }
+
+#rightA {
+    background: url(arrow-right-active.png);
+    background-size: 100%;
+}
+

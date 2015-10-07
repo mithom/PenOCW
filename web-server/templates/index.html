@@ -10,24 +10,16 @@
         <h1>Robot Control</h1>
         <div class="buttons">
             <div class="button" id="up" >
-                <button type='button' id="upB" onmousedown="doUp()">
-
-                </button>
+                <button type='button' id="upB" onmousedown="doUp()" onmouseup="stopUp()" onmouseout="stopUp()"></button>
             </div>
             <div class="button" id="left" >
-                <button type='button' id="leftB" onmousedown="doLeft()">
-
-                </button>
+                <button type='button' id="leftB" onmousedown="doLeft()" onmouseup="stopLeft()" onmouseout="stopLeft()"></button>
             </div>
             <div class="button" id="down">
-                <button type='button' id="downB" onmousedown="doDown()">
-
-                </button>
+                <button type='button' id="downB" onmousedown="doDown()" onmouseup="stopDown()" onmouseout="stopDown()"></button>
             </div>
             <div class="button" id="right">
-                <button type='button' id="rightB" onmousedown="doRight()">
-
-                </button>
+                <button type='button' id="rightB" onmousedown="doRight()" onmouseup="stopRight()" onmouseout="stopRight()"></button>
             </div>
         </div>
     </body>

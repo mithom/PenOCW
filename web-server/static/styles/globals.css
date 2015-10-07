@@ -7,12 +7,46 @@ div{
     border: 2px;
 }
 
-#up{
-    padding-left:2%;
-    display: block;
-    padding-bottom: 4px;
+.buttons {
+    float: left;
+    border: solid red;
+    position: relative;
+    width: auto;
+    padding: 5px;
+}
+
+#up {
+    display: table;
+    margin: auto;
+}
+
+#right {
+    float:right;
+}
+
+#left {
+    float: left;
 }
 
 button{
-    color: blue;
+    display: block;
+    min-width: 60px;
+    min-height: 60px;
+}
+
+#upB {
+    background: url(arrow-up.png);
+    background-size: 100%;
+}
+#downB {
+    background: url(arrow-down.png);
+    background-size: 100%;
+}
+#leftB {
+    background: url(arrow-left.png);
+    background-size: 100%;
+}
+#rightB {
+    background: url(arrow-right.png);
+    background-size: 100%;
 }

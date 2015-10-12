@@ -9,11 +9,9 @@ BrickPiSetupSensors()   #Send the properties of sensors to BrickPi
        
 def set_left(power):
     BrickPi.MotorSpeed[PORT_A] = power  #Set the speed of MotorA (-255 to 255)
-    BrickPiUpdateValues()
 
 def set_right(power):
     BrickPi.MotorSpeed[PORT_B] = power  #Set the speed of MotorB (-255 to 255)
-    BrickPiUpdateValues()
 
 def turn_straight_left(power):
     BrickPi.MotorSpeed[PORT_A] = - power
@@ -25,4 +23,7 @@ def turn_straight_right(power):
     BrickPi.MotorSpeed[PORT_B] = - power
     BrickPiUpdateValues()
 
-set_left(100)
+def go_straight(power):
+    set_left(power)
+    set_right(power)
+    BrickPiUpdateValues()

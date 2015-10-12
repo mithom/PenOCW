@@ -7,27 +7,18 @@ BrickPi.MotorEnable[PORT_B] = 1 #Enable the Motor B
 
 BrickPiSetupSensors()   #Send the properties of sensors to BrickPi
 
-power = 0
+def set_left(power):
+    BrickPi.MotorSpeed[PORT_A] = power  #Set the speed of MotorA (-255 to 255)
 
-class Car():
-    """ Movement of the car """
-    def __init__(self):
+def set_right(power):
+    BrickPi.MotorSpeed[PORT_B] = power  #Set the speed of MotorB (-255 to 255)
 
-    def move_left(self, power):
-        BrickPi.MotorSpeed[PORT_A] = power  #Set the speed of MotorA (-255 to 255)
+def turn_straight_left(power):
+    BrickPi.MotorSpeed[PORT_A] = - power
+    BrickPi.MotorSpeed[PORT_B] = power
 
-    def move_right(self, power):
-        BrickPi.MotorSpeed[PORT_B] = power  #Set the speed of MotorB (-255 to 255)
+def turn_straight_right(power):
+    BrickPi.MotorSpeed[PORT_A] = power
+    BrickPi.MotorSpeed[PORT_B] = - power
 
-    def stop(self):
-        BrickPi.MotorSpeed[PORT_A] = 0
-        BrickPi.MotorSpeed[PORT_B] = 0
-
-    def turn_straight_left(self, power):
-        BrickPi.MotorSpeed[PORT_A] = - power
-        BrickPi.MotorSpeed[PORT_B] = power
-
-    def turn_straight_right(self, power):
-        BrickPi.MotorSpeed[PORT_A] = power
-        BrickPi.MotorSpeed[PORT_B] = - power
-
+set_left(100)

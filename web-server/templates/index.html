@@ -10,7 +10,7 @@
     </head>
     <body>
         <h1>Robot Control</h1>
-        <div class="buttons">
+        <div class="direct-control">
             <table>
                 <!--<tr><td colspan="3"><form action="/echo" method="POST">
                     <input type="text" name="text">
@@ -33,6 +33,35 @@
                     </div></td>
                 </tr>
             </table>
+        </div>
+        <div class="info">
+            
+        </div>
+        <div class="commands">
+            <button type='button' id="line">2m straight line</button>
+            <button type='button' id="square">1m square</button>
+            <button type='button' id="circle">50cm radius circle</button>
+        </div>
+        <div class="route-input">
+            <select>
+                <option value="streets">streets</option>
+                <option value="meters">meters</option>
+            </select>
+            <!--start-->
+            <button type='submit'>START</button>
+            </br>
+            <!--left-->
+            <input min='0' type='number'></input>
+            <button type='submit'>LEFT</button>
+            </br>
+            <!--right-->
+            <input min='0' type='number'></input>
+            <button type='submit'>RIGHT</button>
+            </br>
+            <!--stop-->
+            <input min='0' type='number'></input>
+            <button type='submit'>STOP</button>
+            </br>
         </div>
     </body>
 </html>

@@ -16,16 +16,19 @@ div{
 }
 
 #up {
-    display: table;
+    //display: table;
     margin: auto;
 }
 
 #right {
-    float:right;
+    //float:right;
 }
 
 #left {
-    float: left;
+    //float: left;
+}
+
+#down {
 }
 
 button{

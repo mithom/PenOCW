@@ -3,6 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <title>home</title>
+        <script type=text/javascript src="{{
+  url_for('static', filename='jquery.js') }}"></script>
         <script src="../static/scripts.js"></script>
         <link rel="stylesheet" type="text/css" href="../static/styles/globals.css">
     </head>
@@ -10,6 +12,10 @@
         <h1>Robot Control</h1>
         <div class="buttons">
             <table>
+                <!--<tr><td colspan="3"><form action="/echo" method="POST">
+                    <input type="text" name="text">
+                    <input type="submit" name="my-form" value="Send">
+                </form></td> </tr>-->
                 <tr>
                     <td colspan="3" align="center"><div class="button" id="up" >
                         <button type='button' id="upB" onmousedown="doUp()" onmouseup="stopUp()" onmouseout="stopUp()"></button>

@@ -11,10 +11,10 @@ class Car:
     def __init__(self, power):
         self.power = power
         
-    def set_left(power):
+    def set_left(self,power):
         BrickPi.MotorSpeed[PORT_A] = power  #Set the speed of MotorA (-255 to 255)
 
-    def set_right(power):
+    def set_right(self,power):
         BrickPi.MotorSpeed[PORT_B] = power  #Set the speed of MotorB (-255 to 255)
 
     def stop(self):

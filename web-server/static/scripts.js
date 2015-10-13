@@ -2,7 +2,7 @@
  * Created by Thomas on 05/10/2015.
  */
 
-var a = function(e){
+var keyDown = function(e){
     switch (e.keyCode) {
         case upKey:
             doUp();
@@ -19,11 +19,7 @@ var a = function(e){
     }
 };
 
-/*var b = function(){
-    window.alert('hello world, you pressed the upKey botton!')
-};*/
-
-var b = function(e){
+var keyUp = function(e){
     switch (e.keyCode) {
         case upKey:
             stopUp();
@@ -40,6 +36,9 @@ var b = function(e){
     }
 };
 
+document.addEventListener('keydown',keyDown,false);
+document.addEventListener('keyup', keyUp, false);
+
 var upKey = 38;
 var downKey = 40;
 var leftKey = 37;
@@ -47,35 +46,42 @@ var rightKey = 39;
 
 var doUp = function(){
     document.getElementById("upB").id = "upA";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doUp"}), success:function(data){alert(JSON.parse(data));}});
 };
 
 var stopUp = function() {
     document.getElementById("upA").id = "upB";
-    var a = $.ajax({url:'/fun', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({a: true,b:6}), success:function(data){alert(data);}});
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopUp"}), success:function(data){alert(JSON.parse(data));}});
 };
 
 var doDown = function(){
     document.getElementById("downB").id = "downA";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doDown"}), success:function(data){alert(JSON.parse(data));}});
 };
 
 var stopDown = function() {
     document.getElementById("downA").id = "downB";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopDown"}), success:function(data){alert(JSON.parse(data));}});
 };
 
 var doLeft = function(){
     document.getElementById("leftB").id = "leftA";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doLeft"}), success:function(data){alert(JSON.parse(data));}});
 };
 
 var stopLeft = function() {
     document.getElementById("leftA").id = "leftB";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopLeft"}), success:function(data){alert(JSON.parse(data));}});
 };
 
 var doRight = function(){
     document.getElementById("rightB").id = "rightA";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doRight"}), success:function(data){alert(JSON.parse(data));}});
 };
 
 var stopRight = function() {
     document.getElementById("rightA").id = "rightB";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopRight"}), success:function(data){alert(JSON.parse(data));}});
 };
 
 
@@ -87,30 +93,3 @@ var stopRight = function() {
 /*$('#upKey').click(function(){
     alert('hello world!')
 });*/
-
-document.addEventListener('keydown',a,false);
-document.addEventListener('keyup', b, false);
-
-function post(path, params, method) {
-    method = method || "post"; // Set method to post by default if not specified.
-
-    // The rest of this code assumes you are not using a library.
-    // It can be made less wordy if you use one.
-    var form = document.createElement("form");
-    form.setAttribute("method", method);
-    form.setAttribute("action", path);
-
-    for(var key in params) {
-        if(params.hasOwnProperty(key)) {
-            var hiddenField = document.createElement("input");
-            //hiddenField.setAttribute("type", "hidden");
-            hiddenField.setAttribute("name", key);
-            hiddenField.setAttribute("value", params[key]);
-
-            form.appendChild(hiddenField);
-        }
-    }
-
-    //document.body.appendChildfuncid(form);
-    form.submit();
-}

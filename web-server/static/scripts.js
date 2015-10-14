@@ -45,45 +45,84 @@ var leftKey = 37;
 var rightKey = 39;
 
 var doUp = function(){
-    document.getElementById("upB").id = "upA";
-    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doUp"}), success:function(data){alert(JSON.parse(data));}});
+    $("#up").toggleClass("active passive")
+    var response = post({function: "doUp"}, getId)
 };
 
 var stopUp = function() {
-    document.getElementById("upA").id = "upB";
-    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopUp"}), success:function(data){alert(JSON.parse(data));}});
+    $("#up").toggleClass("active passive")
+    var response = post({function: "stopUp"}, getId)
 };
 
 var doDown = function(){
-    document.getElementById("downB").id = "downA";
-    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doDown"}), success:function(data){alert(JSON.parse(data));}});
+    $("#down").toggleClass("active passive")
+    var response = post({function: "doDown"}, getId)
 };
 
 var stopDown = function() {
-    document.getElementById("downA").id = "downB";
-    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopDown"}), success:function(data){alert(JSON.parse(data));}});
+    $("#down").toggleClass("active passive")
+    var response = post({function: "stopDown"}, getId)
 };
 
 var doLeft = function(){
-    document.getElementById("leftB").id = "leftA";
-    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doLeft"}), success:function(data){alert(JSON.parse(data));}});
+    $("#left").toggleClass("active passive")
+    var response = post({function: "doLeft"}, getId)
 };
 
 var stopLeft = function() {
-    document.getElementById("leftA").id = "leftB";
-    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopLeft"}), success:function(data){alert(JSON.parse(data));}});
+    $("#left").toggleClass("active passive")
+    var response = post({function: "stopLeft"}, getId)
 };
 
 var doRight = function(){
-    document.getElementById("rightB").id = "rightA";
-    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doRight"}), success:function(data){alert(JSON.parse(data));}});
+    $("#right").toggleClass("active passive")
+    var result = post({function: "doRight"}, getId)
 };
 
 var stopRight = function() {
-    document.getElementById("rightA").id = "rightB";
-    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopRight"}), success:function(data){alert(JSON.parse(data));}});
+    $("#right").toggleClass("active passive")
+    var id;
+    var result = post({function: "stopRight"}, getId)
+    //window.alert(result)
+    //for(var key in result){window.alert(key); window.alert(result[key]);}
+    //alert(id)
 };
 
+var getId = function(response, status, xhr){//find a way to save the id that is returned (via global list or something)
+    try{
+        return response.id
+    }catch(err){
+        alert("an error has occured", err.message);
+        throw err;
+    }
+}
+
+var post = function(dataToSend, doOnSucces){
+    doOnSucces = doOnSucces || function(){}
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify(dataToSend), success:doOnSucces});
+    return response
+}
+
+var startStream = function(){
+    if($("#video_button").text() == "start stream") {
+        $("#video_button").text("stop stream")
+        var img = $("<img>").attr("src", Flask.url_for('video_feed'))
+        $("#video_stream").append(img)
+    }else{
+        $("#video_button").text("start stream")
+        $("#video_stream img").each(function(){
+            this.remove()
+        })
+    }
+}
+
+var getAllfunctionsInQueue = function(){
+
+}
+
+var cancelFunction = function(id){
+
+}
 
 
 /*document.addEventListener('mousedown',function(){

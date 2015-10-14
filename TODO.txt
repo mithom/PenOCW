@@ -1,3 +1,9 @@
 inleiding tot ssh keys maken (en basis git)
 
 functionCaller-> splits functie op in kleine functies zelf
+
+een id moet altijd bestaan -> verandering van kleur peiltjes moet ahv classen gebeuren (kan met toggleClass)
+
+pip install Flask-JSGlue
+
+fix voor onmouseout, of gewoon weglaten! (verschillend ff<-> chrome-> zoizo een fix voor maken)

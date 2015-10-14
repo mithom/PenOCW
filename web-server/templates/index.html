@@ -5,6 +5,7 @@
         <title>home</title>
         <script type=text/javascript src="{{
   url_for('static', filename='jquery.js') }}"></script>
+        {{ JSGlue.include() }}
         <script src="../static/scripts.js"></script>
         <link rel="stylesheet" type="text/css" href="../static/styles/globals.css">
     </head>
@@ -17,19 +18,19 @@
                     <input type="submit" name="my-form" value="Send">
                 </form></td> </tr>-->
                 <tr>
-                    <td colspan="3" align="center"><div class="button" id="up" >
-                        <button type='button' id="upB" onmousedown="doUp()" onmouseup="stopUp()" onmouseout="stopUp()"></button>
+                    <td colspan="3" align="center"><div class="button" id="Bup" >
+                        <button type='button' id="up" class="passive" onmousedown="doUp()" onmouseup="stopUp()"></button>
                     </div></td>
                 </tr>
                 <tr>
-                    <td><div class="button" id="left" >
-                        <button type='button' id="leftB" onmousedown="doLeft()" onmouseup="stopLeft()" onmouseout="stopLeft()"></button>
+                    <td><div class="button" id="Bleft" >
+                        <button type='button' id="left" class="passive" onmousedown="doLeft()" onmouseup="stopLeft()"></button>
                     </div></td>
-                    <td><div class="button" id="down">
-                        <button type='button' id="downB" onmousedown="doDown()" onmouseup="stopDown()" onmouseout="stopDown()"></button>
+                    <td><div class="button" id="Bdown">
+                        <button type='button' id="down" class="passive" onmousedown="doDown()" onmouseup="stopDown()"></button>
                     </div></td>
-                    <td><div class="button" id="right">
-                        <button type='button' id="rightB" onmousedown="doRight()" onmouseup="stopRight()" onmouseout="stopRight()"></button>
+                    <td><div class="button" id="Bright">
+                        <button type='button' id="right" class="passive" onmousedown="doRight()" onmouseup="stopRight()"></button>
                     </div></td>
                 </tr>
             </table>
@@ -48,20 +49,29 @@
                 <option value="meters">meters</option>
             </select>
             <!--start-->
-            <button type='submit'>START</button>
+            <button type='button'>START</button>
             </br>
             <!--left-->
             <input min='0' type='number'></input>
-            <button type='submit'>LEFT</button>
+            <button type='button'>LEFT</button>
             </br>
             <!--right-->
             <input min='0' type='number'></input>
-            <button type='submit'>RIGHT</button>
+            <button type='button'>RIGHT</button>
             </br>
             <!--stop-->
             <input min='0' type='number'></input>
-            <button type='submit'>STOP</button>
+            <button type='button'>STOP</button>
             </br>
+        </div>
+        <div>
+            <table>
+                <thead><tr><td>de fotostream</></tr></thead>
+                <tbody>
+                    <tr><td><button type="submit" id="video_button" onmousedown="startStream()">start stream</button></td></tr>
+                    <tr><td id="video_stream"></td></tr>
+                </tbody>
+            </table>
         </div>
     </body>
 </html>

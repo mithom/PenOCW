@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, jsonify, url_for
+from flask import Flask, render_template, request, jsonify, url_for, Response
 import functionCaller as FC
+import cameraPi
+from platform import system
+from flask_jsglue import JSGlue
 
 app = Flask(__name__)
-
+jsglue = JSGlue(app) # this allows us to use url_for in the javascript frontend
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -16,7 +19,7 @@ def index():
 
 
 def procesFunctionCall(func):
-        if func == "doUp":
+        """if func == "doUp":
             FC.getIOStream().addFunctionToQueue()
             return jsonify(id="1")
 
@@ -30,28 +33,52 @@ def procesFunctionCall(func):
 
         elif func == "doRight":
             FC.getIOStream().addFunctionToQueue()
-            return jsonify(id="1")
+            return jsonify(id="1")"""
+        if "do" == func[:2]:
+            id = FC.getIOStream().addFunctionToQueue(func[2:])
+            return jsonify(id=id)
 
         elif func == "stopUp":
-            FC.getIOStream().removeFunctionFromQueue()
+            FC.getIOStream().removeFunctionFromQueue(1)
             return jsonify(id="1")
 
         elif func == "stopLeft":
-            FC.getIOStream().removeFunctionFromQueue()
+            FC.getIOStream().removeFunctionFromQueue(1)
             return jsonify(id="1")
 
         elif func == "stopDown":
-            FC.getIOStream().removeFunctionFromQueue()
+            FC.getIOStream().removeFunctionFromQueue(1)
             return jsonify(id="1")
 
         elif func == "stopRight":
-            FC.getIOStream().removeFunctionFromQueue()
-            return jsonify(id="1")
+            FC.getIOStream().removeFunctionFromQueue(1)
+            return jsonify(id="5")
 
         return jsonify(error="unknown function")
+
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen(camera),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    
 """
-this file is intended to run as imported module, if it runs as main, debug options are on.
+this file is intended to run as imported module, if it runs as main,
+debug options are on.
+If this file is not run on the raspbery pi, a stream emulated will be used.
+Otherwise the real camera is used.
 """
+if system() == 'Linux':
+    camera = cameraPi.Camera()
+    camera.initialize() #make shure you don't have to wait once stream starts, but also start consuming battery (250mA)
+else:
+    camera = cameraPi.ECamera()
+
 if __name__ == '__main__':
     lol = FC.getIOStream()
     app.run(debug=True, host='127.0.0.1', port=5000)

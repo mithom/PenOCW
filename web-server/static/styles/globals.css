@@ -18,42 +18,42 @@ div{
 }
 
 
-#upB {
+#up.passive {
     background-image: url(arrow-up.png);
     background-size: 100%;
 }
 
-#upA {
+#up.active {
     background-image: url(arrow-up-active.png);
     background-size: 100%;
 }
 
-#downB {
+#down.passive {
     background-image: url(arrow-down.png);
     background-size: 100%;
 }
 
-#downA {
+#down.active {
     background-image: url(arrow-down-active.png);
     background-size: 100%;
 }
 
-#leftB {
+#left.passive {
     background-image: url(arrow-left.png);
     background-size: 100%;
 }
 
-#leftA {
+#left.active {
     background-image: url(arrow-left-active.png);
     background-size: 100%;
 }
 
-#rightB {
+#right.passive {
     background-image: url(arrow-right.png);
     background-size: 100%;
 }
 
-#rightA {
+#right.active {
     background-image: url(arrow-right-active.png);
     background-size: 100%;
 }

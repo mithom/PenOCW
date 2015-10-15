@@ -2,7 +2,7 @@
  * Created by Thomas on 05/10/2015.
  */
 
-var a = function(e){
+var keyDown = function(e){
     switch (e.keyCode) {
         case upKey:
             doUp();
@@ -19,10 +19,25 @@ var a = function(e){
     }
 };
 
-/*var b = function(){
-    window.alert('hello world, you pressed the upKey botton!')
-};*/
+var keyUp = function(e){
+    switch (e.keyCode) {
+        case upKey:
+            stopUp();
+            break;
+        case downKey:
+            stopDown();
+            break;
+        case leftKey:
+            stopLeft();
+            break;
+        case rightKey:
+            stopRight();
+            break;
+    }
+};
 
+document.addEventListener('keydown',keyDown,false);
+document.addEventListener('keyup', keyUp, false);
 
 var upKey = 38;
 var downKey = 40;
@@ -30,20 +45,44 @@ var leftKey = 37;
 var rightKey = 39;
 
 var doUp = function(){
-    window.alert("up")
-}
+    document.getElementById("upB").id = "upA";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doUp"}), success:function(data){alert(JSON.parse(data));}});
+};
+
+var stopUp = function() {
+    document.getElementById("upA").id = "upB";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopUp"}), success:function(data){alert(JSON.parse(data));}});
+};
 
 var doDown = function(){
-    window.alert("down")
-}
+    document.getElementById("downB").id = "downA";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doDown"}), success:function(data){alert(JSON.parse(data));}});
+};
+
+var stopDown = function() {
+    document.getElementById("downA").id = "downB";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopDown"}), success:function(data){alert(JSON.parse(data));}});
+};
 
 var doLeft = function(){
-    window.alert("left")
-}
+    document.getElementById("leftB").id = "leftA";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doLeft"}), success:function(data){alert(JSON.parse(data));}});
+};
+
+var stopLeft = function() {
+    document.getElementById("leftA").id = "leftB";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopLeft"}), success:function(data){alert(JSON.parse(data));}});
+};
 
 var doRight = function(){
-    window.alert("right")
-}
+    document.getElementById("rightB").id = "rightA";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "doRight"}), success:function(data){alert(JSON.parse(data));}});
+};
+
+var stopRight = function() {
+    document.getElementById("rightA").id = "rightB";
+    var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify({function: "stopRight"}), success:function(data){alert(JSON.parse(data));}});
+};
 
 
 
@@ -54,5 +93,3 @@ var doRight = function(){
 /*$('#upKey').click(function(){
     alert('hello world!')
 });*/
-
-document.addEventListener('keydown',a,false);

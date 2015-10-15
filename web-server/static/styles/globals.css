@@ -1,18 +1,78 @@
-.button{
-    display: inline-block;
-}
-
 div{
     color:black;
     border: 2px;
 }
 
-#up{
-    padding-left:2%;
-    display: block;
-    padding-bottom: 4px;
+.direct-control {
+    float: left;
+    border: solid red;
+    width: auto;
+    padding: 5px;
 }
 
-button{
-    color: blue;
+.direct-control button{
+    background-color: lightgray;
+    display: block;
+    min-width: 60px;
+    min-height: 60px;
 }
+
+
+#upB {
+    background-image: url(arrow-up.png);
+    background-size: 100%;
+}
+
+#upA {
+    background-image: url(arrow-up-active.png);
+    background-size: 100%;
+}
+
+#downB {
+    background-image: url(arrow-down.png);
+    background-size: 100%;
+}
+
+#downA {
+    background-image: url(arrow-down-active.png);
+    background-size: 100%;
+}
+
+#leftB {
+    background-image: url(arrow-left.png);
+    background-size: 100%;
+}
+
+#leftA {
+    background-image: url(arrow-left-active.png);
+    background-size: 100%;
+}
+
+#rightB {
+    background-image: url(arrow-right.png);
+    background-size: 100%;
+}
+
+#rightA {
+    background-image: url(arrow-right-active.png);
+    background-size: 100%;
+}
+
+.info {
+    border: solid purple;
+}
+
+.commands {
+    float: right;
+    border: solid blue;
+}
+
+.route-input {
+    border: solid green;
+}
+
+.route-input input {
+    width: 50px;
+}
+
+

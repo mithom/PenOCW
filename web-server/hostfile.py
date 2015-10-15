@@ -3,7 +3,7 @@ import functionCaller as FC
 import cameraPi
 from platform import system
 from flask_jsglue import JSGlue
-import threading
+from gevent.wsgi import WSGIServer
 
 app = Flask(__name__)
 jsglue = JSGlue(app) # this allows us to use url_for in the javascript frontend
@@ -64,7 +64,7 @@ def gen(camera):
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-@app.route('/video_feed')
+@app.route('/video_feed.mjpg')
 def video_feed():
     return Response(gen(camera),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -83,12 +83,15 @@ else:
 
 if __name__ == '__main__':
     lol = FC.getIOStream()
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    #app.run(debug=True, host='127.0.0.1', port=5000)
 else:
-    appThread = threading.Thread(target=app.run,name="websiteHost",kwargs={"debug": False, "host": '0.0.0.0', "port": 4848})
-    #app.run(debug= False, host= '0.0.0.0', port= 4848)
-    appThread.start()
-    #FC.getIOStream().setWebsite(url_for('index'))
+    #appThread = threading.Thread(target=app.run,name="websiteHost",kwargs={"debug": False, "host": '0.0.0.0', "port": 4848})
+    #appThread.start()
+    http = WSGIServer(('127.0.0.1', 5000), app)
+    #appThread = threading.Thread(target=http.serve_forever,name="websiteHost")
+    #appThread.setDaemon(True)
+    #appThread.start()
+    #http.serve_forever()
 
 
 """

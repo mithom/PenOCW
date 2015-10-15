@@ -13,10 +13,6 @@ class Function:
     """
 
     def __init__(self, function, time=1000):
-        if(type(function) == Function):
-            self.function = function.getFunction()
-            self.time = function.getTime()
-        else:
             self.function = function
             self.time = time
 
@@ -28,6 +24,11 @@ class Function:
 
     def useTime(self, dt):
         self.time -= dt #dit moet uitgebreider, bvb nooit onder 0
+        return max(0, dt-self.time)
+
+
+    def copy(self):
+        return Function(self.function, self.time)
 
 
 def haha(power=1):
@@ -38,7 +39,7 @@ class FunctionDivider:
     """
     transforms commands into functions that the Car can execute. Also allows interuption of these commands.
     """
-    commandLib={"goForward": [Function(haha, 100)], "goBackward":[]} #the list contains the functions that should be executed in order to drive the car
+    commandLib={"goForward": [Function(haha, 100)], "goBackward": [Function(haha, 100)]} #the list contains the functions that should be executed in order to drive the car
 
     def __init__(self, firstCommand = None):
         self.currentCommand = None
@@ -48,7 +49,7 @@ class FunctionDivider:
 
     def executeCommand(self,command):
         if command is not None and command.getCommandName() in FunctionDivider.commandLib.keys():
-            self.currentCommand = [Function(x) for x in FunctionDivider.commandLib[command.getCommandName()]]
+            self.currentCommand = [x.copy() for x in FunctionDivider.commandLib[command.getCommandName()]]
         else:
             self.currentCommand = None
 
@@ -68,7 +69,7 @@ class FunctionDivider:
         print "processing time"
         while dt >0:
             print "time: ", dt, self.currentCommand
-            if self.currentCommand is not None and len(self.currentCommand)>0:
+            if self.currentCommand is not None:
                 dt = self.processCommand(dt)
             else:
                 self.executeCommand(functionCaller.getIOStream().pushCommand())
@@ -77,19 +78,23 @@ class FunctionDivider:
                     time.sleep(1)
                     dt -= 1
 
-    def processCommand(self,dt):
+    def processCommand(self, dt):
         print "processing command"
         while dt>0:
             print "command: ", dt
             if self.currentFunction is not None:
                 dt = self.procesFunction(dt)
-            elif len(self.currentCommand)>0:
+                if dt > 0:
+                    self.currentFunction = None
+            elif len(self.currentCommand) > 0:
                 self.currentFunction = self.currentCommand.pop(0)
             else:
+                self.currentCommand = None
                 return dt
         return 0
 
-    def procesFunction(self,dt):
+    def procesFunction(self, dt):
         a = self.currentFunction.getFunction()
+        print a, self.currentFunction
         a(100)
-        return 0
+        return self.currentFunction.useTime(dt)

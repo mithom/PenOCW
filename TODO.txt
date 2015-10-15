@@ -7,3 +7,5 @@ een id moet altijd bestaan -> verandering van kleur peiltjes moet ahv classen ge
 pip install Flask-JSGlue
 
 fix voor onmouseout, of gewoon weglaten! (verschillend ff<-> chrome-> zoizo een fix voor maken)
+
+socketServer vs gevent bestuderen

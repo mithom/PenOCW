@@ -26,4 +26,6 @@ def turn_straight_right(power):
 def go_straight(power):
     set_left(power)
     set_right(power)
-    BrickPiUpdateValues()
+    BrickPiUpdateValues() 
+
+    

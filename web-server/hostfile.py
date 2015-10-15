@@ -1,9 +1,13 @@
+import gevent.monkey
+gevent.monkey.patch_all()
 from flask import Flask, render_template, request, jsonify, url_for, Response
 import functionCaller as FC
 import cameraPi
 from platform import system
 from flask_jsglue import JSGlue
-from gevent.wsgi import WSGIServer
+from gevent.pywsgi import WSGIServer
+from gevent.pool import Pool
+import gevent
 
 app = Flask(__name__)
 jsglue = JSGlue(app) # this allows us to use url_for in the javascript frontend
@@ -58,15 +62,22 @@ def procesFunctionCall(func):
 
         return jsonify(error="unknown function")
 
+
 def gen(camera):
     while True:
         frame = camera.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        gevent.sleep(0)
+
+pool = Pool(1)
 
 @app.route('/video_feed.mjpg')
 def video_feed():
-    return Response(gen(camera),
+    thread = gevent.spawn(gen,camera)
+    pool.add(thread)
+    pool.join()
+    return Response(thread.value,
                     mimetype='multipart/x-mixed-replace; boundary=frame')
     
 """

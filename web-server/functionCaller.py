@@ -4,17 +4,17 @@ __ioStream__ = None
 __webCaller__ = None
 
 
-class Function:
+class Command:
     """
-    the functions that are stored in the queue
+    the commands that are stored in the queue
     """
     __idGen__ = None
 
-    def __init__(self, functionName, **params):
-        if Function.__idGen__ is None:
-            Function.__idGen__ = getNextId()
-        self.id = Function.__idGen__.next()
-        self.functionName = functionName
+    def __init__(self, commandName, **params):
+        if Command.__idGen__ is None:
+            Command.__idGen__ = getNextId()
+        self.id = Command.__idGen__.next()
+        self.commandName = commandName
         if params is not None:
             self.__params__ = params
         else:
@@ -23,18 +23,24 @@ class Function:
     def getId(self):
         return self.id
 
-    def getFunctionName(self):
-        return self.functionName
+    def getCommandName(self):
+        return self.commandName
 
     def getParam(self, param):
         if param == "id":
             return self.getId()
-        if param == "functionName":
-            return self.getFunctionName()
+        if param == "commandName":
+            return self.getCommandName()
         return self.__params__.get(param, None)
 
     def output(self):
-        return {"id": self.getId(),"functionName": self.getFunctionName()}
+        return {"id": self.getId(),"commandName": self.getCommandName()}
+
+    def __str__(self):
+        return str(self.output())
+
+    def __repr__(self):
+        return str(self)
 
 
 class __IOStream__:
@@ -44,36 +50,38 @@ class __IOStream__:
     def __init__(self):
         self.queue = []
 
-    def pushFunction(self):
+    def pushCommand(self):
         if len(self.queue) > 0:
             return self.queue.pop(0)
+        return None
 
-    def addFunctionToQueue(self, functionName):
+    def addCommandToQueue(self, commandName):
         if len(self.queue) == sys.maxint:
             return Exception("queue too long")
-        newFunction = Function(functionName)
+        newFunction = Command(commandName)
         self.queue.append(newFunction)
+        print str(self.queue)
         return newFunction.getId()
 
 
-    def addFunctionFrontQueue(self, functionName):
+    def addCommandFrontQueue(self, commandName):
         if len(self.queue) == sys.maxint:
             return Exception("queue too long")
-        newFunction = Function(functionName)
+        newFunction = Command(commandName)
         self.queue.insert(0, newFunction)
         return newFunction.getId()
 
-    def executeFunctionImmediatly(self,functionName):
+    def executeCommandImmediatly(self,commandName):
         pass
 
-    def removeFunctionFromQueue(self, functionId):
+    def removeCommandFromQueue(self, commandId):
         for function in self.queue:
-            if functionId == function.getId():
+            if commandId == function.getId():
                 self.queue.remove(function)
                 return True
         return False
 
-    def cancelCurrentFucntion(self):
+    def cancelCurrentCommand(self):
         pass
 
     def cancelWholeQueue(self):
@@ -89,6 +97,7 @@ class __IOStream__:
         pass
 
     def setWebsite(self, mainUrl):
+        print mainUrl
         pass
 
 

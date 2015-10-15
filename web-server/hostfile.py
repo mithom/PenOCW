@@ -3,6 +3,7 @@ import functionCaller as FC
 import cameraPi
 from platform import system
 from flask_jsglue import JSGlue
+import threading
 
 app = Flask(__name__)
 jsglue = JSGlue(app) # this allows us to use url_for in the javascript frontend
@@ -35,23 +36,24 @@ def procesFunctionCall(func):
             FC.getIOStream().addFunctionToQueue()
             return jsonify(id="1")"""
         if "do" == func[:2]:
-            id = FC.getIOStream().addFunctionToQueue(func[2:])
+            #id = FC.getIOStream().addCommandToQueue(func[2:])
+            id = FC.getIOStream().addCommandToQueue("goForward")
             return jsonify(id=id)
 
         elif func == "stopUp":
-            FC.getIOStream().removeFunctionFromQueue(1)
+            FC.getIOStream().removeCommandFromQueue(1)
             return jsonify(id="1")
 
         elif func == "stopLeft":
-            FC.getIOStream().removeFunctionFromQueue(1)
+            FC.getIOStream().removeCommandFromQueue(1)
             return jsonify(id="1")
 
         elif func == "stopDown":
-            FC.getIOStream().removeFunctionFromQueue(1)
+            FC.getIOStream().removeCommandFromQueue(1)
             return jsonify(id="1")
 
         elif func == "stopRight":
-            FC.getIOStream().removeFunctionFromQueue(1)
+            FC.getIOStream().removeCommandFromQueue(1)
             return jsonify(id="5")
 
         return jsonify(error="unknown function")
@@ -83,8 +85,11 @@ if __name__ == '__main__':
     lol = FC.getIOStream()
     app.run(debug=True, host='127.0.0.1', port=5000)
 else:
-    FC.getIOStream().setWebsite(url_for('index'))
-    app.run(debug=False, host='0.0.0.0', port=4848)
+    appThread = threading.Thread(target=app.run,name="websiteHost",kwargs={"debug": False, "host": '0.0.0.0', "port": 4848})
+    #app.run(debug= False, host= '0.0.0.0', port= 4848)
+    appThread.start()
+    #FC.getIOStream().setWebsite(url_for('index'))
+
 
 """
 om je eigen ip adress te vinden gebruik je in command prompt ipconfig (ifconfig voor linux)

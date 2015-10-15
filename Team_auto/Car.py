@@ -28,7 +28,7 @@ def go_straight(power):
     set_right(power)
     BrickPiUpdateValues()
 
-def make_circle_left(power, radius)
+def make_circle_left(power, radius):
     left_power = int (((radius - 11.5)/ radius)*power)
     set_left(left_power)
     set_right (power)

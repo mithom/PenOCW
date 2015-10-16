@@ -7,8 +7,14 @@ BrickPi.MotorEnable[PORT_A] = 1 #Enable the Motor A
 BrickPi.MotorEnable[PORT_B] = 1 #Enable the Motor B
 car_width = 11.5
 wheel_contour = 5 #foute waarde
+functions = [go_straight, make_circle_left, make_circle_right, rotate_angle_left, rotate_angle_right, set_left, set_right, turn_straight_left, turn_straight_right]
 
 BrickPiSetupSensors()   #Send the properties of sensors to BrickPi
+
+def excecute_function_with_id(function_id, args):
+	for f in functions:
+		if (id(f) == function_id):
+			f(args)
 
 def go_straight(power, duration):
 	BrickPi.nMotorEncoder[PORT_A] = 0 #reset the value of encoder A to zero

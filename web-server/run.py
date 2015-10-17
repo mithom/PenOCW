@@ -18,4 +18,4 @@ if __name__ == "__main__":
     process.start()
     # add other proces for adjusting to obstacles etc
     # hostfile.http.serve_forever()
-    hostfile.socketio.run(hostfile.app, host='0.0.0.0', port=4848)
+    hostfile.socket.run(hostfile.app, host='0.0.0.0', port=4848)

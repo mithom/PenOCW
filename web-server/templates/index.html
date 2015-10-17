@@ -12,15 +12,6 @@
     </head>
     <body>
         <h1>Robot Control</h1>
-        <div class="info">
-            <table>
-                <thead><tr><td>de fotostream</td></tr></thead>
-                <tbody>
-                <tr><td><button type="submit" id="video_button" onmousedown="startStream()">start stream</button></td></tr>
-                <tr><td id="video_stream"></td></tr>
-                </tbody>
-            </table>
-        </div>
         <div class="direct-control">
             <table>
                 <!--<tr><td colspan="3"><form action="/echo" method="POST">
@@ -44,6 +35,15 @@
                         <button type='button' id="right" class="passive" onmousedown="doRight()" onmouseup="stopRight()"></button>
                     </td>
                 </tr>
+            </table>
+        </div>
+        <div class="info">
+            <table>
+                <thead><tr><td>de fotostream</td></tr></thead>
+                <tbody>
+                <tr><td><button type="submit" id="video_button" onmousedown="startStream()">start stream</button></td></tr>
+                <tr><td id="video_stream"></td></tr>
+                </tbody>
             </table>
         </div>
         <div class="commands"><!-- deze knoppen kunnen gewoon ahv submit werken en submit  overschrijven in jquery -->

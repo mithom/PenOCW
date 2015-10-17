@@ -1,9 +1,12 @@
 /**
  * Created by Thomas on 05/10/2015.
  */
-
-$('document').ready(function(){
+var socket
+$(document).ready(function(){
     //TODO: script on startup})
+    var namespace= '/test';
+    socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+    socket.on('alert', function(msg){window.alert(msg);});
 });
 
 var keyDown = function(e){
@@ -49,6 +52,7 @@ var leftKey = 37;
 var rightKey = 39;
 
 var doUp = function(){
+    //socket.emit("manual driving",{function: "doUp"});
     $("#up").toggleClass("active passive");
     var response = post({function: "doUp"}, getId);
 };

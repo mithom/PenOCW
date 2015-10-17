@@ -5,16 +5,17 @@ kunnen worden
 """
 
 import functionCaller, time
-#import Team_auto.Car as car
+import Team_auto.Car as car
 
 class Function:
     """
     the functions that are stored in the queue
     """
 
-    def __init__(self, function, time=1000):
-            self.function = function
-            self.time = time
+    def __init__(self, function, duration=None, **kwargs):
+        self.function = function
+        self.params = kwargs
+        self.time = duration
 
     def getFunction(self):
         return self.function
@@ -23,9 +24,13 @@ class Function:
         return self.time
 
     def useTime(self, dt):
+        if self.time is None:
+            return 0
         self.time -= dt #dit moet uitgebreider, bvb nooit onder 0
         return max(0, dt-self.time)
 
+    def getParams(self):
+        return self.params
 
     def copy(self):
         return Function(self.function, self.time)
@@ -39,11 +44,14 @@ class FunctionDivider:
     """
     transforms commands into functions that the Car can execute. Also allows interuption of these commands.
     """
-    commandLib={"goForward": [Function(haha, 100)], "goBackward": [Function(haha, 100)]} #the list contains the functions that should be executed in order to drive the car
+#    commandLib = {"goForward": [Function(haha, 100)], "goBackward": [Function(haha, 100)]} #the list contains the functions that should be executed in order to drive the car
 
     def __init__(self, firstCommand = None):
         self.currentCommand = None
         self.currentFunction = None
+        function_ids = car.get_function_ids()
+        self.commandLib = {"goForward": [Function(function_ids['go_straight'], duration=10, power=250)],
+                           "goBackward": [Function(function_ids['go_straight'], duration=10, power=-250)]}
         if firstCommand is not None:
             self.executeCommand(firstCommand)
 
@@ -94,7 +102,10 @@ class FunctionDivider:
         return 0
 
     def procesFunction(self, dt):
-        a = self.currentFunction.getFunction()
-        print a, self.currentFunction
-        a(100)
+        function = self.currentFunction.getFunction()
+        params = self.currentFunction.getParams()
+        if self.currentFunction.getTime() is not None:
+            car.execute_function_with_id(function, duration = min(self.currentFunction.getTime(), dt), **params)
+        else:
+            car.execute_function_with_id(function, **params)
         return self.currentFunction.useTime(dt)

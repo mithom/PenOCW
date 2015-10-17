@@ -16,6 +16,8 @@ class Command:
         self.id = Command.__idGen__.next()
         self.commandName = commandName
         if params is not None:
+            if params.get('id') is not None:
+                self.id = params['id']
             self.__params__ = params
         else:
             self.__params__ = {}
@@ -52,7 +54,10 @@ class __IOStream__:
 
     def pushCommand(self):
         if len(self.queue) > 0:
-            return self.queue.pop(0)
+            toExecute = self.queue.pop(0)
+            if toExecute in ["goForward","goBackward"] and len(self.queue) == 0:
+                self.addCommandToQueue(toExecute.getCommandName())
+            return toExecute
         return None
 
     def addCommandToQueue(self, commandName):

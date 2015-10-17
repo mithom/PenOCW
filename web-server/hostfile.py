@@ -8,9 +8,14 @@ from flask_jsglue import JSGlue
 from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
 import gevent
+from flask.ext.socketio import SocketIO,send,emit
 
 app = Flask(__name__)
-jsglue = JSGlue(app) # this allows us to use url_for in the javascript frontend
+jsglue = JSGlue(app)  # this allows us to use url_for in the javascript frontend
+app.config['SECRET_KEY'] = 'secret!'
+http = WSGIServer(('127.0.0.1', 5000), app)
+socketio = SocketIO(app)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -63,6 +68,16 @@ def procesFunctionCall(func):
         return jsonify(error="unknown function")
 
 
+@socketio.on("connect", namespace="/manualDriving")
+def connectManualDriving():
+    return "welcome to the socketIO for manual driving"
+
+@socketio.on("disconnect", namespace="/manualDriving")
+def disconnectManualDriving():
+    return "nice to have met you."
+
+
+
 def gen(camera):
     while True:
         frame = camera.get_frame()
@@ -70,7 +85,8 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         gevent.sleep(0)
 
-pool = Pool(1)
+pool = Pool(2)
+
 
 @app.route('/video_feed.mjpg')
 def video_feed():
@@ -95,10 +111,11 @@ else:
 if __name__ == '__main__':
     lol = FC.getIOStream()
     #app.run(debug=True, host='127.0.0.1', port=5000)
+    socketio.run(debug=True, host='127.0.0.1',port=5000)
 else:
+    pass
     #appThread = threading.Thread(target=app.run,name="websiteHost",kwargs={"debug": False, "host": '0.0.0.0', "port": 4848})
     #appThread.start()
-    http = WSGIServer(('127.0.0.1', 5000), app)
     #appThread = threading.Thread(target=http.serve_forever,name="websiteHost")
     #appThread.setDaemon(True)
     #appThread.start()

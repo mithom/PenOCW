@@ -3,10 +3,10 @@
     <head>
         <meta charset="UTF-8">
         <title>home</title>
-        <script type=text/javascript src="{{
-  url_for('static', filename='jquery.js') }}"></script>
+        <script type="text/javascript" src="{{url_for('static', filename='jquery.js') }}"></script>
         {{ JSGlue.include() }}
-        <script src="../static/scripts.js"></script>
+        <script type="text/javascript" src="{{url_for('static', filename='socket.io.js') }}"></script>
+        <script type="text/javascript" src="{{url_for('static', filename='scripts.js') }}"></script>
         <link rel="stylesheet" type="text/css" href="../static/styles/globals.css">
     </head>
     <body>
@@ -49,24 +49,24 @@
                 <option value="meters">meters</option>
             </select>
             <!--start-->
-            <button type='button'>START</button>
+            <button type='button' name="rStart">START</button>
             </br>
             <!--left-->
-            <input min='0' type='number'></input>
+            <input min='0' type='number' name="rLeft" value="1">
             <button type='button'>LEFT</button>
             </br>
             <!--right-->
-            <input min='0' type='number'></input>
+            <input min='0' type='number' name="rRight" value="1">
             <button type='button'>RIGHT</button>
             </br>
             <!--stop-->
-            <input min='0' type='number'></input>
+            <input min='0' type='number' name="rStop" value="1">
             <button type='button'>STOP</button>
             </br>
         </div>
         <div>
             <table>
-                <thead><tr><td>de fotostream</></tr></thead>
+                <thead><tr><td>de fotostream</td></tr></thead>
                 <tbody>
                     <tr><td><button type="submit" id="video_button" onmousedown="startStream()">start stream</button></td></tr>
                     <tr><td id="video_stream"></td></tr>

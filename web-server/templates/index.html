@@ -12,6 +12,15 @@
     </head>
     <body>
         <h1>Robot Control</h1>
+        <div class="info">
+            <table>
+                <thead><tr><td>de fotostream</td></tr></thead>
+                <tbody>
+                <tr><td><button type="submit" id="video_button" onmousedown="startStream()">start stream</button></td></tr>
+                <tr><td id="video_stream"></td></tr>
+                </tbody>
+            </table>
+        </div>
         <div class="direct-control">
             <table>
                 <!--<tr><td colspan="3"><form action="/echo" method="POST">
@@ -20,25 +29,22 @@
                 </form></td> </tr>-->
                 <!-- TODO: een messagebox maken (in jinja2) die meldingen doorgeeft  -->
                 <tr>
-                    <td colspan="3" align="center"><div class="button" id="Bup" >
+                    <td colspan="3" align="center">
                         <button type='button' id="up" class="passive" onmousedown="doUp()" onmouseup="stopUp()"></button>
-                    </div></td>
+                    </td>
                 </tr>
                 <tr>
-                    <td><div class="button" id="Bleft" >
+                    <td>
                         <button type='button' id="left" class="passive" onmousedown="doLeft()" onmouseup="stopLeft()"></button>
-                    </div></td>
-                    <td><div class="button" id="Bdown">
+                    </td>
+                    <td>
                         <button type='button' id="down" class="passive" onmousedown="doDown()" onmouseup="stopDown()"></button>
-                    </div></td>
-                    <td><div class="button" id="Bright">
+                    </td>
+                    <td>
                         <button type='button' id="right" class="passive" onmousedown="doRight()" onmouseup="stopRight()"></button>
-                    </div></td>
+                    </td>
                 </tr>
             </table>
-        </div>
-        <div class="info">
-            
         </div>
         <div class="commands"><!-- deze knoppen kunnen gewoon ahv submit werken en submit  overschrijven in jquery -->
             <form id="line" method="POST" action='#'><input type='submit' value="2m straight line"></form>
@@ -52,28 +58,20 @@
             </select>
             <!--start-->
             <button type='button' name="rStart">START</button>
-            </br>
+            <br>
             <!--left-->
             <input min='0' type='number' name="rLeft" value="1">
             <button type='button'>LEFT</button>
-            </br>
+            <br>
             <!--right-->
             <input min='0' type='number' name="rRight" value="1">
             <button type='button'>RIGHT</button>
-            </br>
+            <br>
             <!--stop-->
             <input min='0' type='number' name="rStop" value="1">
             <button type='button'>STOP</button>
-            </br>
+            <br>
         </div>
-        <div>
-            <table>
-                <thead><tr><td>de fotostream</td></tr></thead>
-                <tbody>
-                    <tr><td><button type="submit" id="video_button" onmousedown="startStream()">start stream</button></td></tr>
-                    <tr><td id="video_stream"></td></tr>
-                </tbody>
-            </table>
-        </div>
+
     </body>
 </html>

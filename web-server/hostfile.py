@@ -16,17 +16,17 @@ app.config['SECRET_KEY'] = 'secret!'
 socket = SocketIO(app)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])  # post niet meer
 def index():
     if request.method == 'GET':
         return render_template('index.html')
-    if request.method == 'POST':
-        print request.json
-        params = request.json
-        func = params.get('function')
-        return procesFunctionCall(func)
+    # if request.method == 'POST':
+    #   print request.json
+    #    params = request.json
+    #    func = params.get('function')
+    #    return procesFunctionCall(func)
 
-
+'''
 def procesFunctionCall(func):
         """if func == "doUp":
             FC.getIOStream().addFunctionToQueue()
@@ -65,7 +65,7 @@ def procesFunctionCall(func):
             return jsonify(id="5")
 
         return jsonify(error="unknown function")
-
+'''
 
 @socket.on("connect", namespace="/manueel")
 def connect():
@@ -120,56 +120,68 @@ def line(params):
 
 @socket.on("up", namespace="/manueel")
 def line(params):
-    id = FC.getIOStream().addCommandToQueue("circle")
-    params["id"] = id
+    if params.get("status") == "active":
+        id = FC.getIOStream().addCommandToQueue("goForward")
+        params["id"] = id
+    else:
+        FC.getIOStream().removeCommandFromQueue(1)
     emit('alert', params)
 
 
 @socket.on("down", namespace="/manueel")
 def line(params):
-    id = FC.getIOStream().addCommandToQueue("circle")
-    params["id"] = id
+    if params.get("status") == "active":
+        id = FC.getIOStream().addCommandToQueue("goDown")
+        params["id"] = id
+    else:
+        FC.getIOStream().removeCommandFromQueue(1)
     emit('alert', params)
 
 
 @socket.on("left", namespace="/manueel")
 def line(params):
-    id = FC.getIOStream().addCommandToQueue("circle")
-    params["id"] = id
+    if params.get("status") == "active":
+        id = FC.getIOStream().addCommandToQueue("goLeft")
+        params["id"] = id
+    else:
+        FC.getIOStream().removeCommandFromQueue(1)
     emit('alert', params)
 
 
 @socket.on("right", namespace="/manueel")
 def line(params):
-    id = FC.getIOStream().addCommandToQueue("circle")
-    params["id"] = id
+    if params.get("status") == "active":
+        id = FC.getIOStream().addCommandToQueue("goRight")
+        params["id"] = id
+    else:
+        FC.getIOStream().removeCommandFromQueue(1)
     emit('alert', params)
 
 
 @socket.on("start", namespace="/beschrijving")
 def line(params):
-    id = FC.getIOStream().addCommandToQueue("circle")
+    id = FC.getIOStream().addCommandToQueue("start")
     params["id"] = id
     emit('alert', params)
 
 
 @socket.on("stop", namespace="/beschrijving")
 def line(params):
-    id = FC.getIOStream().addCommandToQueue("circle")
+    id = FC.getIOStream().addCommandToQueue("stop")
     params["id"] = id
     emit('alert', params)
 
 
 @socket.on("right", namespace="/beschrijving")
 def line(params):
-    id = FC.getIOStream().addCommandToQueue("circle")
+    id = FC.getIOStream().addCommandToQueue("right")
     params["id"] = id
     emit('alert', params)
 
 
 @socket.on("left", namespace="/beschrijving")
 def line(params):
-    id = FC.getIOStream().addCommandToQueue("circle")
+    id = FC.getIOStream().addCommandToQueue("left")
     params["id"] = id
     emit('alert', params)
 

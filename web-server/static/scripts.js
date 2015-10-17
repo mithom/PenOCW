@@ -29,6 +29,29 @@ $(document).ready(function(){
         complex.emit('circle', {func:"circle"});
         return false;
     });
+
+    $('form#rStart').submit(function(event) {
+        beschrijving.emit('start',{});
+        return false;
+    });
+
+    $('form#rLeft').submit(function(event) {
+        beschrijving.emit('left', {nr: $("#NrLeft").val(), unit: $("#selectType").val()});
+        return false;
+    });
+
+    $('form#rRight').submit(function(event) {
+        beschrijving.emit('right', {nr: $("#NrRight").val(), unit: $("#selectType").val()});
+        return false;
+    });
+
+    $('form#rStop').submit(function(event) {
+        beschrijving.emit('stop', {nr: $("#NrStop").val(), unit: $("#selectType").val()});
+        return false;
+    });
+
+    //here comes responses on socket calls
+    //TODO: antwoorden opvangen
 });
 
 var keyDown = function(e){
@@ -74,44 +97,51 @@ var leftKey = 37;
 var rightKey = 39;
 
 var doUp = function(){
-    //socket.emit("manual driving",{function: "doUp"});
+    manueel.emit("up",{status:'active'});
     $("#up").toggleClass("active passive");
-    var response = post({function: "doUp"}, getId);
+    //var response = post({function: "doUp"}, getId);
 };
 
 var stopUp = function() {
     $("#up").toggleClass("active passive");
-    var response = post({function: "stopUp"}, getId);
+    //var response = post({function: "stopUp"}, getId);
+    manueel.emit("up",{status:'passive'});
 };
 
 var doDown = function(){
     $("#down").toggleClass("active passive");
-    var response = post({function: "doDown"}, getId);
+    //var response = post({function: "doDown"}, getId);
+    manueel.emit("down",{status:'active'});
 };
 
 var stopDown = function() {
     $("#down").toggleClass("active passive");
-    var response = post({function: "stopDown"}, getId);
+    //var response = post({function: "stopDown"}, getId);
+    manueel.emit("down",{status:'passive'});
 };
 
 var doLeft = function(){
     $("#left").toggleClass("active passive");
-    var response = post({function: "doLeft"}, getId);
+    //var response = post({function: "doLeft"}, getId);
+    manueel.emit("left",{status:'active'});
 };
 
 var stopLeft = function() {
     $("#left").toggleClass("active passive");
-    var response = post({function: "stopLeft"}, getId)
+    //var response = post({function: "stopLeft"}, getId)
+    manueel.emit("left",{status:'passive'});
 };
 
 var doRight = function(){
     $("#right").toggleClass("active passive");
-    var result = post({function: "doRight"}, getId)
+    //var result = post({function: "doRight"}, getId)
+    manueel.emit("right",{status:'active'});
 };
 
 var stopRight = function() {
     $("#right").toggleClass("active passive");
-    var result = post({function: "stopRight"}, getId);
+    //var result = post({function: "stopRight"}, getId);
+    manueel.emit("right",{status:'passive'});
     //window.alert(result)
     //for(var key in result){window.alert(key); window.alert(result[key]);}
     //alert(id)

@@ -52,25 +52,37 @@
             <form id="circle" method="POST" action='#'><input type='submit' value="50cm radius circle"></form>
         </div>
         <div class="route-input">
-            <select>
-                <option value="streets">streets</option>
-                <option value="meters">meters</option>
-            </select>
+
             <!--start-->
-            <button type='button' name="rStart">START</button>
-            <br>
+            <form id="rStart" method="post" action="#">
+                <select id="selectType">
+                    <option value="streets">streets</option>
+                    <option value="meters">meters</option>
+                </select>
+                <input type='submit' value="START">
+            </form>
             <!--left-->
-            <input min='0' type='number' name="rLeft" value="1">
-            <button type='button'>LEFT</button>
-            <br>
+            <form id="rLeft" method="post" action="#">
+                <input min='0' type='number' id="NrLeft" value="1">
+                <input type="submit" value="LEFT">
+            </form>
             <!--right-->
-            <input min='0' type='number' name="rRight" value="1">
-            <button type='button'>RIGHT</button>
-            <br>
+            <form id="rRight" method="post" action="#">
+                <input min='0' type='number' id="NrRight" value="1">
+                <input type="submit" value="RIGHT">
+            </form>
             <!--stop-->
-            <input min='0' type='number' name="rStop" value="1">
-            <button type='button'>STOP</button>
+            <form id="rStop" method="post" action="#">
+                <input min='0' type='number' id="NrStop" value="1">
+                <input type="submit" value="STOP">
+            </form>
             <br>
+            <div id="currentRoute">
+                <table>
+                    <thead><tr><td>Current route description</td></tr></thead>
+                    <tbody><!-- hier komt de route in via JS --></tbody>
+                </table>
+            </div>
         </div>
 
     </body>

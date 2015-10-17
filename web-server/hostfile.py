@@ -118,6 +118,62 @@ def line(params):
     emit('alert', params)
 
 
+@socket.on("up", namespace="/manueel")
+def line(params):
+    id = FC.getIOStream().addCommandToQueue("circle")
+    params["id"] = id
+    emit('alert', params)
+
+
+@socket.on("down", namespace="/manueel")
+def line(params):
+    id = FC.getIOStream().addCommandToQueue("circle")
+    params["id"] = id
+    emit('alert', params)
+
+
+@socket.on("left", namespace="/manueel")
+def line(params):
+    id = FC.getIOStream().addCommandToQueue("circle")
+    params["id"] = id
+    emit('alert', params)
+
+
+@socket.on("right", namespace="/manueel")
+def line(params):
+    id = FC.getIOStream().addCommandToQueue("circle")
+    params["id"] = id
+    emit('alert', params)
+
+
+@socket.on("start", namespace="/beschrijving")
+def line(params):
+    id = FC.getIOStream().addCommandToQueue("circle")
+    params["id"] = id
+    emit('alert', params)
+
+
+@socket.on("stop", namespace="/beschrijving")
+def line(params):
+    id = FC.getIOStream().addCommandToQueue("circle")
+    params["id"] = id
+    emit('alert', params)
+
+
+@socket.on("right", namespace="/beschrijving")
+def line(params):
+    id = FC.getIOStream().addCommandToQueue("circle")
+    params["id"] = id
+    emit('alert', params)
+
+
+@socket.on("left", namespace="/beschrijving")
+def line(params):
+    id = FC.getIOStream().addCommandToQueue("circle")
+    params["id"] = id
+    emit('alert', params)
+
+
 def gen(camera):
     while True:
         frame = camera.get_frame()

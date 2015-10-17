@@ -5,7 +5,6 @@ import functionCaller as FC
 import cameraPi
 from platform import system
 from flask_jsglue import JSGlue
-from gevent.pywsgi import WSGIServer
 from gevent.pool import Pool
 import gevent
 from flask_socketio import SocketIO, emit
@@ -68,19 +67,55 @@ def procesFunctionCall(func):
         return jsonify(error="unknown function")
 
 
-@socket.on("connect", namespace="/test")
+@socket.on("connect", namespace="/manueel")
 def connect():
-    print "welcome to the socketIO for manual driving"
+    emit("alert", "welcome to the socketIO for manual driving")
 
 
-@socket.on("disconnect", namespace="/test")
+@socket.on("connect", namespace="/complex")
+def connect():
+    emit("alert", "welcome to the socketIO for complex figures")
+
+
+@socket.on("connect", namespace="/beschrijving")
+def connect():
+    emit("alert", "welcome to the socketIO for route description")
+
+
+@socket.on("disconnect", namespace="/manueel")
 def disconnect():
     print "nice to have met you."
 
 
-@socket.on("manual driving", namespace="/test")
-def manualDriving(message):
-    socket.emit('alert', message)
+@socket.on("disconnect", namespace="/complex")
+def disconnect():
+    print "nice to have met you."
+
+
+@socket.on("disconnect", namespace="/beschrijving")
+def disconnect():
+    print "nice to have met you."
+
+
+@socket.on("line", namespace="/complex")
+def line(params):
+    id = FC.getIOStream().addCommandToQueue("line")
+    params["id"] = id
+    emit('alert', params)
+
+
+@socket.on("square", namespace="/complex")
+def line(params):
+    id = FC.getIOStream().addCommandToQueue("square")
+    params["id"] = id
+    emit('alert', params)
+
+
+@socket.on("circle", namespace="/complex")
+def line(params):
+    id = FC.getIOStream().addCommandToQueue("circle")
+    params["id"] = id
+    emit('alert', params)
 
 
 def gen(camera):
@@ -115,17 +150,7 @@ else:
 
 if __name__ == '__main__':
     lol = FC.getIOStream()
-    #app.run(debug=True, host='127.0.0.1', port=5000)
     socket.run(app, host='127.0.0.1',port=5000)
-else:
-    pass
-    #appThread = threading.Thread(target=app.run,name="websiteHost",kwargs={"debug": False, "host": '0.0.0.0', "port": 4848})
-    #appThread.start()
-    #appThread = threading.Thread(target=http.serve_forever,name="websiteHost")
-    #appThread.setDaemon(True)
-    #appThread.start()
-    #http.serve_forever()
-
 
 """
 om je eigen ip adress te vinden gebruik je in command prompt ipconfig (ifconfig voor linux)

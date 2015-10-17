@@ -1,7 +1,7 @@
 client naar server:
 
-nameSpace = soort aansturing -> aanpassing: niet vrij te kiezen-> naam van event
-naam van de call = functie -> is nu soort -> naam call in body
+nameSpace = soort aansturing -> vrij te kiezen door meerdere connecties
+naam van de call = functie
 body van de post = parameters
 
 server naar client:

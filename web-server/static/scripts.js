@@ -4,9 +4,31 @@
 var socket
 $(document).ready(function(){
     //TODO: script on startup})
-    var namespace= '/test';
-    socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
-    socket.on('alert', function(msg){window.alert(msg);});
+    manueel = io.connect('http://' + document.domain + ':' + location.port + '/manueel');
+    beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving');
+    complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');
+
+    manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
+    beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
+    complex.on('alert', function(msg){window.alert("complex meldt: " + JSON.stringify(msg));});
+
+
+    //here comes all the submit overrides
+
+    $('form#line').submit(function(event) {
+        complex.emit('line', {func:"line"});
+        return false;
+    });
+
+    $('form#square').submit(function(event) {
+        complex.emit('square', {func:"square"});
+        return false;
+    });
+
+    $('form#circle').submit(function(event) {
+        complex.emit('circle', {func:"circle"});
+        return false;
+    });
 });
 
 var keyDown = function(e){
@@ -108,15 +130,6 @@ var post = function(dataToSend, doOnSuccess){
     doOnSuccess = doOnSuccess || function(){};
     var response = $.ajax({url:'/', type: "POST", dataType:"json", contentType:'application/json; charset-utf-8', data:JSON.stringify(dataToSend), success:doOnSuccess});
     return response
-};
-//TODO: funciton name(){} vergelijken met var name = function(){}
-
-var connect = function(namespace){
-    //TODO: implement this function
-};
-
-var emit = function(message,namespace,name){
-    //TODO: implement this function
 };
 
 var startStream = function(){

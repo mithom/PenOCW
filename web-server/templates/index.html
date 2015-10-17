@@ -18,6 +18,7 @@
                     <input type="text" name="text">
                     <input type="submit" name="my-form" value="Send">
                 </form></td> </tr>-->
+                <!-- TODO: een messagebox maken (in jinja2) die meldingen doorgeeft  -->
                 <tr>
                     <td colspan="3" align="center"><div class="button" id="Bup" >
                         <button type='button' id="up" class="passive" onmousedown="doUp()" onmouseup="stopUp()"></button>
@@ -39,10 +40,10 @@
         <div class="info">
             
         </div>
-        <div class="commands">
-            <button type='button' id="line">2m straight line</button>
-            <button type='button' id="square">1m square</button>
-            <button type='button' id="circle">50cm radius circle</button>
+        <div class="commands"><!-- deze knoppen kunnen gewoon ahv submit werken en submit  overschrijven in jquery -->
+            <form id="line" method="POST" action='#'><input type='submit' value="2m straight line"></form>
+            <form id="square" method="POST" action='#'><input type='submit' value="1m square"></form>
+            <form id="circle" method="POST" action='#'><input type='submit' value="50cm radius circle"></form>
         </div>
         <div class="route-input">
             <select>

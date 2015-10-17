@@ -67,33 +67,34 @@ def procesFunctionCall(func):
         return jsonify(error="unknown function")
 '''
 
+
 @socket.on("connect", namespace="/manueel")
-def connect():
+def connectManueel():
     emit("alert", "welcome to the socketIO for manual driving")
 
 
 @socket.on("connect", namespace="/complex")
-def connect():
+def connectComplex():
     emit("alert", "welcome to the socketIO for complex figures")
 
 
 @socket.on("connect", namespace="/beschrijving")
-def connect():
+def connectBeschrijving():
     emit("alert", "welcome to the socketIO for route description")
 
 
-@socket.on("disconnect", namespace="/manueel")
+@socket.on("disconnectManueel", namespace="/manueel")
 def disconnect():
     print "nice to have met you."
 
 
 @socket.on("disconnect", namespace="/complex")
-def disconnect():
+def disconnectComplex():
     print "nice to have met you."
 
 
 @socket.on("disconnect", namespace="/beschrijving")
-def disconnect():
+def disconnectBeschrijving():
     print "nice to have met you."
 
 
@@ -105,21 +106,21 @@ def line(params):
 
 
 @socket.on("square", namespace="/complex")
-def line(params):
+def square(params):
     id = FC.getIOStream().addCommandToQueue("square")
     params["id"] = id
     emit('alert', params)
 
 
 @socket.on("circle", namespace="/complex")
-def line(params):
+def circle(params):
     id = FC.getIOStream().addCommandToQueue("circle")
     params["id"] = id
     emit('alert', params)
 
 
 @socket.on("up", namespace="/manueel")
-def line(params):
+def up(params):
     if params.get("status") == "active":
         id = FC.getIOStream().addCommandToQueue("goForward")
         params["id"] = id
@@ -129,7 +130,7 @@ def line(params):
 
 
 @socket.on("down", namespace="/manueel")
-def line(params):
+def down(params):
     if params.get("status") == "active":
         id = FC.getIOStream().addCommandToQueue("goDown")
         params["id"] = id
@@ -139,7 +140,7 @@ def line(params):
 
 
 @socket.on("left", namespace="/manueel")
-def line(params):
+def left(params):
     if params.get("status") == "active":
         id = FC.getIOStream().addCommandToQueue("goLeft")
         params["id"] = id
@@ -149,7 +150,7 @@ def line(params):
 
 
 @socket.on("right", namespace="/manueel")
-def line(params):
+def right(params):
     if params.get("status") == "active":
         id = FC.getIOStream().addCommandToQueue("goRight")
         params["id"] = id
@@ -159,28 +160,28 @@ def line(params):
 
 
 @socket.on("start", namespace="/beschrijving")
-def line(params):
+def start(params):
     id = FC.getIOStream().addCommandToQueue("start")
     params["id"] = id
     emit('alert', params)
 
 
 @socket.on("stop", namespace="/beschrijving")
-def line(params):
+def stop(params):
     id = FC.getIOStream().addCommandToQueue("stop")
     params["id"] = id
     emit('alert', params)
 
 
 @socket.on("right", namespace="/beschrijving")
-def line(params):
+def descriptionRight(params):
     id = FC.getIOStream().addCommandToQueue("right")
     params["id"] = id
     emit('alert', params)
 
 
 @socket.on("left", namespace="/beschrijving")
-def line(params):
+def descriptionLeft(params):
     id = FC.getIOStream().addCommandToQueue("left")
     params["id"] = id
     emit('alert', params)
@@ -203,7 +204,8 @@ def video_feed():
     pool.join()
     return Response(thread.value,
                     mimetype='multipart/x-mixed-replace; boundary=frame')
-    
+
+
 """
 this file is intended to run as imported module, if it runs as main,
 debug options are on.

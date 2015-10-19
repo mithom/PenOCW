@@ -39,15 +39,13 @@ def go_straight(power, duration):
             set_right(right_power)
             BrickPiUpdateValues()
         elif BrickPi.nMotorEncoder[PORT_A] > BrickPi.nMotorEncoder[PORT_B]:
-            correction_factor = "blehbleh"
+            correction_factor = int(0.05*power)
             left_power -= correction_factor
-            right_power += correction_factor
             set_left(left_power)
             set_right(right_power)
             BrickPiUpdateValues()
         else:
-            correction_factor = "blehbleh"
-            left_power += correction_factor
+            correction_factor = int(0.05*power)
             right_power -= correction_factor
             set_left(left_power)
             set_right(right_power)

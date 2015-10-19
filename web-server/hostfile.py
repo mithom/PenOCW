@@ -1,5 +1,5 @@
 import gevent.monkey
-gevent.monkey.patch_all()
+##gevent.monkey.patch_all()
 from flask import Flask, render_template, request, jsonify, url_for, Response
 import functionCaller as FC
 import cameraPi

@@ -7,6 +7,10 @@ kunnen worden
 import functionCaller, time
 import Team_auto.Car as car
 
+
+
+functionDivider = None
+
 class Function:
     """
     the functions that are stored in the queue
@@ -52,12 +56,14 @@ class FunctionDivider:
         function_ids = car.get_function_ids()
         self.commandLib = {"goForward": [Function(function_ids['go_straight'], duration=10, power=250)],
                            "goBackward": [Function(function_ids['go_straight'], duration=10, power=-250)]}
+        self.currentCommandObject = None
         if firstCommand is not None:
             self.executeCommand(firstCommand)
 
-    def executeCommand(self,command):
+    def executeCommand(self, command):
         if command is not None and command.getCommandName() in FunctionDivider.commandLib.keys():
             self.currentCommand = [x.copy() for x in FunctionDivider.commandLib[command.getCommandName()]]
+            self.currentCommandObject = command
         else:
             self.currentCommand = None
 
@@ -109,3 +115,9 @@ class FunctionDivider:
         else:
             car.execute_function_with_id(function, **params)
         return self.currentFunction.useTime(dt)
+
+
+def getFunctionDivider():
+    return functionDivider
+
+functionDivider = FunctionDivider()

@@ -1,4 +1,4 @@
-import sys
+import sys, functionDivider
 
 __ioStream__ = None
 __webCaller__ = None
@@ -87,10 +87,12 @@ class __IOStream__:
         return False
 
     def cancelCurrentCommand(self):
-        pass
+        if functionDivider.getFunctionDivider().interuptCurrentCommand() is not None and len(self.queue) > 0:
+            self.queue.pop(0)
 
     def cancelWholeQueue(self):
-        pass
+        self.queue = []
+        self.cancelCurrentCommand()
 
     def start(self):
         pass
@@ -105,6 +107,8 @@ class __IOStream__:
         print mainUrl
         pass
 
+    def getAllCommandOutputsInQueue(self):
+        return [command.output() for command in self.queue]
 
 class __WebCaller__:
     """

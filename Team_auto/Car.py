@@ -6,10 +6,11 @@ BrickPiSetup()  # setup the serial port for communicationfrom BrickPi import *
 BrickPi.MotorEnable[PORT_A] = 1  # Enable the Motor A
 BrickPi.MotorEnable[PORT_B] = 1  # Enable the Motor B
 car_width = 11.5
-wheel_contour = 5  # foute waarde
+wheel_contour = 17.8  # foute waarde
 
 BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
-
+offset_A= None
+offset_B= None
 
 def execute_function_with_id(function_id, *args, **kwargs):
     for f in functions:
@@ -39,18 +40,21 @@ def go_straight(power, duration):
             set_right(right_power)
             BrickPiUpdateValues()
         elif BrickPi.Encoder[PORT_A] > BrickPi.Encoder[PORT_B]:
-            left_power = int(0.95*power)
-            right_power = int(1.05*power)
+            left_power -= 1
+            right_power += 1
             set_left(left_power)
             set_right(right_power)
+            BrickPi.Encoder[PORT_A] = 0
+            BrickPi.Encoder[PORT_B] = 0
             BrickPiUpdateValues()
         else:
-            correction_factor = 0.01
-            left_power = int(1.05*power)
-            right_power = int(0.95*power)
+            left_power += 1
+            right_power -= 1
             set_left(left_power)
             set_right(right_power)
             BrickPiUpdateValues()
+            BrickPi.Encoder[PORT_A] = 0
+            BrickPi.Encoder[PORT_B] = 0
 
 
 def make_circle_left(power, radius):
@@ -123,6 +127,25 @@ def brake():
 functions = [go_straight, make_circle_left, make_circle_right, rotate_angle_left, rotate_angle_right, set_left,
              set_right, turn_straight_left, turn_straight_right]
 
-time.sleep(20)
-print "le go"
-go_straight(200, 40)
+time.sleep(10)
+
+while True:
+    
+    if offset_A == None or offset_B == None:
+        offset_A = BrickPi.Encoder[PORT_A]
+        offset_B = BrickPi.Encoder[PORT_B]
+    else:
+        print BrickPi.Encoder[PORT_A] - offset_A
+        print BrickPi.Encoder[PORT_B] - offset_B
+    set_left(200)
+    set_right(200)
+    BrickPiUpdateValues()
+
+
+##            print 'left',
+##            print left_power,
+##            print
+##            print 'right',
+##            print right_power,
+##            print left_power
+##            print right_power

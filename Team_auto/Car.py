@@ -102,5 +102,20 @@ def turn_straight_right(power):
     BrickPiUpdateValues()
 
 
+def stop():
+    set_right(0)
+    set_left(0)
+    BrickUpdateValues()
+
+
+def brake():
+    while(power>5):
+        set_left(power-10)
+        set_right(power-10)
+        power -= 10
+    set_left(0)
+    set_right(0)
+    power = 0
+
 functions = [go_straight, make_circle_left, make_circle_right, rotate_angle_left, rotate_angle_right, set_left,
              set_right, turn_straight_left, turn_straight_right]

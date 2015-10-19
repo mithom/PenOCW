@@ -1,4 +1,6 @@
-import webserver.hostfile, webserver.functionDivider, webserver.functionCaller, sys, os, threading
+import webserver.hostfile as hostfile
+import webserver.functionDivider as functionDivider
+import sys, os, threading
 #import Team_auto.Car as car
 import werkzeug.serving
 

@@ -1,14 +1,13 @@
-div {
-    //border: 1px solid black;
-}
-
-.info {
-    float: left;
+div{
+    color:black;
+    border: 2px;
 }
 
 .direct-control {
     float: left;
-    padding: 10px;
+    border: solid red;
+    width: auto;
+    padding: 5px;
 }
 
 .direct-control button{
@@ -18,64 +17,62 @@ div {
     min-height: 60px;
 }
 
-#up.passive {
+
+#upB {
     background-image: url(arrow-up.png);
     background-size: 100%;
 }
 
-#up.active {
+#upA {
     background-image: url(arrow-up-active.png);
     background-size: 100%;
 }
 
-#down.passive {
+#downB {
     background-image: url(arrow-down.png);
     background-size: 100%;
 }
 
-#down.active {
+#downA {
     background-image: url(arrow-down-active.png);
     background-size: 100%;
 }
 
-#left.passive {
+#leftB {
     background-image: url(arrow-left.png);
     background-size: 100%;
 }
 
-#left.active {
+#leftA {
     background-image: url(arrow-left-active.png);
     background-size: 100%;
 }
 
-#right.passive {
+#rightB {
     background-image: url(arrow-right.png);
     background-size: 100%;
 }
 
-#right.active {
+#rightA {
     background-image: url(arrow-right-active.png);
     background-size: 100%;
 }
 
+.info {
+    border: solid purple;
+}
+
 .commands {
-    clear: left;
-    padding: 5px 0px;
+    float: right;
+    border: solid blue;
 }
 
 .route-input {
-    padding: 5px 0px;
-}
-
-.route-input select {
-    width: 65px;
-    margin: 2px;
+    border: solid green;
 }
 
 .route-input input {
-    box-sizing: border-box;
-    width: 65px;
-    margin: 2px;
+    width: 50px;
 }
 
 

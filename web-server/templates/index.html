@@ -3,9 +3,11 @@
     <head>
         <meta charset="UTF-8">
         <title>home</title>
-        <script type=text/javascript src="{{
-  url_for('static', filename='jquery.js') }}"></script>
-        <script src="../static/scripts.js"></script>
+        <script type="text/javascript" src="{{url_for('static', filename='jquery.js') }}"></script>
+        {{ JSGlue.include() }}
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+        <!--<script type="text/javascript" src="{{url_for('static', filename='socket.io.js') }}"></script> dit is een verkeerde versie-->
+        <script type="text/javascript" src="{{url_for('static', filename='scripts.js') }}"></script>
         <link rel="stylesheet" type="text/css" href="../static/styles/globals.css">
     </head>
     <body>
@@ -16,52 +18,72 @@
                     <input type="text" name="text">
                     <input type="submit" name="my-form" value="Send">
                 </form></td> </tr>-->
+                <!-- TODO: een messagebox maken (in jinja2) die meldingen doorgeeft  -->
                 <tr>
-                    <td colspan="3" align="center"><div class="button" id="up" >
-                        <button type='button' id="upB" onmousedown="doUp()" onmouseup="stopUp()" onmouseout="stopUp()"></button>
-                    </div></td>
+                    <td colspan="3" align="center">
+                        <button type='button' id="up" class="passive" onmousedown="doUp()" onmouseup="stopUp()"></button>
+                    </td>
                 </tr>
                 <tr>
-                    <td><div class="button" id="left" >
-                        <button type='button' id="leftB" onmousedown="doLeft()" onmouseup="stopLeft()" onmouseout="stopLeft()"></button>
-                    </div></td>
-                    <td><div class="button" id="down">
-                        <button type='button' id="downB" onmousedown="doDown()" onmouseup="stopDown()" onmouseout="stopDown()"></button>
-                    </div></td>
-                    <td><div class="button" id="right">
-                        <button type='button' id="rightB" onmousedown="doRight()" onmouseup="stopRight()" onmouseout="stopRight()"></button>
-                    </div></td>
+                    <td>
+                        <button type='button' id="left" class="passive" onmousedown="doLeft()" onmouseup="stopLeft()"></button>
+                    </td>
+                    <td>
+                        <button type='button' id="down" class="passive" onmousedown="doDown()" onmouseup="stopDown()"></button>
+                    </td>
+                    <td>
+                        <button type='button' id="right" class="passive" onmousedown="doRight()" onmouseup="stopRight()"></button>
+                    </td>
                 </tr>
             </table>
         </div>
         <div class="info">
-            
+            <table>
+                <thead><tr><td>de fotostream</td></tr></thead>
+                <tbody>
+                <tr><td><button type="submit" id="video_button" onmousedown="startStream()">start stream</button></td></tr>
+                <tr><td id="video_stream"></td></tr>
+                </tbody>
+            </table>
         </div>
-        <div class="commands">
-            <button type='button' id="line">2m straight line</button>
-            <button type='button' id="square">1m square</button>
-            <button type='button' id="circle">50cm radius circle</button>
+        <div class="commands"><!-- deze knoppen kunnen gewoon ahv submit werken en submit  overschrijven in jquery -->
+            <form id="line" method="POST" action='#'><input type='submit' value="2m straight line"></form>
+            <form id="square" method="POST" action='#'><input type='submit' value="1m square"></form>
+            <form id="circle" method="POST" action='#'><input type='submit' value="50cm radius circle"></form>
         </div>
         <div class="route-input">
-            <select>
-                <option value="streets">streets</option>
-                <option value="meters">meters</option>
-            </select>
+
             <!--start-->
-            <button type='submit'>START</button>
-            </br>
+            <form id="rStart" method="post" action="#">
+                <select id="selectType">
+                    <option value="streets">streets</option>
+                    <option value="meters">meters</option>
+                </select>
+                <input type='submit' value="START">
+            </form>
             <!--left-->
-            <input min='0' type='number'></input>
-            <button type='submit'>LEFT</button>
-            </br>
+            <form id="rLeft" method="post" action="#">
+                <input min='0' type='number' id="NrLeft" value="1">
+                <input type="submit" value="LEFT">
+            </form>
             <!--right-->
-            <input min='0' type='number'></input>
-            <button type='submit'>RIGHT</button>
-            </br>
+            <form id="rRight" method="post" action="#">
+                <input min='0' type='number' id="NrRight" value="1">
+                <input type="submit" value="RIGHT">
+            </form>
             <!--stop-->
-            <input min='0' type='number'></input>
-            <button type='submit'>STOP</button>
-            </br>
+            <form id="rStop" method="post" action="#">
+                <input min='0' type='number' id="NrStop" value="1">
+                <input type="submit" value="STOP">
+            </form>
+            <br>
+            <div id="currentRoute">
+                <table>
+                    <thead><tr><td>Current route description</td></tr></thead>
+                    <tbody><!-- hier komt de route in via JS --></tbody>
+                </table>
+            </div>
         </div>
+
     </body>
 </html>

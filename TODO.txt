@@ -1,3 +1,16 @@
 inleiding tot ssh keys maken (en basis git)
 
 functionCaller-> splits functie op in kleine functies zelf
+
+een id moet altijd bestaan -> verandering van kleur peiltjes moet ahv classen gebeuren (kan met toggleClass)
+
+pip install gevent-websocket->???
+pip install Flask-SocketIO
+
+fix voor onmouseout, of gewoon weglaten! (verschillend ff<-> chrome-> zoizo een fix voor maken)
+
+socketServer vs gevent bestuderen
+
+voor evy:
+input tags moeten altijd name of id attribuut hebben (id default gelijk aan name, niet andersom)
+input tags hebben geen 2de tag nodig aangezien er geen info tussen staat. (als je er iets typt, komt het er ook niet te staan)

@@ -5,7 +5,9 @@ kunnen worden
 """
 
 import functionCaller, time
-import Team_auto.Car as car
+from platform import system
+
+car = None  # this is going to be the module Team_auto.car or a mockup for it.
 
 
 
@@ -54,15 +56,15 @@ class FunctionDivider:
         self.currentCommand = None
         self.currentFunction = None
         function_ids = car.get_function_ids()
-        self.commandLib = {"goForward": [Function(function_ids['go_straight'], duration=10, power=250)],
-                           "goBackward": [Function(function_ids['go_straight'], duration=10, power=-250)]}
+        self.commandLib = {"goForward": [Function(function_ids.get('go_straight'), duration=10, power=250)],
+                           "goBackward": [Function(function_ids.get('go_straight'), duration=10, power=-250)]}
         self.currentCommandObject = None
         if firstCommand is not None:
             self.executeCommand(firstCommand)
 
     def executeCommand(self, command):
-        if command is not None and command.getCommandName() in FunctionDivider.commandLib.keys():
-            self.currentCommand = [x.copy() for x in FunctionDivider.commandLib[command.getCommandName()]]
+        if command is not None and command.getCommandName() in self.commandLib.keys():
+            self.currentCommand = [x.copy() for x in self.commandLib[command.getCommandName()]]
             self.currentCommandObject = command
         else:
             self.currentCommand = None
@@ -120,4 +122,8 @@ class FunctionDivider:
 def getFunctionDivider():
     return functionDivider
 
+if system() == 'Linux': #import Team_auto.car as car
+    car = __import__("Team_auto.car").car
+else:
+    car = __import__("webserver.CarMock").CarMock
 functionDivider = FunctionDivider()

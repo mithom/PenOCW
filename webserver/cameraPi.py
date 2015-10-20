@@ -55,6 +55,7 @@ class Camera(object):
                 # store frame
                 stream.seek(0)
                 cls.frame = stream.read()
+                print "new frame available"
 
                 # reset stream for next frame
                 stream.seek(0)

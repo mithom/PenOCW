@@ -32,10 +32,10 @@ def go_straight(power, duration):
     BrickPi.Encoder[PORT_B] = 0  # reset the value of encoder B to zero
     left_power = power
     right_power = power
-    start_time = time.clock()
-    while (time.clock() - start_time) < duration:
-        if (BrickPi.Encoder[PORT_A] + 10 > BrickPi.Encoder[PORT_B]) and (
-                BrickPi.Encoder[PORT_B] + 10 > BrickPi.Encoder[PORT_A]):
+    start_time = time.time()
+    while (time.time() - start_time) < duration:
+        if (BrickPi.Encoder[PORT_A] + 100 > BrickPi.Encoder[PORT_B]) and (
+                BrickPi.Encoder[PORT_B] + 100 > BrickPi.Encoder[PORT_A]):
             set_left(left_power)
             set_right(right_power)
             BrickPiUpdateValues()
@@ -44,17 +44,21 @@ def go_straight(power, duration):
             right_power += 1
             set_left(left_power)
             set_right(right_power)
-            BrickPi.Encoder[PORT_A] = 0
-            BrickPi.Encoder[PORT_B] = 0
+            #BrickPi.Encoder[PORT_A] = 0
+            #BrickPi.Encoder[PORT_B] = 0
+            BrickPi.EncoderOffset[PORT_A] = BrickPi.Encoder[PORT_A]
+            BrickPi.EncoderOffset[PORT_B] = BrickPi.Encoder[PORT_B]
             BrickPiUpdateValues()
         else:
             left_power += 1
             right_power -= 1
             set_left(left_power)
             set_right(right_power)
+            #BrickPi.Encoder[PORT_A] = 0
+            #BrickPi.Encoder[PORT_B] = 0
+            BrickPi.EncoderOffset[PORT_A] = BrickPi.Encoder[PORT_A]
+            BrickPi.EncoderOffset[PORT_B] = BrickPi.Encoder[PORT_B]
             BrickPiUpdateValues()
-            BrickPi.Encoder[PORT_A] = 0
-            BrickPi.Encoder[PORT_B] = 0
 
 
 def make_circle_left(power, radius):
@@ -130,16 +134,15 @@ functions = [go_straight, make_circle_left, make_circle_right, rotate_angle_left
 time.sleep(10)
 
 while True:
-    
-    if offset_A == None or offset_B == None:
-        offset_A = BrickPi.Encoder[PORT_A]
-        offset_B = BrickPi.Encoder[PORT_B]
-    else:
-        print BrickPi.Encoder[PORT_A] - offset_A
-        print BrickPi.Encoder[PORT_B] - offset_B
-    set_left(200)
-    set_right(200)
+    go_straight(100,10)
     BrickPiUpdateValues()
+    #if offset_A == None or offset_B == None:
+    #    offset_A = BrickPi.Encoder[PORT_A]
+    #    offset_B = BrickPi.Encoder[PORT_B]
+##    else:
+##        print BrickPi.Encoder[PORT_A] - offset_A
+##        print BrickPi.Encoder[PORT_B] - offset_B
+    
 
 
 ##            print 'left',

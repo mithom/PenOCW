@@ -95,7 +95,7 @@ def set_right(power):
     BrickPi.MotorSpeed[PORT_B] = power  # Set the speed of MotorB (-255 to 255)
 
 
-def turn_straight_left(power):
+def turn_straight_left(power):      # Voor rechte hoek buitenste wiel 360 laten draaien (via motorRotateDegree)
     set_left(-power)
     set_right(power)
     BrickPiUpdateValues()

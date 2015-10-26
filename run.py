@@ -1,4 +1,6 @@
-import hostfile, functionDivider, functionCaller, sys, os, threading
+import webserver.hostfile as hostfile
+import webserver.functionDivider as functionDivider
+import sys, os, threading
 #import Team_auto.Car as car
 import werkzeug.serving
 
@@ -12,7 +14,7 @@ def proces_forever():
 
 
 if __name__ == "__main__":
-    FD = functionDivider.FunctionDivider()
+    FD = functionDivider.getFunctionDivider()
     process = threading.Thread(target=proces_forever, name='processing')
     process.setDaemon(True)
     process.start()

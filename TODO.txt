@@ -6,6 +6,7 @@ een id moet altijd bestaan -> verandering van kleur peiltjes moet ahv classen ge
 
 pip install gevent-websocket->???
 pip install Flask-SocketIO
+pip install -r requirements.txt -> te vinden op https://github.com/miguelgrinberg/Flask-SocketIO/blob/master/example/requirements.txt
 
 fix voor onmouseout, of gewoon weglaten! (verschillend ff<-> chrome-> zoizo een fix voor maken)
 

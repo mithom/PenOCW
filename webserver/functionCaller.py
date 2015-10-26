@@ -1,4 +1,4 @@
-import sys
+import sys, functionDivider
 
 __ioStream__ = None
 __webCaller__ = None
@@ -87,10 +87,12 @@ class __IOStream__:
         return False
 
     def cancelCurrentCommand(self):
-        pass
+        if functionDivider.getFunctionDivider().interuptCurrentCommand() is not None and len(self.queue) > 0:
+            self.queue.pop(0)
 
     def cancelWholeQueue(self):
-        pass
+        self.queue = []
+        self.cancelCurrentCommand()
 
     def start(self):
         pass
@@ -105,6 +107,8 @@ class __IOStream__:
         print mainUrl
         pass
 
+    def getAllCommandOutputsInQueue(self):
+        return [command.output() for command in self.queue]
 
 class __WebCaller__:
     """
@@ -118,6 +122,8 @@ class __WebCaller__:
 
 
 def getIOStream():
+    if __ioStream__ is None:
+        print "None"
     return __ioStream__
 
 
@@ -133,24 +139,26 @@ def getNextId():
         i += 1
         yield i
 
-
-def init():
-    global __ioStream__, __webCaller__
-    if __ioStream__ is None:
-        __ioStream__ = __IOStream__()
-    if __webCaller__ is None:
-        __webCaller__ = __WebCaller__()
-
-
-def testinit():
-    ioStream = __IOStream__()
-    webCaller = __WebCaller__()
-    print "created all instances"
-
-"""if this module is run as main module, it will be tested"""
-if __name__ == "__main__":
-    testinit()
-
-"""if the module is imported, this will configure everything"""
-if __name__ == "functionCaller":
-    init()
+__ioStream__ = __IOStream__()
+__webCaller__ = __WebCaller__()
+##
+##def init():
+##    global __ioStream__, __webCaller__
+##    if __ioStream__ is None:
+##        __ioStream__ = __IOStream__()
+##    if __webCaller__ is None:
+##        __webCaller__ = __WebCaller__()
+##
+##
+##def testinit():
+##    ioStream = __IOStream__()
+##    webCaller = __WebCaller__()
+##    print "created all instances"
+##
+##"""if this module is run as main module, it will be tested"""
+##if __name__ == "__main__":
+##    testinit()
+##
+##"""if the module is imported, this will configure everything"""
+##if __name__ == "functionCaller":
+##    init()

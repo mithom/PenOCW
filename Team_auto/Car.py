@@ -1,6 +1,7 @@
 from BrickPi import *  # import BrickPi.py file to use BrickPi operations
 import time
 import math
+import PID
 
 BrickPiSetup()  # setup the serial port for communicationfrom BrickPi import *
 
@@ -85,6 +86,46 @@ def go_straight(power, distance):
     degree = (distance/O)*360
     motorRotateDegree([150,150],[degree,degree],[PORT_A,PORT_B],0,0)
 
+def go_straight_pid(power, duration, offset_A, offset_B):
+    print 'start'
+    left_power = power
+    right_power = power
+    set_left(left_power)
+    set_right(right_power)
+    BrickPiUpdateValues()
+    start_time = time.time()
+    update_interval = 0.05
+    difference = 0
+    pid_controller = PID.PID(1,0.5,3,0,offset_A,offset_B)
+    last_update = 0
+    counter = 0
+    while ((time.time() - start_time) < duration):
+        difference = (BrickPi.Encoder[PORT_A]-offset_A)-(BrickPi.Encoder[PORT_B]-offset_B)
+        print 'Difference ', difference
+        pid_value = pid_controller.update(BrickPi.Encoder[PORT_A],BrickPi.Encoder[PORT_B])
+        print 'PID value ', pid_value
+        if ((time.time()-last_update)>update_interval):
+            if pid_value < difference:
+                #rechts sneller
+    ##          left_power -= abs(difference-pid_value)
+                right_power += int(abs(difference-pid_value))
+                set_left(power)
+                set_right(right_power)
+                BrickPiUpdateValues()
+            elif pid_value > difference:
+                #rechts sneller
+                left_power += int(abs(difference-pid_value))
+    ##          right_power += abs(difference-pid_value)power
+                set_left(left_power)
+                set_right(power)
+                BrickPiUpdateValues()
+            else:
+                set_left(power)
+                set_right(power)
+                BrickPiUpdateValues()
+        last_update = time.time()
+        print difference
+
 def make_circle_left(power, radius): #radius in cm
     left_power = int(((radius - car_width) / radius) * power)
     set_left(left_power)
@@ -156,9 +197,10 @@ def brake():
 functions = [go_straight, make_circle_left, make_circle_right, rotate_angle_left, rotate_angle_right, set_left,
              set_right, turn_straight_left, turn_straight_right]
 
-time.sleep(20)
-go_straight(200,100)
-turn_straight_left(200)
+(offset_A,offset_B) = calibrate()
+##time.sleep(15)
+go_straight_pid(120,100,offset_A,offset_B)
+##turn_straight_left(200)
 
 ##            print 'left',
 ##            print left_power,

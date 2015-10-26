@@ -30,7 +30,7 @@ class PID:
 
     def update(self,encoder_A,encoder_B):
         difference = (encoder_A - self.offset_A) - (encoder_B - self.offset_B)
-        error = self.setpoint + difference
+        error = self.setpoint - difference
 
         derivative = (error-self.previous_error)
         output = self.kp*error + self.ki*self.integral + self.kd*derivative

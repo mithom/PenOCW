@@ -1,9 +1,12 @@
 /**
  * Created by Thomas on 05/10/2015.
- */
-var socket
+*/
+var manueel = null;
+var beschrijving = null;
+var complex = null;
+
 $(document).ready(function(){
-    //TODO: script on startup})
+    //TODO: script on startup
     manueel = io.connect('http://' + document.domain + ':' + location.port + '/manueel');
     beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving');
     complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');
@@ -12,6 +15,23 @@ $(document).ready(function(){
     beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
     complex.on('alert', function(msg){window.alert("complex meldt: " + JSON.stringify(msg));});
 
+    beschrijving.on('updateRouteDescription', function(route){
+        var routeBody = $("#currentRoute table tbody");
+        routeBody.empty();
+
+        route.each(function(){
+            var newRow = document.createElement('tr');
+            var newName = document.createElement('td');
+            var newId = document.createElement('td');
+            var newIdContent = document.createTextNode('id: ' + route.id);
+            var newNameContent = document.createTextNode('command: '+ route.commandName);
+            newName.appendChild(newNameContent);
+            newId.appendChild(newIdContent);
+            newRow.appendChild(newName);
+            newRow.appendChild(newId);
+            routeBody.appendChild(newRow);
+        })
+    });
 
     //here comes all the submit overrides
 

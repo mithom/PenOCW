@@ -13,9 +13,13 @@ class Camera(object):
     frame = None  # current frame is stored here by background thread
     last_access = 0  # time of last client access to the camera
     picamera = None
-    
+
+    def __init__(self):
+        self.initialize()
+
     def initialize(self):
         if Camera.thread is None:
+            print "getting camera"
             if Camera.picamera == None:
                 Camera.picamera = __import__('picamera')
             # start background frame thread
@@ -25,6 +29,7 @@ class Camera(object):
             # wait until frames start to be available
             while self.frame is None:
                 time.sleep(0)
+            print "eerste beeld gevonden"
 
     def get_frame(self):
         Camera.last_access = time.time()
@@ -42,13 +47,14 @@ class Camera(object):
             # let camera warm up
             camera.start_preview()
             time.sleep(2)
-
+            print "from now on there are pictures"
             stream = io.BytesIO()
             for foo in camera.capture_continuous(stream, 'jpeg',
                                                  use_video_port=True):
                 # store frame
                 stream.seek(0)
                 cls.frame = stream.read()
+                print "new frame available"
 
                 # reset stream for next frame
                 stream.seek(0)

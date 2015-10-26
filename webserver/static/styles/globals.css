@@ -1,13 +1,14 @@
-div{
-    color:black;
-    border: 2px;
+div {
+    //border: 1px solid black;
+}
+
+.info {
+    float: left;
 }
 
 .direct-control {
     float: left;
-    border: solid red;
-    width: auto;
-    padding: 5px;
+    padding: 10px;
 }
 
 .direct-control button{
@@ -16,7 +17,6 @@ div{
     min-width: 60px;
     min-height: 60px;
 }
-
 
 #up.passive {
     background-image: url(arrow-up.png);
@@ -58,21 +58,24 @@ div{
     background-size: 100%;
 }
 
-.info {
-    border: solid purple;
-}
-
 .commands {
-    float: right;
-    border: solid blue;
+    clear: left;
+    padding: 5px 0px;
 }
 
 .route-input {
-    border: solid green;
+    padding: 5px 0px;
+}
+
+.route-input select {
+    width: 65px;
+    margin: 2px;
 }
 
 .route-input input {
-    width: 50px;
+    box-sizing: border-box;
+    width: 65px;
+    margin: 2px;
 }
 
 

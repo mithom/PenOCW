@@ -1,0 +1,81 @@
+if __name__ == '__main__':
+    gevent.signal(signal.SIGQUIT, gevent.kill)
+    thread = gevent.spawn(run_forever)
+    thread.join()
+
+om stream te force stoppen
+
+async dataverwerking
+
+import gevent
+from gevent.event import AsyncResult
+a = AsyncResult()
+
+def setter():
+    """
+    After 3 seconds set the result of a.
+    """
+    gevent.sleep(3)
+    a.set('Hello!')
+
+def waiter():
+    """
+    After 3 seconds the get call will unblock after the setter
+    puts a value into the AsyncResult.
+    """
+    print(a.get())
+
+gevent.joinall([
+    gevent.spawn(setter),
+    gevent.spawn(waiter),
+])
+
+
+meerdere workers:
+
+import gevent
+from gevent.queue import Queue
+
+tasks = Queue()
+
+def worker(n):
+    while not tasks.empty():
+        task = tasks.get()
+        print('Worker %s got task %s' % (n, task))
+        gevent.sleep(0)
+
+    print('Quitting time!')
+
+def boss():
+    for i in xrange(1,25):
+        tasks.put_nowait(i)
+
+gevent.spawn(boss).join()
+
+gevent.joinall([
+    gevent.spawn(worker, 'steve'),
+    gevent.spawn(worker, 'john'),
+    gevent.spawn(worker, 'nancy'),
+])
+
+
+runtime toevoegen greenlets
+
+import gevent
+from gevent.pool import Group
+
+def talk(msg):
+    for i in xrange(3):
+        print(msg)
+
+g1 = gevent.spawn(talk, 'bar')
+g2 = gevent.spawn(talk, 'foo')
+g3 = gevent.spawn(talk, 'fizz')
+
+group = Group()
+group.add(g1)
+group.add(g2)
+group.join()
+
+group.add(g3)
+group.join()

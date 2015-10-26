@@ -33,8 +33,7 @@ class Camera(object):
 
     def get_frame(self):
         Camera.last_access = time.time()
-        while self.frame == None:
-            time.sleep(0)
+        self.initialize()
         return self.frame
 
     @classmethod

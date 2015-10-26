@@ -1,13 +1,11 @@
 /**
  * Created by Thomas on 05/10/2015.
- */
-var manueel = io.connect('http://' + document.domain + ':' + location.port + '/manueel');
-var beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving');
-var complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');
-
+*/
 $(document).ready(function(){
     //TODO: script on startup
-    window.alert("hallo");
+    var manueel = io.connect('http://' + document.domain + ':' + location.port + '/manueel');
+    var beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving');
+    var complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');
 
     manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
     beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});

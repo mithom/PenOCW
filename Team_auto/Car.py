@@ -96,14 +96,15 @@ def go_straight_pid(power, duration, offset_A, offset_B):
     start_time = time.time()
     update_interval = 0.05
     difference = 0
-    pid_controller = PID.PID(1,0.5,3,0,offset_A,offset_B)
+    pid_controller = PID.PID(5,5,0,offset_A,offset_B,update_interval)
     last_update = 0
     counter = 0
+    f = open('values.txt','w')
     while ((time.time() - start_time) < duration):
         difference = (BrickPi.Encoder[PORT_A]-offset_A)-(BrickPi.Encoder[PORT_B]-offset_B)
-        print 'Difference ', difference
+        f.write(str(difference) + ',')
+        print difference
         pid_value = pid_controller.update(BrickPi.Encoder[PORT_A],BrickPi.Encoder[PORT_B])
-        print 'PID value ', pid_value
         if ((time.time()-last_update)>update_interval):
             if pid_value < difference:
                 #rechts sneller
@@ -124,7 +125,7 @@ def go_straight_pid(power, duration, offset_A, offset_B):
                 set_right(power)
                 BrickPiUpdateValues()
         last_update = time.time()
-        print difference
+    f.close()
 
 def make_circle_left(power, radius): #radius in cm
     left_power = int(((radius - car_width) / radius) * power)
@@ -198,7 +199,7 @@ functions = [go_straight, make_circle_left, make_circle_right, rotate_angle_left
              set_right, turn_straight_left, turn_straight_right]
 
 (offset_A,offset_B) = calibrate()
-##time.sleep(15)
+time.sleep(15)
 go_straight_pid(120,100,offset_A,offset_B)
 ##turn_straight_left(200)
 

@@ -11,26 +11,34 @@ $(document).ready(function(){
     beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving');
     complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');
 
-    manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
-    beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
-    complex.on('alert', function(msg){window.alert("complex meldt: " + JSON.stringify(msg));});
+    manueel.on('connect', function () {
+        manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
+        });
 
-    beschrijving.on('updateRouteDescription', function(route){
-        var routeBody = $("#currentRoute table tbody");
-        routeBody.empty();
+    beschrijving.on('connect',function(){
+        beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
 
-        route.forEach(function(){
-            var newRow = document.createElement('tr');
-            var newName = document.createElement('td');
-            var newId = document.createElement('td');
-            var newIdContent = document.createTextNode('id: ' + route.id);
-            var newNameContent = document.createTextNode('command: '+ route.commandName);
-            newName.appendChild(newNameContent);
-            newId.appendChild(newIdContent);
-            newRow.appendChild(newName);
-            newRow.appendChild(newId);
-            routeBody.append(newRow);
-        })
+        beschrijving.on('updateRouteDescription', function(route){
+            var routeBody = $("#currentRoute table tbody");
+            routeBody.empty();
+
+            route.forEach(function(){
+                var newRow = document.createElement('tr');
+                var newName = document.createElement('td');
+                var newId = document.createElement('td');
+                var newIdContent = document.createTextNode('id: ' + route.id);
+                var newNameContent = document.createTextNode('command: '+ route.commandName);
+                newName.appendChild(newNameContent);
+                newId.appendChild(newIdContent);
+                newRow.appendChild(newName);
+                newRow.appendChild(newId);
+                routeBody.append(newRow);
+            })
+        });
+    });
+
+    complex.on('connect',function(){
+        complex.on('alert', function(msg){window.alert("complex meldt: " + JSON.stringify(msg));});
     });
 
     //here comes all the submit overrides

@@ -19,7 +19,7 @@ $(document).ready(function(){
         var routeBody = $("#currentRoute table tbody");
         routeBody.empty();
 
-        route.each(function(){
+        route.forEach(function(){
             var newRow = document.createElement('tr');
             var newName = document.createElement('td');
             var newId = document.createElement('td');
@@ -29,7 +29,7 @@ $(document).ready(function(){
             newId.appendChild(newIdContent);
             newRow.appendChild(newName);
             newRow.appendChild(newId);
-            routeBody.appendChild(newRow);
+            routeBody.append(newRow);
         })
     });
 

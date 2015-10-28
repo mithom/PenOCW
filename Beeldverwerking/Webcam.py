@@ -3,27 +3,22 @@ import numpy as np
 import time
 import math
 
-number_of_test_files = 5
+cap = cv.VideoCapture(0)
 
-# Image loading
-#img = cv.imread('C:\\Users\\Gilles\\Desktop\\P&O\\line_images\\line6.jpg',1)
+while(True):
+    # Capture frame-by-frame
+    ret1, frame = cap.read()
 
-imglist = []
-for i in range(1,number_of_test_files + 1):
-    imglist.append(cv.imread('C:\\Users\\Gilles\\Desktop\\P&O\\line_images\\line' + str(i) + '.jpg',1))
+    # Frame to grayscale
+    frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
 
-for i in range(len(imglist)):
-
-    img = imglist[i]
-
-    # Image to grayscale
-    gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+##### Image processing ###############################################
 
     # Gaussian blur
-    blur = cv.GaussianBlur(gray,(5,5),0)
+    blur = cv.GaussianBlur(frame,(5,5),0)
 
-    # Thresholding
-    ret, bw = cv.threshold(blur, 200, 255, cv.THRESH_BINARY)
+    # Threshold image
+    ret2, bw = cv.threshold(blur, 200, 255, cv.THRESH_BINARY)
 
     # Canny edge detection
     edges = cv.Canny(bw,5,5)
@@ -31,14 +26,14 @@ for i in range(len(imglist)):
     # Hough line transform
     lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 100, 200)
 
-    # Print number of found lines
-    print 'Lines found: ', len(lines)
+    #### LINE FILTERING ####
 
     # Filtering on/off
     filter = True
 
     # Line filtering
-    if filter == True:
+    #TODO: voorkomen crash bij len(lines) nul
+    if filter == True and lines is not None:
         line1 = 0
         while line1 < len(lines):
             line2 = line1 + 1
@@ -106,19 +101,32 @@ for i in range(len(imglist)):
                         switch = True
                 if delete is False and switch is False:
                     line2 += 1
+                if len(lines) == 0:
+                    break
             line1 += 1
-            line2 = 0
-        print 'Lines after filtering: ', len(lines)
+            if len(lines) == 0:
+                    break
+
+    #### LINE FILTERING ####
 
     # Grayscale to RGB for color line drawing
-    line_image = cv.cvtColor(bw, cv.COLOR_GRAY2RGB)
+    frame = cv.cvtColor(frame, cv.COLOR_GRAY2RGB)
 
     # Drawing the lines
-    for i in xrange(0,len(lines)):
-        for x1,y1,x2,y2 in lines[i]:
-            #cv.line(line_image, (x1,y1),(x2,y2),(0,255,0),2)
-            cv.line(img, (x1,y1),(x2,y2),(0,0,255),2)
+    if lines is not None:
+        for i in xrange(0,len(lines)):
+            for x1,y1,x2,y2 in lines[i]:
+                cv.line(frame, (x1,y1),(x2,y2),(0,255,0),2)
 
-    # Image showing
-    cv.imshow('Lines', img)
-    cv.waitKey(0)
+######################################################################
+
+    # Display the resulting frame
+    cv.imshow('Camera',frame)
+    k = cv.waitKey(10)
+    if k == 27:
+        break
+
+# When escape is hit, release the capture and close the window
+cap.release()
+cv.destroyAllWindows()
+

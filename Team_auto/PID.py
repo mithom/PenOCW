@@ -34,7 +34,7 @@ class PID:
         error = self.setpoint - difference
 
         derivative = (error-self.previous_error)/self.dt
-        output = self.kp*error + self.kd*derivative # + self.ki*self.integral
+        output = self.kp*error + self.kd*derivative #+ self.ki*self.integral
 
         self.previous_error = error
         #self.integral += error

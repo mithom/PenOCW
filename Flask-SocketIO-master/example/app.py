@@ -8,8 +8,8 @@ from flask.ext.socketio import SocketIO, emit, join_room, leave_room, \
     close_room, disconnect
 
 app = Flask(__name__)
-app.debug = True
-app.config['SECRET_KEY'] = 'secret!'
+app.debug = False
+app.config['SECRET_KEY'] = 'enwgfiovweruiogdngfvoed'
 socketio = SocketIO(app)
 thread = None
 
@@ -103,4 +103,4 @@ def test_disconnect():
 
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app,host='0.0.0.0',port=5000)

@@ -219,7 +219,7 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         gevent.sleep(0)
 
-pool = Pool(2)
+pool = Pool(5)
 
 
 @app.route('/video_feed.mjpg')

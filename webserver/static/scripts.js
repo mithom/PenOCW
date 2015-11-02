@@ -8,14 +8,16 @@ var complex = null;
 $(document).ready(function(){
     //TODO: script on startup
     manueel = io.connect('http://' + document.domain + ':' + location.port + '/manueel');
-    beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving');
-    complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');
+    //beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving');
+    //complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');
 
     manueel.on('connect', function () {
+        window.alert('connected manueel');
         manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
+        manueel.on('disconnect',function(){window.alert('manueel disconnected')});
         });
 
-    beschrijving.on('connect',function(){
+    /*beschrijving.on('connect',function(){
         beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
 
         beschrijving.on('updateRouteDescription', function(route){
@@ -76,7 +78,7 @@ $(document).ready(function(){
     $('form#rStop').submit(function(event) {
         beschrijving.emit('stop', {nr: $("#NrStop").val(), unit: $("#selectType").val()});
         return false;
-    });
+    });*/
 
     //here comes responses on socket calls
     //TODO: antwoorden opvangen

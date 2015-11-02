@@ -1,19 +1,126 @@
 import gevent.monkey
-##gevent.monkey.patch_all()
-from flask import Flask, render_template, request, jsonify, url_for, Response
+gevent.monkey.patch_all()
+from flask import Flask, render_template, request, send_file, Response
 import functionCaller as FC
 import cameraPi
 from platform import system
 from flask_jsglue import JSGlue
 from gevent.pool import Pool
 import gevent
-from flask_socketio import SocketIO, emit
+#from flask_socketio import SocketIO, emit
+# http = WSGIServer(('127.0.0.1', 5000), app)
+#socket = SocketIO(app)
+from socketio import socketio_manage
+from socketio.namespace import BaseNamespace
+from socketio.mixins import BroadcastMixin, RoomsMixin
+
 
 app = Flask(__name__)
 jsglue = JSGlue(app)  # this allows us to use url_for in the javascript frontend
 app.config['SECRET_KEY'] = 'secret!'
-# http = WSGIServer(('127.0.0.1', 5000), app)
-socket = SocketIO(app)
+
+
+class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
+    def __init__(self, *args, **kwargs):
+        super(ManueelNamespace, self).__init__(*args, **kwargs)
+
+    def emit(self, event, args):
+        self.socket.send_packet(dict(type="event", name=event,
+            args=args, endpoint=self.ns_name))
+
+    def recv_connect(self):
+        print "thirth connect"
+        self.emit('alert', "welkom  bij manuele aansturing")
+        #self.broadcast_event('alert', 'nieuwe gebruiker!')
+
+    def recv_message(self, message):
+        print "PING!!!", message
+
+    def on_up(self, params):
+        if params.get("status") == "active":
+            id = FC.getIOStream().addCommandToQueue("goForward")
+            params["id"] = id
+        else:
+            for output in FC.getIOStream().getAllCommandOutputsInQueue():
+                if output["commandName"] == "goForward":
+                    FC.getIOStream().removeCommandFromQueue(output['id'])
+                    break
+            # FC.getIOStream().removeCommandFromQueue(1)
+        self.emit('alert', params)
+
+    def on_down(self, params):
+        if params.get("status") == "active":
+            id = FC.getIOStream().addCommandToQueue("goDown")
+            params["id"] = id
+        else:
+            for output in FC.getIOStream().getAllCommandOutputsInQueue():
+                if output["commandName"] == "goDown":
+                    FC.getIOStream().removeCommandFromQueue(output['id'])
+                    break
+            # FC.getIOStream().removeCommandFromQueue(1)
+        self.emit('alert', params)
+
+    def on_left(self, params):
+        if params.get("status") == "active":
+            id = FC.getIOStream().addCommandToQueue("goLeft")
+            params["id"] = id
+        else:
+            for output in FC.getIOStream().getAllCommandOutputsInQueue():
+                if output["commandName"] == "goLeft":
+                    FC.getIOStream().removeCommandFromQueue(output['id'])
+                    break
+            # FC.getIOStream().removeCommandFromQueue(1)
+        self.emit('alert', params)
+
+    def on_right(self, params):
+        if params.get("status") == "active":
+            id = FC.getIOStream().addCommandToQueue("goRight")
+            params["id"] = id
+        else:
+            for output in FC.getIOStream().getAllCommandOutputsInQueue():
+                if output["commandName"] == "goRight":
+                    FC.getIOStream().removeCommandFromQueue(output['id'])
+                    break
+            # FC.getIOStream().removeCommandFromQueue(1)
+        self.emit('alert', params)
+
+
+class ComplexNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
+    def __init__(self, *args, **kwargs):
+        super(ComplexNamespace, self).__init__(*args, **kwargs)
+
+    def emit(self, event, args):
+        self.socket.send_packet(dict(type="event", name=event,
+            args=args, endpoint=self.ns_name))
+
+    def recv_connect(self):
+        print "thirth connect"
+        self.emit('alert', "welkom  bij complexe aansturing")
+
+    def recv_message(self, message):
+        print "PING!!!", message
+
+
+class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
+    def __init__(self, *args, **kwargs):
+        super(BeschrijvingNamespace, self).__init__(*args, **kwargs)
+
+    def emit(self, event, args):
+        self.socket.send_packet(dict(type="event", name=event,
+            args=args, endpoint=self.ns_name))
+
+    def recv_connect(self):
+        print "thirth connect"
+        self.emit('alert', "welkom  bij wegbeschrijving")
+
+    def recv_message(self, message):
+        print "PING!!!", message
+
+
+@app.route("/socket.io/<path:rest>")
+def run_socketio(rest):
+    socketio_manage(request.environ, {'/manueel': ManueelNamespace})
+    return ''
 
 
 @app.route('/', methods=['GET'])  # post niet meer
@@ -27,47 +134,6 @@ def index():
     #    return procesFunctionCall(func)
 
 '''
-def procesFunctionCall(func):
-        """if func == "doUp":
-            FC.getIOStream().addFunctionToQueue()
-            return jsonify(id="1")
-
-        elif func == "doLeft":
-            FC.getIOStream().addFunctionToQueue()
-            return jsonify(id="1")
-
-        elif func == "doDown":
-            FC.getIOStream().addFunctionToQueue()
-            return jsonify(id="1")
-
-        elif func == "doRight":
-            FC.getIOStream().addFunctionToQueue()
-            return jsonify(id="1")"""
-        if "do" == func[:2]:
-            #id = FC.getIOStream().addCommandToQueue(func[2:])
-            id = FC.getIOStream().addCommandToQueue("goForward")
-            return jsonify(id=id)
-
-        elif func == "stopUp":
-            FC.getIOStream().removeCommandFromQueue(1)
-            return jsonify(id="1")
-
-        elif func == "stopLeft":
-            FC.getIOStream().removeCommandFromQueue(1)
-            return jsonify(id="1")
-
-        elif func == "stopDown":
-            FC.getIOStream().removeCommandFromQueue(1)
-            return jsonify(id="1")
-
-        elif func == "stopRight":
-            FC.getIOStream().removeCommandFromQueue(1)
-            return jsonify(id="5")
-
-        return jsonify(error="unknown function")
-'''
-
-
 @socket.on("connect", namespace="/manueel")
 def connectManueel():
     emit("alert", "welcome to the socketIO for manual driving")
@@ -83,7 +149,7 @@ def connectBeschrijving():
     emit("alert", "welcome to the socketIO for route description")
 
 
-@socket.on("disconnectManueel", namespace="/manueel")
+@socket.on("disconnect", namespace="/manueel")
 def disconnect():
     print "nice to have met you."
 
@@ -122,64 +188,6 @@ def circle(params):
     params["id"] = id
     emit('alert', params)
 
-
-@socket.on("up", namespace="/manueel")
-def up(params):
-    if params.get("status") == "active":
-        id = FC.getIOStream().addCommandToQueue("goForward")
-        params["id"] = id
-    else:
-        for output in FC.getIOStream().getAllCommandOutputsInQueue():
-            if output["commandName"] == "goForward":
-                FC.getIOStream().removeCommandFromQueue(output['id'])
-                break
-        # FC.getIOStream().removeCommandFromQueue(1)
-    emit('alert', params)
-
-
-@socket.on("down", namespace="/manueel")
-def down(params):
-    if params.get("status") == "active":
-        id = FC.getIOStream().addCommandToQueue("goDown")
-        params["id"] = id
-    else:
-        for output in FC.getIOStream().getAllCommandOutputsInQueue():
-            if output["commandName"] == "goDown":
-                FC.getIOStream().removeCommandFromQueue(output['id'])
-                break
-        # FC.getIOStream().removeCommandFromQueue(1)
-    emit('alert', params)
-
-
-@socket.on("left", namespace="/manueel")
-def left(params):
-    if params.get("status") == "active":
-        id = FC.getIOStream().addCommandToQueue("goLeft")
-        params["id"] = id
-    else:
-        for output in FC.getIOStream().getAllCommandOutputsInQueue():
-            if output["commandName"] == "goLeft":
-                FC.getIOStream().removeCommandFromQueue(output['id'])
-                break
-        # FC.getIOStream().removeCommandFromQueue(1)
-    emit('alert', params)
-
-
-@socket.on("right", namespace="/manueel")
-def right(params):
-    if params.get("status") == "active":
-        id = FC.getIOStream().addCommandToQueue("goRight")
-        params["id"] = id
-    else:
-        for output in FC.getIOStream().getAllCommandOutputsInQueue():
-            if output["commandName"] == "goRight":
-                FC.getIOStream().removeCommandFromQueue(output['id'])
-                break
-        # FC.getIOStream().removeCommandFromQueue(1)
-    emit('alert', params)
-    updateRouteDesciption()
-
-
 @socket.on("start", namespace="/beschrijving")
 def start(params):
     id = FC.getIOStream().addCommandToQueue("start")
@@ -210,7 +218,7 @@ def descriptionLeft(params):
     params["id"] = id
     emit('alert', params)
     updateRouteDesciption()
-
+'''
 
 def gen(camera):
     while True:
@@ -246,7 +254,7 @@ camera = cameraPi.ECamera()
 
 if __name__ == '__main__':
     lol = FC.getIOStream()
-    socket.run(app, host='127.0.0.1',port=5000)
+    #socket.run(app, host='127.0.0.1',port=5000)
 
 """
 om je eigen ip adress te vinden gebruik je in command prompt ipconfig (ifconfig voor linux)

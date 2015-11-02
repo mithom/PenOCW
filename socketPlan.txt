@@ -9,3 +9,5 @@ nameSpace niet vrij te kiezen
 naam van de call: wat er moet gebeuren (functie die klaar is bij grotere commando's en dan verwijderd moet worden/
 	 connectie verbroken/refresh hele lijst/...)
 body: id van de functie + eventuele params
+
+gunicorn --worker-class socketio.sgunicorn.GeventSocketIOWorker module:app

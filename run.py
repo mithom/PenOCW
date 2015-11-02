@@ -4,8 +4,11 @@ import sys, os, threading
 #import Team_auto.Car as car
 import werkzeug.serving
 
+from socketio.server import SocketIOServer
+from werkzeug.wsgi import SharedDataMiddleware
+
 __author__ = 'Thomas'
-wsgi_callable = hostfile.app    
+app = hostfile.app
 
 def proces_forever():
     while True:
@@ -18,12 +21,20 @@ def main():
     process = threading.Thread(target=proces_forever, name='processing')
     process.setDaemon(True)
     process.start()
+    app.debug = True
+    server = SocketIOServer(
+        ('0.0.0.0', 4848),
+        SharedDataMiddleware(app, {}),
+        namespace="socket.io",
+        policy_server=False)
+    server.serve_forever()
     # add other proces for adjusting to obstacles etc
     # hostfile.http.serve_forever()
 ##    hostfile.socket.run(hostfile.app, host='0.0.0.0', port=4848)
 
 if __name__ == "__main__":
     print "i am main"
+    main()
 else:
     print "running main function"
     main()

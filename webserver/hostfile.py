@@ -29,7 +29,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             args=args, endpoint=self.ns_name))
 
     def recv_connect(self):
-        print "thirth connect"
+        print "manueel connect"
         self.emit('alert', "welkom  bij manuele aansturing")
         #self.broadcast_event('alert', 'nieuwe gebruiker!')
 
@@ -94,11 +94,31 @@ class ComplexNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             args=args, endpoint=self.ns_name))
 
     def recv_connect(self):
-        print "thirth connect"
+        print "complex connect"
         self.emit('alert', "welkom  bij complexe aansturing")
 
     def recv_message(self, message):
         print "PING!!!", message
+
+    def on_circle(self, data):
+        id = FC.getIOStream().addCommandToQueue('makeCircle')
+        data['id'] = id
+        self.emit('alert', data)
+
+    def on_square(self, data):
+        id = FC.getIOStream().addCommandToQueue('makeSquare')
+        data['id'] = id
+        self.emit('alert', data)
+
+    def on_line(self, data):
+        id = FC.getIOStream().addCommandToQueue('makeLine')
+        data['id'] = id
+        self.emit('alert', data)
+
+    def on_start(self, data):
+        #TODO: implementeren
+        pass
+
 
 
 class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
@@ -110,7 +130,7 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             args=args, endpoint=self.ns_name))
 
     def recv_connect(self):
-        print "thirth connect"
+        print "beschrijving connect"
         self.emit('alert', "welkom  bij wegbeschrijving")
 
     def recv_message(self, message):
@@ -134,21 +154,6 @@ def index():
     #    return procesFunctionCall(func)
 
 '''
-@socket.on("connect", namespace="/manueel")
-def connectManueel():
-    emit("alert", "welcome to the socketIO for manual driving")
-
-
-@socket.on("connect", namespace="/complex")
-def connectComplex():
-    emit("alert", "welcome to the socketIO for complex figures")
-
-
-@socket.on("connect", namespace="/beschrijving")
-def connectBeschrijving():
-    emit("alert", "welcome to the socketIO for route description")
-
-
 @socket.on("disconnect", namespace="/manueel")
 def disconnect():
     print "nice to have met you."
@@ -167,26 +172,6 @@ def disconnectBeschrijving():
 def updateRouteDesciption():
     emit('updateRouteDescription', FC.getIOStream().getAllCommandOutputsInQueue(), namespace="/beschrijving", broadcast=True)
 
-
-@socket.on("line", namespace="/complex")
-def line(params):
-    id = FC.getIOStream().addCommandToQueue("line")
-    params["id"] = id
-    emit('alert', params)
-
-
-@socket.on("square", namespace="/complex")
-def square(params):
-    id = FC.getIOStream().addCommandToQueue("square")
-    params["id"] = id
-    emit('alert', params)
-
-
-@socket.on("circle", namespace="/complex")
-def circle(params):
-    id = FC.getIOStream().addCommandToQueue("circle")
-    params["id"] = id
-    emit('alert', params)
 
 @socket.on("start", namespace="/beschrijving")
 def start(params):

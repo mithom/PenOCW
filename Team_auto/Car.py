@@ -9,6 +9,7 @@ BrickPi.MotorEnable[PORT_A] = 1  # Enable the Motor A
 BrickPi.MotorEnable[PORT_B] = 1  # Enable the Motor B
 car_width = 11.5
 wheel_contour = 17.8  # foute waarde
+functions = [go_straight_distance, go_straight_pid, make_circle_left, make_circle_right, rotate_angle_left, rotate_angle_right, turn_straight_left, turn_straight_right]
 
 BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
 
@@ -231,9 +232,6 @@ def brake():
     set_right(0)
     BrickPiUpdateValues()
     power = 0"""
-
-functions = [go_straight, make_circle_left, make_circle_right, rotate_angle_left, rotate_angle_right, set_left,
-             set_right, turn_straight_left, turn_straight_right]
 
 (offset_A,offset_B) = calibrate()
 time.sleep(15)

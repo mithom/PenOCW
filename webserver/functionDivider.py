@@ -21,8 +21,10 @@ class Function:
 
     def __init__(self, function, **kwargs):
         self.function = function
-        self.params = kwargs
         self.time = kwargs.get('duration')
+        if(self.time is not None):
+            del kwargs['duration']
+        self.params = kwargs
 
     def getFunction(self):
         return self.function

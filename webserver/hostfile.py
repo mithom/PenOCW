@@ -139,7 +139,7 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
 @app.route("/socket.io/<path:rest>")
 def run_socketio(rest):
-    socketio_manage(request.environ, {'/manueel': ManueelNamespace})
+    socketio_manage(request.environ, {'/manueel': ManueelNamespace, '/complex': ComplexNamespace, '/beschrijving': BeschrijvingNamespace})
     return ''
 
 

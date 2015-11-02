@@ -12,20 +12,6 @@ wheel_contour = 17.8  # foute waarde
 
 BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
 
-
-def execute_function_with_id(function_id, *args, **kwargs):
-    for f in functions:
-        if id(f) == function_id:
-            f(*args, **kwargs)
-
-
-def get_function_ids():
-    function_ids = {'go_straight_distance': id(go_straight_distance), 'go_straight_pid': id(go_straight_pid),
-                    'make_circle_left': id(make_circle_left), 'make_circle_right': id(make_circle_right),
-                    'rotate_angle_left': id(rotate_angle_left), 'rotate_angle_right': id(rotate_angle_left),
-                    'turn_straight_left': id(turn_straight_left), 'turn_straight_right': id(turn_straight_right)}
-    return function_ids
-
 def calibrate():
     set_left(1)
     set_right(1)
@@ -220,7 +206,22 @@ def turn_straight_right(power, duration):
 	set_right(power)
 	BrickPiUpdateValues()
 
+"""
 functions = [go_straight_distance, go_straight_pid, make_circle_left, make_circle_right, rotate_angle_left, rotate_angle_right, turn_straight_left, turn_straight_right]
+
+
+def execute_function(function_id, *args, **kwargs):
+    for f in functions:
+        if id(f) == function_id:
+            f(*args, **kwargs)"""
+
+
+def get_functions():
+    functions = {'go_straight_distance': go_straight_distance, 'go_straight_pid': go_straight_pid,
+                    'make_circle_left': make_circle_left, 'make_circle_right': make_circle_right,
+                    'rotate_angle_left': rotate_angle_left, 'rotate_angle_right': rotate_angle_left,
+                    'turn_straight_left': turn_straight_left, 'turn_straight_right': turn_straight_right}
+    return functions
 
 """
 def brake():

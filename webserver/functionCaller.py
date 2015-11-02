@@ -59,8 +59,8 @@ class __IOStream__:
             toExecute = self.queue.pop(0)
             if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 0:
                 self.addCommandFrontQueue(toExecute.getCommandName())
-            elif self.queue[0].getCommandName() in __IOStream__.manueelCommands:
-                return self._getCombinedCommand(toExecute,self.queue[0])
+            elif len(self.queue) >0 and self.queue[0].getCommandName() in __IOStream__.manueelCommands:
+                return self._getCombinedCommand(toExecute, self.queue[0])
             return toExecute
         return None
 

@@ -239,9 +239,12 @@ def brake():
     BrickPiUpdateValues()
     power = 0
 
+
 (offset_A,offset_B) = calibrate()
-time.sleep(15)
-go_straight_pid(120,100)
+
+if __name__ == '__main__':
+    time.sleep(15)
+    go_straight_pid(120,100)
 ##turn_straight_left(200)
 
 ##            print 'left',

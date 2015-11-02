@@ -21,8 +21,8 @@ def execute_function_with_id(function_id, *args, **kwargs):
 
 def get_function_ids():
     function_ids = {'go_straight_distance': id(go_straight_distance), 'go_straight_pid': id(go_straight_pid),
-		    'make_circle_left': id(make_circle_left), 'make_circle_right': id(make_circle_right), 
-		    'rotate_angle_left': id(rotate_angle_left), 'rotate_angle_right': id(rotate_angle_left),
+                    'make_circle_left': id(make_circle_left), 'make_circle_right': id(make_circle_right),
+                    'rotate_angle_left': id(rotate_angle_left), 'rotate_angle_right': id(rotate_angle_left),
                     'turn_straight_left': id(turn_straight_left), 'turn_straight_right': id(turn_straight_right)}
     return function_ids
 
@@ -220,13 +220,7 @@ def turn_straight_right(power, duration):
 	set_right(power)
 	BrickPiUpdateValues()
 
-
-def stop():
-    set_right(0)
-    set_left(0)
-    BrickPiUpdateValues()
-
-
+"""
 def brake():
     while(power>5):
         set_left(power-10)
@@ -236,7 +230,7 @@ def brake():
     set_left(0)
     set_right(0)
     BrickPiUpdateValues()
-    power = 0
+    power = 0"""
 
 functions = [go_straight, make_circle_left, make_circle_right, rotate_angle_left, rotate_angle_right, set_left,
              set_right, turn_straight_left, turn_straight_right]

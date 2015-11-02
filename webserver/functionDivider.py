@@ -6,6 +6,7 @@ kunnen worden
 
 import functionCaller, time
 from platform import system
+import math
 
 car = None  # this is going to be the module Team_auto.car or a mockup for it.
 
@@ -18,10 +19,10 @@ class Function:
     the functions that are stored in the queue
     """
 
-    def __init__(self, function, duration=None, **kwargs):
+    def __init__(self, function, **kwargs):
         self.function = function
         self.params = kwargs
-        self.time = duration
+        self.time = kwargs.get('duration')
 
     def getFunction(self):
         return self.function
@@ -56,8 +57,24 @@ class FunctionDivider:
         self.currentCommand = None
         self.currentFunction = None
         function_ids = car.get_function_ids()
-        self.commandLib = {"goForward": [Function(function_ids.get('go_straight'), duration=10, power=250)],
-                           "goBackward": [Function(function_ids.get('go_straight'), duration=10, power=-250)]}
+        self.commandLib = {"goForward": [Function(function_ids.get('go_straight_pid'), duration=10, power=250)],
+                           "goBackward": [Function(function_ids.get('go_straight_pid'), duration=10, power=-250)],
+			"goLeft": [Function(function_ids.get('turn_straight_left'), duration=10, power=250)],
+			"goRight": [Function(function_ids.get('turn_straight_right'), duration=10, power=250)],
+#			"goForwardLeft"
+#			"goForwardRigth"
+#			"goBackwardLeft"
+#			"goBackwardRight"
+			"makeLine": [Function(function_ids.get('go_straight_distance', distance=200, power=200)],
+			"makeSquare": [Function(function_ids.get('go_straight_distance', distance=100, power=150),
+					Function(function_ids.get('rotate_angle_left', angle=math.pi, power=150),
+					Function(function_ids.get('go_straight_distance', distance=100, power=150),
+					Function(function_ids.get('rotate_angle_left', angle=math.pi, power=150),
+					Function(function_ids.get('go_straight_distance', distance=100, power=150),
+					Function(function_ids.get('rotate_angle_left', angle=math.pi, power=150),
+					Function(function_ids.get('go_straight_distance', distance=100, power=150),
+					Function(function_ids.get('rotate_angle_left', angle=math.pi, power=150)],
+			"makeCircle": [Function(function_ids.get('make_circle_left', radius=50, power=200)]}
         self.currentCommandObject = None
         if firstCommand is not None:
             self.executeCommand(firstCommand)

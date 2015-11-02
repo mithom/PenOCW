@@ -56,11 +56,14 @@ class __IOStream__:
 
     def pushCommand(self):
         if len(self.queue) > 0:
-            toExecute = self.queue.pop(0)
-            if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 0:
-                self.addCommandFrontQueue(toExecute.getCommandName(), **toExecute.__params__)
-            elif len(self.queue) > 0 and self.queue[0].getCommandName() in __IOStream__.manueelCommands:
-                return self._getCombinedCommand(toExecute, self.queue[0])
+            toExecute = self.queue[0]
+            if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 1:
+                #self.addCommandFrontQueue(toExecute.getCommandName(), **toExecute.__params__)
+                pass
+            elif len(self.queue) > 1 and self.queue[1].getCommandName() in __IOStream__.manueelCommands:
+                return self._getCombinedCommand(toExecute, self.queue[1])
+            else:
+                del self.queue[0]
             return toExecute
         return None
 

@@ -91,7 +91,7 @@ class FunctionDivider:
         if firstCommand is not None:
             self.executeCommand(firstCommand)
 
-    def executeCommand(self, command):
+    def executeCommand(self, command):#TODO: take params into account
         if command is not None and command.getCommandName() in self.commandLib.keys():
             self.currentCommand = [x.copy() for x in self.commandLib[command.getCommandName()]]
             self.currentCommandObject = command
@@ -111,22 +111,22 @@ class FunctionDivider:
         :param dt: int telling how many ms the current command should run
         :return: None
         """
-        print "processing time"
+        #  print "processing time"
         while dt >0:
-            print "time: ", dt, self.currentCommand
+            #print "time: ", dt, self.currentCommand
             if self.currentCommand is not None:
                 dt = self.processCommand(dt)
             else:
                 self.executeCommand(functionCaller.getIOStream().pushCommand())
-                print self.currentCommand, "current command"
+                #  print self.currentCommand, "current command"
                 if self.currentCommand == None: #geen commands in queue
                     time.sleep(1)
                     dt -= 1
 
     def processCommand(self, dt): #TODO: fix dubbele true prints
-        print "processing command"
+        #  print "processing command"
         while dt > 0:
-            print "command time left: ", dt
+            #  print "command time left: ", dt
             if self.currentFunction is not None:
                 done, dt = self.procesFunction(dt)
                 if done or dt > 0:

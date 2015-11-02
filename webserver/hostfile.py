@@ -20,7 +20,7 @@ jsglue = JSGlue(app)  # this allows us to use url_for in the javascript frontend
 app.config['SECRET_KEY'] = 'secret!'
 
 
-class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
+class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin): #  TODO: breaks actief maken wanner js bug is gefixed van klikken op pijltjes
     def __init__(self, *args, **kwargs):
         super(ManueelNamespace, self).__init__(*args, **kwargs)
 
@@ -44,7 +44,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             for output in FC.getIOStream().getAllCommandOutputsInQueue():
                 if output["commandName"] == "goForward":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
-                    break
+                    #break
             # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 
@@ -54,9 +54,9 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             params["id"] = id
         else:
             for output in FC.getIOStream().getAllCommandOutputsInQueue():
-                if output["commandName"] == "goDown":
+                if output["commandName"] == "goBackward":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
-                    break
+                    #break
             # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 
@@ -68,7 +68,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             for output in FC.getIOStream().getAllCommandOutputsInQueue():
                 if output["commandName"] == "goLeft":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
-                    break
+                    #break
             # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 
@@ -80,7 +80,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             for output in FC.getIOStream().getAllCommandOutputsInQueue():
                 if output["commandName"] == "goRight":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
-                    break
+                    #break
             # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 

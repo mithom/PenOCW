@@ -1,25 +1,38 @@
+import time
+
+
 def go_straight_distance(*args, **kwargs):
-    pass
+    time.sleep(1)
+
 
 def go_straight_pid(*args, **kwargs):
+    time.sleep(0.1)
     pass
+
 
 def make_circle_left(*args, **kwargs):
     pass
 
+
 def make_circle_right(*args, **kwargs):
     pass
+
 
 def rotate_angle_left(*args, **kwargs):
     pass
 
+
 def rotate_angle_right(*args, **kwargs):
     pass
 
+
 def turn_straight_left(*args, **kwargs):
+    time.sleep(0.1)
     pass
 
+
 def turn_straight_right(*args, **kwargs):
+    time.sleep(0.1)
     pass
 
 

@@ -58,8 +58,8 @@ class __IOStream__:
         if len(self.queue) > 0:
             toExecute = self.queue.pop(0)
             if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 0:
-                self.addCommandFrontQueue(toExecute.getCommandName())
-            elif len(self.queue) >0 and self.queue[0].getCommandName() in __IOStream__.manueelCommands:
+                self.addCommandFrontQueue(toExecute.getCommandName(), **toExecute.__params__)
+            elif len(self.queue) > 0 and self.queue[0].getCommandName() in __IOStream__.manueelCommands:
                 return self._getCombinedCommand(toExecute, self.queue[0])
             return toExecute
         return None
@@ -67,7 +67,7 @@ class __IOStream__:
     @classmethod
     def _getCombinedCommand(cls, command1, command2):
         return command1
-    #TODO: implementeren!!!
+    # TODO: implementeren!!!
 
     def addCommandToQueue(self, commandName, **kwargs):
         if len(self.queue) == sys.maxint:
@@ -150,24 +150,3 @@ def getNextId():
 
 __ioStream__ = __IOStream__()
 __webCaller__ = __WebCaller__()
-##
-##def init():
-##    global __ioStream__, __webCaller__
-##    if __ioStream__ is None:
-##        __ioStream__ = __IOStream__()
-##    if __webCaller__ is None:
-##        __webCaller__ = __WebCaller__()
-##
-##
-##def testinit():
-##    ioStream = __IOStream__()
-##    webCaller = __WebCaller__()
-##    print "created all instances"
-##
-##"""if this module is run as main module, it will be tested"""
-##if __name__ == "__main__":
-##    testinit()
-##
-##"""if the module is imported, this will configure everything"""
-##if __name__ == "functionCaller":
-##    init()

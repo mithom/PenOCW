@@ -50,7 +50,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
     def on_down(self, params):
         if params.get("status") == "active":
-            id = FC.getIOStream().addCommandToQueue("goDown")
+            id = FC.getIOStream().addCommandToQueue("goBackward")
             params["id"] = id
         else:
             for output in FC.getIOStream().getAllCommandOutputsInQueue():

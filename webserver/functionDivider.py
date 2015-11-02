@@ -18,7 +18,6 @@ class Function:
     """
 
     def __init__(self, function, **kwargs):
-        print kwargs
         self.function = function
         self.time = kwargs.get('duration', None)
         kwargs.pop('duration', None)
@@ -35,9 +34,9 @@ class Function:
             self.function(**self.params)
             return True, 0
         else:
-            self.function(duration= min(dt, self.time) **self.params)
-            self.time -= dt  # dit moet uitgebreider, bvb nooit onder 0
-            return self.time <= 0, max(0, dt-self.time)
+            self.function(duration= min(dt, self.time), **self.params)
+            self.time, dt = self.time - dt, dt - self.time   # dit moet uitgebreider, bvb nooit onder 0
+            return self.time <= 0, max(0, dt)
 
     def getParams(self):
         return self.params
@@ -46,7 +45,12 @@ class Function:
         return Function(self.function, duration=self.time, **self.params)
 
     def __str__(self):
-        return "" + str(self.function) + ", " + str(self.params)
+        stri = ""
+        stri += str(self.function) + ', '
+        if self.time is not None:
+            stri += "duration: " + str(self.time) + ", "
+        stri += str(self.params)
+        return stri
 
     def __repr__(self):
         return str(self)
@@ -121,8 +125,8 @@ class FunctionDivider:
 
     def processCommand(self, dt): #TODO: fix dubbele true prints
         print "processing command"
-        while dt>0:
-            print "command: ", dt
+        while dt > 0:
+            print "command time left: ", dt
             if self.currentFunction is not None:
                 done, dt = self.procesFunction(dt)
                 if done or dt > 0:

@@ -33,14 +33,14 @@ class Function:
     def useTime(self, dt):
         if self.time is None:
             return 0
-        self.time -= dt #dit moet uitgebreider, bvb nooit onder 0
+        self.time -= dt  # dit moet uitgebreider, bvb nooit onder 0
         return max(0, dt-self.time)
 
     def getParams(self):
         return self.params
 
     def copy(self):
-        return Function(self.function, self.time)
+        return Function(self.function, duration=self.time)
 
 
 def haha(power=1):

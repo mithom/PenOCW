@@ -123,7 +123,9 @@ def getFunctionDivider():
     return functionDivider
 
 if system() == 'Linux': #import Team_auto.car as car
+    print "using real car"
     car = __import__("Team_auto.Car").Car
 else:
+    print "using carMock"
     car = __import__("webserver.CarMock").CarMock
 functionDivider = FunctionDivider()

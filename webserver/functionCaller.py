@@ -49,30 +49,39 @@ class __IOStream__:
     """
     a class designed to communicate from the website to the BrickPi
     """
+    manueelCommands = ["goForward","goBackward","goLeft","goRight"]
+
     def __init__(self):
         self.queue = []
 
     def pushCommand(self):
         if len(self.queue) > 0:
             toExecute = self.queue.pop(0)
-            if toExecute in ["goForward","goBackward"] and len(self.queue) == 0:
-                self.addCommandToQueue(toExecute.getCommandName())
+            if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 0:
+                self.addCommandFrontQueue(toExecute.getCommandName())
+            elif self.queue[0].getCommandName() in __IOStream__.manueelCommands:
+                return self._getCombinedCommand(toExecute,self.queue[0])
             return toExecute
         return None
 
-    def addCommandToQueue(self, commandName):
+    @classmethod
+    def _getCombinedCommand(cls, command1, command2):
+        return command1
+    #TODO: implementeren!!!
+
+    def addCommandToQueue(self, commandName, **kwargs):
         if len(self.queue) == sys.maxint:
             return Exception("queue too long")
-        newFunction = Command(commandName)
+        newFunction = Command(commandName, **kwargs)
         self.queue.append(newFunction)
         print str(self.queue)
         return newFunction.getId()
 
 
-    def addCommandFrontQueue(self, commandName):
+    def addCommandFrontQueue(self, commandName, **kwargs):
         if len(self.queue) == sys.maxint:
             return Exception("queue too long")
-        newFunction = Command(commandName)
+        newFunction = Command(commandName,**kwargs)
         self.queue.insert(0, newFunction)
         return newFunction.getId()
 

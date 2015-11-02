@@ -96,6 +96,9 @@ class __IOStream__:
             if commandId == function.getId():
                 self.queue.remove(function)
                 return True
+        current = functionDivider.getFunctionDivider().currentCommand
+        if current.getId() == commandId:
+            functionDivider.getFunctionDivider().interuptCurrentCommand()
         return False
 
     def cancelCurrentCommand(self):
@@ -120,7 +123,11 @@ class __IOStream__:
         pass
 
     def getAllCommandOutputsInQueue(self):
-        return [command.output() for command in self.queue]
+        output = [command.output() for command in self.queue]
+        current = functionDivider.getFunctionDivider().currentCommandObject
+        if current is not None:
+            output.insert(0, current.output())
+        return output
 
 class __WebCaller__:
     """

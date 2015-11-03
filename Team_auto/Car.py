@@ -183,11 +183,21 @@ def rotate_angle_right(power, angle):
 
 
 def set_left(power):
-    BrickPi.MotorSpeed[PORT_A] = power  # Set the speed of MotorA (-255 to 255)
+    if power > 255:
+        BrickPi.MotorSpeed[PORT_A] = 255
+    elif power < -255:
+        BrickPi.MotorSpeed[PORT_A] = -255
+    else:
+        BrickPi.MotorSpeed[PORT_A] = power  # Set the speed of MotorA (-255 to 255)
 
 
 def set_right(power):
-    BrickPi.MotorSpeed[PORT_B] = power  # Set the speed of MotorB (-255 to 255)
+    if power > 255:
+        BrickPi.MotorSpeed[PORT_B] = 255
+    elif power < -255:
+        BrickPi.MotorSpeed[PORT_B] = -255
+    else:
+        BrickPi.MotorSpeed[PORT_B] = power  # Set the speed of MotorA (-255 to 255)
 
 
 def turn_straight_left(power, duration):      # Voor rechte hoek buitenste wiel 360 laten draaien (via motorRotateDegree)

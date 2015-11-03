@@ -94,18 +94,16 @@ def go_straight_duration(power, duration):
                 right_power += int(abs(difference-pid_value))
                 set_left(power)
                 set_right(right_power)
-                BrickPiUpdateValues()
             elif pid_value > difference:
                 #rechts sneller
                 left_power += int(abs(difference-pid_value))
     ##          right_power += abs(difference-pid_value)power
                 set_left(left_power)
                 set_right(power)
-                BrickPiUpdateValues()
             else:
                 set_left(power)
                 set_right(power)
-                BrickPiUpdateValues()
+        BrickPiUpdateValues()
         last_update = time.time()
     f.close()
 

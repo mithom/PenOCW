@@ -41,7 +41,7 @@ def go_straight_distance(power, distance):
     last_update = 0
     counter = 0
     average = 0
-    d=56
+    d=5.6
     O=math.pi*d
     degree = (distance/O)*360
     print degree, "degree"

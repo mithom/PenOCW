@@ -3,13 +3,14 @@ import numpy as np
 import time
 import math
 
-number_of_test_files = 5
+number_of_test_files = 6
 
 # Image loading
 #img = cv.imread('C:\\Users\\Gilles\\Desktop\\P&O\\line_images\\line6.jpg',1)
 
 imglist = []
-for i in range(1,number_of_test_files + 1):
+#for i in range(1,number_of_test_files + 1):
+for i in range(3,4):
     imglist.append(cv.imread('C:\\Users\\Gilles\\Desktop\\P&O\\line_images\\line' + str(i) + '.jpg',1))
 
 for i in range(len(imglist)):
@@ -22,6 +23,8 @@ for i in range(len(imglist)):
     # Gaussian blur
     blur = cv.GaussianBlur(gray,(5,5),0)
 
+    #TODO: threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
+
     # Thresholding
     ret, bw = cv.threshold(blur, 200, 255, cv.THRESH_BINARY)
 
@@ -29,13 +32,15 @@ for i in range(len(imglist)):
     edges = cv.Canny(bw,5,5)
 
     # Hough line transform
-    lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 100, 200)
+    lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 100, 100)
 
     # Print number of found lines
     print 'Lines found: ', len(lines)
 
     # Filtering on/off
     filter = True
+
+    #TODO: enkel beginpunt en rico opnieuw berekenen als index veranderd is
 
     # Line filtering
     if filter == True:

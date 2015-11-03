@@ -20,7 +20,7 @@ jsglue = JSGlue(app)  # this allows us to use url_for in the javascript frontend
 app.config['SECRET_KEY'] = 'secret!'
 
 
-class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
+class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin): #  TODO: breaks actief maken wanner js bug is gefixed van klikken op pijltjes
     def __init__(self, *args, **kwargs):
         super(ManueelNamespace, self).__init__(*args, **kwargs)
 
@@ -44,19 +44,19 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             for output in FC.getIOStream().getAllCommandOutputsInQueue():
                 if output["commandName"] == "goForward":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
-                    break
+                    #break
             # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 
     def on_down(self, params):
         if params.get("status") == "active":
-            id = FC.getIOStream().addCommandToQueue("goDown")
+            id = FC.getIOStream().addCommandToQueue("goBackward")
             params["id"] = id
         else:
             for output in FC.getIOStream().getAllCommandOutputsInQueue():
-                if output["commandName"] == "goDown":
+                if output["commandName"] == "goBackward":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
-                    break
+                    #break
             # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 
@@ -68,7 +68,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             for output in FC.getIOStream().getAllCommandOutputsInQueue():
                 if output["commandName"] == "goLeft":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
-                    break
+                    #break
             # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 
@@ -80,7 +80,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             for output in FC.getIOStream().getAllCommandOutputsInQueue():
                 if output["commandName"] == "goRight":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
-                    break
+                    #break
             # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 
@@ -136,10 +136,37 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     def recv_message(self, message):
         print "PING!!!", message
 
+    def updateRouteDesciption(self):
+        self.broadcast_event('updateRouteDescription', FC.getIOStream().getAllCommandOutputsInQueue())
+
+    def on_start(self, params):
+        id = FC.getIOStream().addCommandToQueue("start")
+        params["id"] = id
+        self.emit('alert', params)
+        self.updateRouteDesciption()
+
+    def on_stop(self, params):
+        id = FC.getIOStream().addCommandToQueue("stop", **params)
+        params["id"] = id
+        self.emit('alert', params)
+        self.updateRouteDesciption()
+
+    def on_right(self,params):
+        id = FC.getIOStream().addCommandToQueue("right", **params)
+        params["id"] = id
+        self.emit('alert', params)
+        self.updateRouteDesciption()
+
+    def on_left(self, params):
+        id = FC.getIOStream().addCommandToQueue("left", **params)
+        params["id"] = id
+        self.emit('alert', params)
+        self.updateRouteDesciption()
+
 
 @app.route("/socket.io/<path:rest>")
 def run_socketio(rest):
-    socketio_manage(request.environ, {'/manueel': ManueelNamespace})
+    socketio_manage(request.environ, {'/manueel': ManueelNamespace, '/complex': ComplexNamespace, '/beschrijving': BeschrijvingNamespace})
     return ''
 
 
@@ -167,42 +194,6 @@ def disconnectComplex():
 @socket.on("disconnect", namespace="/beschrijving")
 def disconnectBeschrijving():
     print "nice to have met you."
-
-
-def updateRouteDesciption():
-    emit('updateRouteDescription', FC.getIOStream().getAllCommandOutputsInQueue(), namespace="/beschrijving", broadcast=True)
-
-
-@socket.on("start", namespace="/beschrijving")
-def start(params):
-    id = FC.getIOStream().addCommandToQueue("start")
-    params["id"] = id
-    emit('alert', params)
-    updateRouteDesciption()
-
-
-@socket.on("stop", namespace="/beschrijving")
-def stop(params):
-    id = FC.getIOStream().addCommandToQueue("stop")
-    params["id"] = id
-    emit('alert', params)
-    updateRouteDesciption()
-
-
-@socket.on("right", namespace="/beschrijving")
-def descriptionRight(params):
-    id = FC.getIOStream().addCommandToQueue("right")
-    params["id"] = id
-    emit('alert', params)
-    updateRouteDesciption()
-
-
-@socket.on("left", namespace="/beschrijving")
-def descriptionLeft(params):
-    id = FC.getIOStream().addCommandToQueue("left")
-    params["id"] = id
-    emit('alert', params)
-    updateRouteDesciption()
 '''
 
 def gen(camera):

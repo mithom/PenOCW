@@ -154,6 +154,7 @@ def turn_straight_right(power, duration):
 
 
 def set_left(power):
+    power += 15
     if power > 255:
         BrickPi.MotorSpeed[PORT_A] = 255
     elif power < -255:

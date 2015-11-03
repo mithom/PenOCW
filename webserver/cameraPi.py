@@ -6,7 +6,7 @@ http://blog.miguelgrinberg.com/post/video-streaming-with-flask
 import time
 import io
 import threading
-
+import gevent
 
 class Camera(object):
     thread = None  # background thread that reads frames from camera
@@ -59,7 +59,7 @@ class Camera(object):
                 # reset stream for next frame
                 stream.seek(0)
                 stream.truncate()
-
+                gevent.sleep()
                 # if there hasn't been any clients asking for frames in
                 # the last 10 seconds stop the thread
                 if time.time() - cls.last_access > 10:

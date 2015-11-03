@@ -44,7 +44,7 @@ def go_straight_distance(power, distance):
     degree = (distance/O)*360
     print degree
     while average < degree:
-	    average = ((BrickPi.Encoder[PORT_A]-offset_A)+(BrickPi.Encoder[PORT_B]-offset_B))/2
+        average = ((BrickPi.Encoder[PORT_A]-offset_A)+(BrickPi.Encoder[PORT_B]-offset_B))/2
         difference = (BrickPi.Encoder[PORT_A]-offset_A)-(BrickPi.Encoder[PORT_B]-offset_B)
         pid_value = pid_controller.update(BrickPi.Encoder[PORT_A],BrickPi.Encoder[PORT_B])
         if ((time.time()-last_update)>update_interval):
@@ -198,9 +198,9 @@ def brake():
 (offset_A,offset_B) = calibrate()
 
 if __name__ == '__main__':
-    print "i am the main module, running the go straight pid"
+    print "i am the main module, running the go straight duration"
     time.sleep(15)
-    go_straight_distance(120,100)
+    go_straight_duration(120,100)
 ##turn_straight_left(200)
 
 ##            print 'left',

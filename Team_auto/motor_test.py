@@ -48,6 +48,5 @@ def test(offset_A,offset_B):
         print 'Ratio: ', ratio
         time.sleep(5)
 
-time.sleep(2)
 (offset_A, offset_B) = calibrate()
 test(offset_A,offset_B)

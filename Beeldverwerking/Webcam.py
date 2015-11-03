@@ -1,11 +1,12 @@
 import cv2 as cv
 import numpy as np
-import time
 import math
 
-cap = cv.VideoCapture(0)
+capture_source = 0
 
-while(True):
+cap = cv.VideoCapture(capture_source)
+
+while True:
     # Capture frame-by-frame
     ret1, frame = cap.read()
 

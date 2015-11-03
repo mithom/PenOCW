@@ -42,6 +42,7 @@ def go_straight_distance(power, distance):
     d=56
     O=math.pi*d
     degree = (distance/O)*360
+    print degree
     while average < degree:
 	    average = ((BrickPi.Encoder[PORT_A]-offset_A)+(BrickPi.Encoder[PORT_B]-offset_B))/2
         difference = (BrickPi.Encoder[PORT_A]-offset_A)-(BrickPi.Encoder[PORT_B]-offset_B)

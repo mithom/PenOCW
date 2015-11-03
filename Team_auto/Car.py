@@ -199,7 +199,7 @@ def brake():
 
 if __name__ == '__main__':
     time.sleep(15)
-    go_straight_pid(120,100)
+    go_straight_distance(120,100)
 ##turn_straight_left(200)
 
 ##            print 'left',

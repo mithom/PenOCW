@@ -220,13 +220,13 @@ this file is intended to run as imported module, if it runs as main,
 debug options are on.
 If this file is not run on the raspbery pi, a stream emulated will be used.
 Otherwise the real camera is used.
-"""""""
+"""
 if system() == 'Linux':
         camera = cameraPi.Camera()
         camera.initialize() #make shure you don't have to wait once stream starts, but also start consuming battery (250mA)
 else:
-    camera = cameraPi.ECamera()"""
-camera = cameraPi.ECamera()
+    camera = cameraPi.ECamera()
+#camera = cameraPi.ECamera()
 
 if __name__ == '__main__':
     lol = FC.getIOStream()

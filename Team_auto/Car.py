@@ -25,6 +25,7 @@ def calibrate():
 
 
 def go_straight_distance(power, distance):
+    print 'start'
     global offset_A, offset_B
     left_power = power
     right_power = power
@@ -42,7 +43,7 @@ def go_straight_distance(power, distance):
     O=math.pi*d
     degree = (distance/O)*360
     while average < degree:
-	average = ((BrickPi.Encoder[PORT_A]-offset_A)+(BrickPi.Encoder[PORT_B]-offset_B))/2
+	    average = ((BrickPi.Encoder[PORT_A]-offset_A)+(BrickPi.Encoder[PORT_B]-offset_B))/2
         difference = (BrickPi.Encoder[PORT_A]-offset_A)-(BrickPi.Encoder[PORT_B]-offset_B)
         pid_value = pid_controller.update(BrickPi.Encoder[PORT_A],BrickPi.Encoder[PORT_B])
         if ((time.time()-last_update)>update_interval):

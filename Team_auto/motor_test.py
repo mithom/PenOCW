@@ -14,8 +14,8 @@ BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
 
 def calibrate():
     print "start calibrate"
-    set_left(150)
-    set_right(150)
+    set_left(1)
+    set_right(1)
     offset_A= None
     offset_B= None
     while offset_A is None or offset_B is None:
@@ -28,6 +28,8 @@ def calibrate():
 def test(offset_A,offset_B):
     list = [50,100,150,200,250]
     for power in list:
+        offset_A = BrickPi.Encoder[PORT_A]
+        offset_B = BrickPi.Encoder[PORT_B]
         left_power = power
         right_power = power
         set_left(left_power)

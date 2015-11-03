@@ -12,13 +12,13 @@ $(document).ready(function(){
     complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');
 
     manueel.on('connect', function () {
-        window.alert('connected manueel');
+        // window.alert('connected manueel');
         //manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
         manueel.on('disconnect',function(){window.alert('manueel disconnected')});
         });
 
     beschrijving.on('connect',function(){
-        beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
+        //beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
 
         beschrijving.on('updateRouteDescription', function(route){
             var routeBody = $("#currentRoute table tbody");
@@ -40,7 +40,7 @@ $(document).ready(function(){
     });
 
     complex.on('connect',function(){
-        complex.on('alert', function(msg){window.alert("complex meldt: " + JSON.stringify(msg));});
+        //complex.on('alert', function(msg){window.alert("complex meldt: " + JSON.stringify(msg));});
     });
 
     //here comes all the submit overrides

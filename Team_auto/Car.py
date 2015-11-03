@@ -15,10 +15,10 @@ BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
 def calibrate():
     set_left(1)
     set_right(1)
-    BrickPiUpdateValues()
     offset_A= None
     offset_B= None
     while offset_A is None or offset_B is None:
+        BrickPiUpdateValues()
         offset_A = BrickPi.Encoder[PORT_A]
         offset_B = BrickPi.Encoder[PORT_B]
     return (offset_A, offset_B)
@@ -49,14 +49,14 @@ def go_straight_distance(power, distance):
         pid_value = pid_controller.update(BrickPi.Encoder[PORT_A],BrickPi.Encoder[PORT_B])
         if ((time.time()-last_update)>update_interval):
             if pid_value < difference:
-                left_power -= int(abs(difference-pid_value))
+                #left_power -= int(abs(difference-pid_value))
                 right_power += int(abs(difference-pid_value))
                 set_left(power)
                 set_right(right_power)
                 BrickPiUpdateValues()
             elif pid_value > difference:
                 left_power += int(abs(difference-pid_value))
-                right_power -= int(abs(difference-pid_value))
+                #right_power -= int(abs(difference-pid_value))
                 set_left(left_power)
                 set_right(power)
                 BrickPiUpdateValues()
@@ -85,7 +85,7 @@ def go_straight_duration(power, duration):
     while ((time.time() - start_time) < duration):
         difference = (BrickPi.Encoder[PORT_A]-offset_A)-(BrickPi.Encoder[PORT_B]-offset_B)
         f.write(str(difference) + ',')
-        print difference
+        print "difference",difference
         pid_value = pid_controller.update(BrickPi.Encoder[PORT_A],BrickPi.Encoder[PORT_B])
         if ((time.time()-last_update)>update_interval):
             if pid_value < difference:

@@ -49,30 +49,42 @@ class __IOStream__:
     """
     a class designed to communicate from the website to the BrickPi
     """
+    manueelCommands = ["goForward","goBackward","goLeft","goRight"]
+
     def __init__(self):
         self.queue = []
 
     def pushCommand(self):
         if len(self.queue) > 0:
-            toExecute = self.queue.pop(0)
-            if toExecute in ["goForward","goBackward"] and len(self.queue) == 0:
-                self.addCommandToQueue(toExecute.getCommandName())
+            toExecute = self.queue[0]
+            if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 1:
+                #self.addCommandFrontQueue(toExecute.getCommandName(), **toExecute.__params__)
+                pass
+            elif len(self.queue) > 1 and self.queue[1].getCommandName() in __IOStream__.manueelCommands:
+                return self._getCombinedCommand(toExecute, self.queue[1])
+            else:
+                del self.queue[0]
             return toExecute
         return None
 
-    def addCommandToQueue(self, commandName):
+    @classmethod
+    def _getCombinedCommand(cls, command1, command2):
+        return command1
+    # TODO: implementeren!!!
+
+    def addCommandToQueue(self, commandName, **kwargs):
         if len(self.queue) == sys.maxint:
             return Exception("queue too long")
-        newFunction = Command(commandName)
+        newFunction = Command(commandName, **kwargs)
         self.queue.append(newFunction)
         print str(self.queue)
         return newFunction.getId()
 
 
-    def addCommandFrontQueue(self, commandName):
+    def addCommandFrontQueue(self, commandName, **kwargs):
         if len(self.queue) == sys.maxint:
             return Exception("queue too long")
-        newFunction = Command(commandName)
+        newFunction = Command(commandName,**kwargs)
         self.queue.insert(0, newFunction)
         return newFunction.getId()
 
@@ -84,6 +96,9 @@ class __IOStream__:
             if commandId == function.getId():
                 self.queue.remove(function)
                 return True
+        current = functionDivider.getFunctionDivider().currentCommand
+        if current.getId() == commandId:
+            functionDivider.getFunctionDivider().interuptCurrentCommand()
         return False
 
     def cancelCurrentCommand(self):
@@ -108,7 +123,11 @@ class __IOStream__:
         pass
 
     def getAllCommandOutputsInQueue(self):
-        return [command.output() for command in self.queue]
+        output = [command.output() for command in self.queue]
+        current = functionDivider.getFunctionDivider().currentCommandObject
+        if current is not None:
+            output.insert(0, current.output())
+        return output
 
 class __WebCaller__:
     """
@@ -141,24 +160,3 @@ def getNextId():
 
 __ioStream__ = __IOStream__()
 __webCaller__ = __WebCaller__()
-##
-##def init():
-##    global __ioStream__, __webCaller__
-##    if __ioStream__ is None:
-##        __ioStream__ = __IOStream__()
-##    if __webCaller__ is None:
-##        __webCaller__ = __WebCaller__()
-##
-##
-##def testinit():
-##    ioStream = __IOStream__()
-##    webCaller = __WebCaller__()
-##    print "created all instances"
-##
-##"""if this module is run as main module, it will be tested"""
-##if __name__ == "__main__":
-##    testinit()
-##
-##"""if the module is imported, this will configure everything"""
-##if __name__ == "functionCaller":
-##    init()

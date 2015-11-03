@@ -1,5 +1,7 @@
 # Created by https://www.gitignore.io/api/ebstorm,pycharm,eclipse,linux,windows
 
+Team_auto/values.txt
+
 ### PyCharm ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
 

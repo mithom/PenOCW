@@ -11,26 +11,36 @@ $(document).ready(function(){
     beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving');
     complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');
 
-    manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
-    beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
-    complex.on('alert', function(msg){window.alert("complex meldt: " + JSON.stringify(msg));});
+    manueel.on('connect', function () {
+        window.alert('connected manueel');
+        manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
+        manueel.on('disconnect',function(){window.alert('manueel disconnected')});
+        });
 
-    beschrijving.on('updateRouteDescription', function(route){
-        var routeBody = $("#currentRoute table tbody");
-        routeBody.empty();
+    beschrijving.on('connect',function(){
+        beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
 
-        route.each(function(){
-            var newRow = document.createElement('tr');
-            var newName = document.createElement('td');
-            var newId = document.createElement('td');
-            var newIdContent = document.createTextNode('id: ' + route.id);
-            var newNameContent = document.createTextNode('command: '+ route.commandName);
-            newName.appendChild(newNameContent);
-            newId.appendChild(newIdContent);
-            newRow.appendChild(newName);
-            newRow.appendChild(newId);
-            routeBody.appendChild(newRow);
-        })
+        beschrijving.on('updateRouteDescription', function(route){
+            var routeBody = $("#currentRoute table tbody");
+            routeBody.empty();
+
+            route.forEach(function(){
+                var newRow = document.createElement('tr');
+                var newName = document.createElement('td');
+                var newId = document.createElement('td');
+                var newIdContent = document.createTextNode('id: ' + route.id);
+                var newNameContent = document.createTextNode('command: '+ route.commandName);
+                newName.appendChild(newNameContent);
+                newId.appendChild(newIdContent);
+                newRow.appendChild(newName);
+                newRow.appendChild(newId);
+                routeBody.append(newRow);
+            })
+        });
+    });
+
+    complex.on('connect',function(){
+        complex.on('alert', function(msg){window.alert("complex meldt: " + JSON.stringify(msg));});
     });
 
     //here comes all the submit overrides
@@ -72,45 +82,49 @@ $(document).ready(function(){
 
     //here comes responses on socket calls
     //TODO: antwoorden opvangen
+
+    var keyDown = function(e){
+        switch (e.keyCode) {
+            case upKey:
+                doUp();
+                break;
+            case downKey:
+                doDown();
+                break;
+            case leftKey:
+                doLeft();
+                break;
+            case rightKey:
+                doRight();
+                break;
+        }
+    };
+
+    var keyUp = function(e){
+        switch (e.keyCode) {
+            case upKey:
+                stopUp();
+                break;
+            case downKey:
+                stopDown();
+                break;
+            case leftKey:
+                stopLeft();
+                break;
+            case rightKey:
+                stopRight();
+                break;
+        }
+    };
+
+    document.addEventListener('keydown',keyDown,false);
+    document.addEventListener('keyup', keyUp, false);
+
 });
 
-var keyDown = function(e){
-    switch (e.keyCode) {
-        case upKey:
-            doUp();
-            break;
-        case downKey:
-            doDown();
-            break;
-        case leftKey:
-            doLeft();
-            break;
-        case rightKey:
-            doRight();
-            break;
-    }
-};
 
-var keyUp = function(e){
-    switch (e.keyCode) {
-        case upKey:
-            stopUp();
-            break;
-        case downKey:
-            stopDown();
-            break;
-        case leftKey:
-            stopLeft();
-            break;
-        case rightKey:
-            stopRight();
-            break;
-    }
-};
 
-document.addEventListener('keydown',keyDown,false);
-document.addEventListener('keyup', keyUp, false);
-
+//vanaf hier buiten document.ready()
 var upKey = 38;
 var downKey = 40;
 var leftKey = 37;
@@ -190,8 +204,8 @@ var startStream = function(){
     }else{
         $("#video_button").text("start stream");
         /*$("#video_stream img").each(function(){
-            this.remove()
-        });*///TODO: werkt onerstaande? anders gebruik bovenstaande
+         this.remove()
+         });*///TODO: werkt onerstaande? anders gebruik bovenstaande
         $("#video_stream > img").each(function(){this.remove()})
     }
 };
@@ -206,9 +220,9 @@ var cancelFunction = function(id){
 
 
 /*document.addEventListener('mousedown',function(){
-    alert('hello world!');
-});*/
+ alert('hello world!');
+ });*/
 
 /*$('#upKey').click(function(){
-    alert('hello world!')
-});*/
+ alert('hello world!')
+ });*/

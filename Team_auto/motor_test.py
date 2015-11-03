@@ -48,5 +48,23 @@ def test(offset_A,offset_B):
         print 'Ratio: ', ratio
         time.sleep(5)
 
+def set_left(power):
+    power += 15
+    if power > 255:
+        BrickPi.MotorSpeed[PORT_A] = 255
+    elif power < -255:
+        BrickPi.MotorSpeed[PORT_A] = -255
+    else:
+        BrickPi.MotorSpeed[PORT_A] = power  # Set the speed of MotorA (-255 to 255)
+
+
+def set_right(power):
+    if power > 255:
+        BrickPi.MotorSpeed[PORT_B] = 255
+    elif power < -255:
+        BrickPi.MotorSpeed[PORT_B] = -255
+    else:
+        BrickPi.MotorSpeed[PORT_B] = power  # Set the speed of MotorA (-255 to 255)
+
 (offset_A, offset_B) = calibrate()
 test(offset_A,offset_B)

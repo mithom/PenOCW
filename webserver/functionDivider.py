@@ -120,8 +120,8 @@ class FunctionDivider:
                 self.executeCommand(functionCaller.getIOStream().pushCommand())
                 #  print self.currentCommand, "current command"
                 if self.currentCommand == None: #geen commands in queue
-                    time.sleep(1)
-                    dt -= 1
+                    time.sleep(0.1)
+                    dt -= 0.1
 
     def processCommand(self, dt): #TODO: fix dubbele true prints
         #  print "processing command"

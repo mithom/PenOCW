@@ -139,6 +139,7 @@ class FunctionDivider:
         return 0
 
     def procesFunction(self, dt):
+        print "executing now: " + str(self.currentFunction)
         return self.currentFunction.useTime(dt)
 
 

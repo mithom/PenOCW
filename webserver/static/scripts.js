@@ -13,7 +13,7 @@ $(document).ready(function(){
 
     manueel.on('connect', function () {
         window.alert('connected manueel');
-        manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
+        //manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
         manueel.on('disconnect',function(){window.alert('manueel disconnected')});
         });
 

@@ -62,7 +62,7 @@ def test2(offset_A,offset_B):
         step = 1
         while time.time() - t < 10:
             BrickPiUpdateValues()
-            if time.time() > step:
+            if time.time()-t  > step:
                 encoder_A = BrickPi.Encoder[PORT_A] - offset_A
                 encoder_B = BrickPi.Encoder[PORT_B] - offset_B
                 print 'Power: ', power

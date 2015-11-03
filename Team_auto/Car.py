@@ -173,7 +173,7 @@ def set_right(power):
         BrickPi.MotorSpeed[PORT_B] = power  # Set the speed of MotorA (-255 to 255)
 
 def get_functions():
-    functions = {'go_straight_distance': go_straight_distance, 'go_straight_pid': go_straight_pid,
+    functions = {'go_straight_distance': go_straight_distance, 'go_straight_pid': go_straight_duration,
                     'make_circle_left': make_circle_left, 'make_circle_right': make_circle_right,
                     'rotate_angle_left': rotate_angle_left, 'rotate_angle_right': rotate_angle_left,
                     'turn_straight_left': turn_straight_left, 'turn_straight_right': turn_straight_right}
@@ -199,7 +199,6 @@ def brake():
 
 if __name__ == '__main__':
     print "i am the main module, running the go straight pid"
-    time.sleep(15)
     go_straight_distance(120,100)
 ##turn_straight_left(200)
 

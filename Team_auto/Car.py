@@ -150,8 +150,8 @@ def turn_straight_left(power, duration):      # Voor rechte hoek buitenste wiel 
 def turn_straight_right(power, duration):
     start_time = time.time()
     if (time.time() - start_time) < duration:
-        set_left(-power)
-        set_right(power)
+        set_left(power)
+        set_right(-power)
         BrickPiUpdateValues()
 
 

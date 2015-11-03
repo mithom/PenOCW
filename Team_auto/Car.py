@@ -198,6 +198,7 @@ def brake():
 (offset_A,offset_B) = calibrate()
 
 if __name__ == '__main__':
+    print "i am the main module, running the go straight pid"
     time.sleep(15)
     go_straight_distance(120,100)
 ##turn_straight_left(200)

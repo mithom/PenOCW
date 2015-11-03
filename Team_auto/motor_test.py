@@ -26,7 +26,7 @@ def calibrate():
     return (offset_A, offset_B)
 
 def test(offset_A,offset_B):
-    list = [50,100,150,200,250]
+    list = [50, 100,150,200,250]
     for power in list:
         offset_A = BrickPi.Encoder[PORT_A]
         offset_B = BrickPi.Encoder[PORT_B]
@@ -37,7 +37,7 @@ def test(offset_A,offset_B):
         BrickPiUpdateValues()
         t = time.time()
         while time.time() - t < 5:
-            pass
+            BrickPiUpdateValues()
         encoder_A = BrickPi.Encoder[PORT_A] - offset_A
         encoder_B = BrickPi.Encoder[PORT_B] - offset_B
         print 'Power: ', power

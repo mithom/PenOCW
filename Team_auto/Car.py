@@ -13,6 +13,7 @@ wheel_contour = 17.8
 BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
 
 def calibrate():
+    print "start calibrate"
     set_left(1)
     set_right(1)
     offset_A= None
@@ -21,11 +22,12 @@ def calibrate():
         BrickPiUpdateValues()
         offset_A = BrickPi.Encoder[PORT_A]
         offset_B = BrickPi.Encoder[PORT_B]
+    print "end calibrate"
     return (offset_A, offset_B)
 
 
 def go_straight_distance(power, distance):
-    print 'start'
+    print 'start go straith distance'
     global offset_A, offset_B
     left_power = power
     right_power = power
@@ -42,8 +44,9 @@ def go_straight_distance(power, distance):
     d=56
     O=math.pi*d
     degree = (distance/O)*360
-    print degree
+    print degree, "degree"
     while average < degree:
+        print "while"
         average = ((BrickPi.Encoder[PORT_A]-offset_A)+(BrickPi.Encoder[PORT_B]-offset_B))/2
         difference = (BrickPi.Encoder[PORT_A]-offset_A)-(BrickPi.Encoder[PORT_B]-offset_B)
         pid_value = pid_controller.update(BrickPi.Encoder[PORT_A],BrickPi.Encoder[PORT_B])
@@ -53,17 +56,15 @@ def go_straight_distance(power, distance):
                 right_power += int(abs(difference-pid_value))
                 set_left(power)
                 set_right(right_power)
-                BrickPiUpdateValues()
             elif pid_value > difference:
                 left_power += int(abs(difference-pid_value))
                 #right_power -= int(abs(difference-pid_value))
                 set_left(left_power)
                 set_right(power)
-                BrickPiUpdateValues()
             else:
                 set_left(power)
                 set_right(power)
-                BrickPiUpdateValues()
+        BrickPiUpdateValues()
         last_update = time.time()
 
 
@@ -179,7 +180,7 @@ def get_functions():
     return functions
 
 def get_motor_values():
-    return(BrickPi.Encoder[PORT_A]-offset_A, BrickPi.Encoder[PORT_B]-offset_B)
+    return(BrickPi.Encoder[PORT_A]-offset_A, BrickPi.Encoder[PORT_B]-offset_B);
 
 """
 def brake():

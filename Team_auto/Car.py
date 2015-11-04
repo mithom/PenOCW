@@ -130,7 +130,7 @@ def rotate_angle_left(power, angle):
     BrickPi.Encoder[PORT_B] = 0
     goal_angle_wheel = int((angle * car_width * 360) / (2 * wheel_contour))  # in graden
     while BrickPi.Encoder[PORT_B] < goal_angle_wheel:
-        turn_straight_left(power)
+        turn_straight_left(power, 0.01)
 
 
 def rotate_angle_right(power, angle):
@@ -138,7 +138,7 @@ def rotate_angle_right(power, angle):
     BrickPi.Encoder[PORT_A] = 0
     goal_angle_wheel = int((angle * car_width * 360) / (2 * wheel_contour))  # in graden
     while BrickPi.Encoder[PORT_A] < goal_angle_wheel:
-        turn_straight_right(power)
+        turn_straight_right(power, 0.01)
 
 def turn_straight_left(power, duration):      # Voor rechte hoek buitenste wiel 360 laten draaien (via motorRotateDegree)
     start_time = time.time()

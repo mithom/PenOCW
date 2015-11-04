@@ -136,14 +136,14 @@ def make_circle_right(power, radius):
 def rotate_angle_left(power, angle):
     """Angle in degrees"""
     BrickPi.Encoder[PORT_A] = 0
-    goal_angle_wheel = int((angle * car_width * 360) / (2 * wheel_contour))  # in graden
+    goal_angle_wheel = int((angle * car_width * math.pi)/ 5.6)  # in graden
     motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_B, PORT_A])
 
 
 def rotate_angle_right(power, angle):
     """Angle in degrees"""
     BrickPi.Encoder[PORT_A] = 0
-    goal_angle_wheel = int((angle * car_width * 360) / (2 * wheel_contour))  # in graden
+    goal_angle_wheel = int((angle * car_width * math.pi)/ 5.6)  # in graden
     motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_A, PORT_B])
 
 def turn_straight_left(power, duration):      # Voor rechte hoek buitenste wiel 360 laten draaien (via motorRotateDegree)

@@ -1,7 +1,7 @@
 import webserver.hostfile as hostfile
 import webserver.functionDivider as functionDivider
 import sys, os, threading
-#import Team_auto.Car as car
+# import Team_auto.Car as car
 import werkzeug.serving
 
 from socketio.server import SocketIOServer
@@ -10,10 +10,12 @@ from werkzeug.wsgi import SharedDataMiddleware
 __author__ = 'Thomas'
 app = hostfile.app
 
+
 def proces_forever():
     while True:
         print "running"
         FD.processTime(100)
+
 
 def main():
     global FD
@@ -30,6 +32,8 @@ def main():
     server.serve_forever()
     # add other proces for adjusting to obstacles etc
     # hostfile.http.serve_forever()
+
+
 ##    hostfile.socket.run(hostfile.app, host='0.0.0.0', port=4848)
 
 if __name__ == "__main__":
@@ -39,6 +43,3 @@ else:
     print "running main function"
     main()
 ##    main()
-    
-
-

@@ -36,7 +36,7 @@ class Command:
         return self.__params__.get(param, None)
 
     def output(self):
-        return {"id": self.getId(),"commandName": self.getCommandName()}
+        return {"id": self.getId(), "commandName": self.getCommandName()}
 
     def __str__(self):
         return str(self.output())
@@ -49,7 +49,7 @@ class __IOStream__:
     """
     a class designed to communicate from the website to the BrickPi
     """
-    manueelCommands = ["goForward","goBackward","goLeft","goRight"]
+    manueelCommands = ["goForward", "goBackward", "goLeft", "goRight"]
 
     def __init__(self):
         self.queue = []
@@ -58,7 +58,7 @@ class __IOStream__:
         if len(self.queue) > 0:
             toExecute = self.queue[0]
             if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 1:
-                #self.addCommandFrontQueue(toExecute.getCommandName(), **toExecute.__params__)
+                # self.addCommandFrontQueue(toExecute.getCommandName(), **toExecute.__params__)
                 pass
             elif len(self.queue) > 1 and self.queue[1].getCommandName() in __IOStream__.manueelCommands:
                 return self._getCombinedCommand(toExecute, self.queue[1])
@@ -70,6 +70,7 @@ class __IOStream__:
     @classmethod
     def _getCombinedCommand(cls, command1, command2):
         return command1
+
     # TODO: implementeren!!!
 
     def addCommandToQueue(self, commandName, **kwargs):
@@ -80,15 +81,14 @@ class __IOStream__:
         print str(self.queue)
         return newFunction.getId()
 
-
     def addCommandFrontQueue(self, commandName, **kwargs):
         if len(self.queue) == sys.maxint:
             return Exception("queue too long")
-        newFunction = Command(commandName,**kwargs)
+        newFunction = Command(commandName, **kwargs)
         self.queue.insert(0, newFunction)
         return newFunction.getId()
 
-    def executeCommandImmediatly(self,commandName):
+    def executeCommandImmediatly(self, commandName):
         pass
 
     def removeCommandFromQueue(self, commandId):
@@ -129,10 +129,12 @@ class __IOStream__:
             output.insert(0, current.output())
         return output
 
+
 class __WebCaller__:
     """
     a class designed to comunicate from the BrickPi to the website
     """
+
     def __init__(self):
         pass
 
@@ -157,6 +159,7 @@ def getNextId():
             i = 0
         i += 1
         yield i
+
 
 __ioStream__ = __IOStream__()
 __webCaller__ = __WebCaller__()

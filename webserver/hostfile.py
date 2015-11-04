@@ -1,4 +1,5 @@
 import gevent.monkey
+
 gevent.monkey.patch_all()
 from flask import Flask, render_template, request, send_file, Response
 import functionCaller as FC
@@ -7,26 +8,26 @@ from platform import system
 from flask_jsglue import JSGlue
 from gevent.pool import Pool
 import gevent
-#from flask_socketio import SocketIO, emit
+# from flask_socketio import SocketIO, emit
 # http = WSGIServer(('127.0.0.1', 5000), app)
-#socket = SocketIO(app)
+# socket = SocketIO(app)
 from socketio import socketio_manage
 from socketio.namespace import BaseNamespace
 from socketio.mixins import BroadcastMixin, RoomsMixin
-
 
 app = Flask(__name__)
 jsglue = JSGlue(app)  # this allows us to use url_for in the javascript frontend
 app.config['SECRET_KEY'] = 'secret!'
 
 
-class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):  # TODO: breaks actief maken wanner js bug is gefixed van klikken op pijltjes
+class ManueelNamespace(BaseNamespace, RoomsMixin,
+                       BroadcastMixin):  # TODO: breaks actief maken wanner js bug is gefixed van klikken op pijltjes
     def __init__(self, *args, **kwargs):
         super(ManueelNamespace, self).__init__(*args, **kwargs)
 
     def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,
-                                args=args, endpoint=self.ns_name))
+                                     args=args, endpoint=self.ns_name))
 
     def recv_connect(self):
         print "manueel connect"
@@ -45,7 +46,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):  # TODO: brea
                 if output["commandName"] == "goForward":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
                     # break
-            # FC.getIOStream().removeCommandFromQueue(1)
+                    # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 
     def on_down(self, params):
@@ -57,7 +58,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):  # TODO: brea
                 if output["commandName"] == "goBackward":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
                     # break
-            # FC.getIOStream().removeCommandFromQueue(1)
+                    # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 
     def on_left(self, params):
@@ -69,7 +70,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):  # TODO: brea
                 if output["commandName"] == "goLeft":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
                     # break
-            # FC.getIOStream().removeCommandFromQueue(1)
+                    # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 
     def on_right(self, params):
@@ -81,7 +82,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):  # TODO: brea
                 if output["commandName"] == "goRight":
                     FC.getIOStream().removeCommandFromQueue(output['id'])
                     # break
-            # FC.getIOStream().removeCommandFromQueue(1)
+                    # FC.getIOStream().removeCommandFromQueue(1)
         self.emit('alert', params)
 
 
@@ -91,7 +92,7 @@ class ComplexNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
     def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,
-                                args=args, endpoint=self.ns_name))
+                                     args=args, endpoint=self.ns_name))
 
     def recv_connect(self):
         print "complex connect"
@@ -126,7 +127,7 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
     def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,
-                                args=args, endpoint=self.ns_name))
+                                     args=args, endpoint=self.ns_name))
 
     def recv_connect(self):
         print "beschrijving connect"
@@ -150,7 +151,7 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.emit('alert', params)
         self.updateRouteDesciption()
 
-    def on_right(self,params):
+    def on_right(self, params):
         func_id = FC.getIOStream().addCommandToQueue("right", **params)
         params["id"] = func_id
         self.emit('alert', params)
@@ -174,11 +175,12 @@ def run_socketio(rest):
 def index():
     if request.method == 'GET':
         return render_template('index.html')
-    # if request.method == 'POST':
-    #   print request.json
-    #    params = request.json
-    #    func = params.get('function')
-    #    return procesFunctionCall(func)
+        # if request.method == 'POST':
+        #   print request.json
+        #    params = request.json
+        #    func = params.get('function')
+        #    return procesFunctionCall(func)
+
 
 '''
 @socket.on("disconnect", namespace="/manueel")
@@ -204,6 +206,7 @@ def gen(cam):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         gevent.sleep(0)
 
+
 pool = Pool(5)
 
 
@@ -223,9 +226,9 @@ If this file is not run on the raspbery pi, a stream emulated will be used.
 Otherwise the real camera is used.
 """
 if system() == 'Linux':
-        camera = cameraPi.Camera()
-        camera.initialize()
-        # make shure you don't have to wait once stream starts, but also start consuming battery (250mA)
+    camera = cameraPi.Camera()
+    camera.initialize()
+    # make shure you don't have to wait once stream starts, but also start consuming battery (250mA)
 else:
     camera = cameraPi.ECamera()
 

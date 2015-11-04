@@ -12,17 +12,19 @@ wheel_contour = 17.8
 offset_A = None
 offset_B = None
 BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
+d = 5.6
+O = math.pi * d
 
 
 def calibrate():
-    global offset_A,offset_B
+    global offset_A, offset_B
     print "start calibrate"
     BrickPi.MotorEnable[PORT_A] = 1
     BrickPi.MotorEnable[PORT_B] = 1
     set_left(1)
     set_right(1)
-    offset_A= None
-    offset_B= None
+    offset_A = None
+    offset_B = None
     offset_A = BrickPi.Encoder[PORT_A]
     offset_B = BrickPi.Encoder[PORT_B]
     while offset_A is None or offset_B is None:
@@ -33,7 +35,7 @@ def calibrate():
 
 
 def go_straight_distance(power, distance):
-    global offset_A, offset_B
+    global offset_A, offset_B, O, d
     print 'start go straight distance'
     calibrate()
     left_power = power
@@ -44,37 +46,35 @@ def go_straight_distance(power, distance):
     start_time = time.time()
     update_interval = 0.01
     difference = 0
-    pid_controller = PID.PID(5,5,0,offset_A,offset_B,update_interval)
+    pid_controller = PID.PID(5, 5, 0, offset_A, offset_B, update_interval)
     last_update = 0
     counter = 0
     average = 0
-    d=5.6
-    O=math.pi*d
     print O, "omtrek"
-    degree = (distance/O)*360
+    degree = (distance / O) * 360
     print degree, "degree"
     while average < degree:
         print "while"
-        average = ((BrickPi.Encoder[PORT_A]-offset_A)+(BrickPi.Encoder[PORT_B]-offset_B))/2
-        difference = (BrickPi.Encoder[PORT_A]-offset_A)-(BrickPi.Encoder[PORT_B]-offset_B)
-        pid_value = pid_controller.update(BrickPi.Encoder[PORT_A],BrickPi.Encoder[PORT_B])
-        if ((time.time()-last_update)>update_interval):
+        average = ((BrickPi.Encoder[PORT_A] - offset_A) + (BrickPi.Encoder[PORT_B] - offset_B)) / 2
+        difference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
+        pid_value = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
+        if ((time.time() - last_update) > update_interval):
             last_update = time.time()
             print "time to update our values"
             if pid_value < difference:
-                #left_power -= int(abs(difference-pid_value))
-                right_power += int(abs(difference-pid_value))
+                # left_power -= int(abs(difference-pid_value))
+                right_power += int(abs(difference - pid_value))
                 set_left(power)
                 set_right(right_power)
             elif pid_value > difference:
-                left_power += int(abs(difference-pid_value))
-                #right_power -= int(abs(difference-pid_value))
+                left_power += int(abs(difference - pid_value))
+                # right_power -= int(abs(difference-pid_value))
                 set_left(left_power)
                 set_right(power)
             else:
                 set_left(power)
                 set_right(power)
-        print 'left: ' + str(left_power) +", right: "+ str(right_power)
+        print 'left: ' + str(left_power) + ", right: " + str(right_power)
         BrickPiUpdateValues()
 
 
@@ -90,38 +90,39 @@ def go_straight_duration(power, duration):
     start_time = time.time()
     update_interval = 0.01
     difference = 0
-    pid_controller = PID.PID(5,5,0,offset_A,offset_B,update_interval)
+    pid_controller = PID.PID(5, 5, 0, offset_A, offset_B, update_interval)
     last_update = 0
     counter = 0
     with open('values.txt', 'w') as f:
-    # f = open('values.txt','w')
+        # f = open('values.txt','w')
         while ((time.time() - start_time) < duration):
-            difference = (BrickPi.Encoder[PORT_A]-offset_A)-(BrickPi.Encoder[PORT_B]-offset_B)
+            difference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
             f.write(str(difference) + ',')
             print "difference", difference
-            pid_value = pid_controller.update(BrickPi.Encoder[PORT_A],BrickPi.Encoder[PORT_B])
-            if ((time.time()-last_update)>update_interval):
+            pid_value = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
+            if ((time.time() - last_update) > update_interval):
                 last_update = time.time()
                 if pid_value < difference:
-                    #rechts sneller
-        ##          left_power -= abs(difference-pid_value)
-                    right_power += int(abs(difference-pid_value))
+                    # rechts sneller
+                    ##          left_power -= abs(difference-pid_value)
+                    right_power += int(abs(difference - pid_value))
                     set_left(power)
                     set_right(right_power)
                 elif pid_value > difference:
-                    #rechts sneller
-                    left_power += int(abs(difference-pid_value))
-        ##          right_power += abs(difference-pid_value)power
+                    # rechts sneller
+                    left_power += int(abs(difference - pid_value))
+                    ##          right_power += abs(difference-pid_value)power
                     set_left(left_power)
                     set_right(power)
                 else:
                     set_left(power)
                     set_right(power)
-            print 'left: ' + str(left_power) +", right: "+ str(right_power)
+            print 'left: ' + str(left_power) + ", right: " + str(right_power)
             BrickPiUpdateValues()
-    # f.close()
+            # f.close()
 
-def make_circle_left(power, radius): #radius in cm
+
+def make_circle_left(power, radius):  # radius in cm
     calibrate()
     left_power = int(((radius - car_width) / radius) * power)
     set_left(left_power)
@@ -139,22 +140,23 @@ def make_circle_right(power, radius):
 
 def rotate_angle_left(power, angle):
     """Angle in degrees"""
-    goal_angle_wheel = int((angle * car_width * 2)/ 5.6)  # in graden
+    goal_angle_wheel = int((angle * car_width * 2) / 5.6)  # in graden
     motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_B, PORT_A])
 
 
 def rotate_angle_right(power, angle):
     """Angle in degrees"""
-    goal_angle_wheel = int((angle * car_width * 2)/ 5.6)  # in graden
+    goal_angle_wheel = int((angle * car_width * 2) / 5.6)  # in graden
     motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_A, PORT_B])
 
-def turn_straight_left(power, duration):      # Voor rechte hoek buitenste wiel 360 laten draaien (via motorRotateDegree)
+
+def turn_straight_left(power, duration):  # Voor rechte hoek buitenste wiel 360 laten draaien (via motorRotateDegree)
     start_time = time.time()
     if (time.time() - start_time) < duration:
         set_left(-power)
         set_right(power)
         BrickPiUpdateValues()
-        #motorRotateDegree([power],[360],[PORT_B])
+        # motorRotateDegree([power],[360],[PORT_B])
 
 
 def turn_straight_right(power, duration):
@@ -163,6 +165,7 @@ def turn_straight_right(power, duration):
         set_left(power)
         set_right(-power)
         BrickPiUpdateValues()
+
 
 deviations_per_power = {50: 1.2, 100: 1.0}
 
@@ -187,14 +190,15 @@ def set_right(power):
 
 def get_functions():
     functions = {'go_straight_distance': go_straight_distance, 'go_straight_pid': go_straight_duration,
-                    'make_circle_left': make_circle_left, 'make_circle_right': make_circle_right,
-                    'rotate_angle_left': rotate_angle_left, 'rotate_angle_right': rotate_angle_left,
-                    'turn_straight_left': turn_straight_left, 'turn_straight_right': turn_straight_right}
+                 'make_circle_left': make_circle_left, 'make_circle_right': make_circle_right,
+                 'rotate_angle_left': rotate_angle_left, 'rotate_angle_right': rotate_angle_left,
+                 'turn_straight_left': turn_straight_left, 'turn_straight_right': turn_straight_right}
     return functions
 
 
 def get_motor_values():
-    return(BrickPi.Encoder[PORT_A]-offset_A, BrickPi.Encoder[PORT_B]-offset_B);
+    return (BrickPi.Encoder[PORT_A] - offset_A, BrickPi.Encoder[PORT_B] - offset_B);
+
 
 """
 def brake():
@@ -208,15 +212,14 @@ def brake():
     BrickPiUpdateValues()
     power = 0"""
 
-
 calibrate()
 
 if __name__ == '__main__':
     print "i am the main module, running the go straight distance"
-    #go_straight_distance(120,100)
+    # go_straight_distance(120,100)
     go_straight_distance(150, 100)
     time.sleep(2)
-    #turn_straight_left(150, 3)
+    # turn_straight_left(150, 3)
     rotate_angle_left(150, 90)
     time.sleep(2)
     go_straight_distance(150, 100)

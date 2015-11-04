@@ -4,13 +4,14 @@ op in kleinere functies om zo te kunnen zorgen dat ze ter plekke afgebroken
 kunnen worden
 """
 
-import functionCaller, time
+import functionCaller
+import time
 from platform import system
-import math
 
 car = None  # this is going to be the module Team_auto.car or a mockup for it.
 
 functionDivider = None
+
 
 class Function:
     """
@@ -34,8 +35,8 @@ class Function:
             self.function(**self.params)
             return True, 0
         else:
-            self.function(duration= min(dt, self.time), **self.params)
-            self.time, dt = self.time - dt, dt - self.time   # dit moet uitgebreider, bvb nooit onder 0
+            self.function(duration=min(dt, self.time), **self.params)
+            self.time, dt = self.time - dt, dt - self.time  # dit moet uitgebreider, bvb nooit onder 0
             return self.time <= 0, max(0, dt)
 
     def getParams(self):
@@ -55,6 +56,7 @@ class Function:
     def __repr__(self):
         return str(self)
 
+
 def haha(power=1):
     print "power: ", power
 
@@ -63,7 +65,7 @@ class FunctionDivider:
     """
     transforms commands into functions that the Car can execute. Also allows interuption of these commands.
     """
-#    commandLib = {"goForward": [Function(haha, 100)], "goBackward": [Function(haha, 100)]} #the list contains the functions that should be executed in order to drive the car
+    #    commandLib = {"goForward": [Function(haha, 100)], "goBackward": [Function(haha, 100)]} #the list contains the functions that should be executed in order to drive the car
 
     def __init__(self, firstCommand=None):
         self.currentCommand = None
@@ -91,7 +93,7 @@ class FunctionDivider:
         if firstCommand is not None:
             self.executeCommand(firstCommand)
 
-    def executeCommand(self, command):#TODO: take params into account
+    def executeCommand(self, command):  # TODO: take params into account
         if command is not None and command.getCommandName() in self.commandLib.keys():
             self.currentCommand = [x.copy() for x in self.commandLib[command.getCommandName()]]
             self.currentCommandObject = command
@@ -105,25 +107,25 @@ class FunctionDivider:
         """
         pass
 
-    def processTime(self,dt):
+    def processTime(self, dt):
         """
         executes the current command for dt seconds
         :param dt: int telling how many ms the current command should run
         :return: None
         """
         #  print "processing time"
-        while dt >0:
-            #print "time: ", dt, self.currentCommand
+        while dt > 0:
+            # print "time: ", dt, self.currentCommand
             if self.currentCommand is not None:
                 dt = self.processCommand(dt)
             else:
                 self.executeCommand(functionCaller.getIOStream().pushCommand())
                 #  print self.currentCommand, "current command"
-                if self.currentCommand == None: #geen commands in queue
+                if self.currentCommand == None:  # geen commands in queue
                     time.sleep(0.1)
                     dt -= 0.1
 
-    def processCommand(self, dt): #TODO: fix dubbele true prints
+    def processCommand(self, dt):  # TODO: fix dubbele true prints
         #  print "processing command"
         while dt > 0:
             #  print "command time left: ", dt
@@ -146,7 +148,8 @@ class FunctionDivider:
 def getFunctionDivider():
     return functionDivider
 
-if system() == 'Linux': #import Team_auto.car as car
+
+if system() == 'Linux':  # import Team_auto.car as car
     print "using real car"
     car = __import__("Team_auto.Car").Car
 else:

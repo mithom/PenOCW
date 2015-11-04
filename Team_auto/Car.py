@@ -31,8 +31,8 @@ def calibrate():
 
 
 def go_straight_distance(power, distance):
-    print 'start go straight distance'
     global offset_A, offset_B
+    print 'start go straight distance'
     calibrate()
     left_power = power
     right_power = power
@@ -40,7 +40,7 @@ def go_straight_distance(power, distance):
     set_right(right_power)
     BrickPiUpdateValues()
     start_time = time.time()
-    update_interval = 0.05
+    update_interval = 0.01
     difference = 0
     pid_controller = PID.PID(5,5,0,offset_A,offset_B,update_interval)
     last_update = 0
@@ -72,6 +72,7 @@ def go_straight_distance(power, distance):
             else:
                 set_left(power)
                 set_right(power)
+        print 'left: ' + str(left_power) +", right: "+ str(right_power)
         BrickPiUpdateValues()
 
 

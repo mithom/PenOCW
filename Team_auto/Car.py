@@ -78,7 +78,7 @@ def go_straight_duration(power, duration):
     set_right(right_power)
     BrickPiUpdateValues()
     start_time = time.time()
-    update_interval = 0.05
+    update_interval = 0.01
     difference = 0
     pid_controller = PID.PID(5,5,0,offset_A,offset_B,update_interval)
     last_update = 0
@@ -88,9 +88,10 @@ def go_straight_duration(power, duration):
         while ((time.time() - start_time) < duration):
             difference = (BrickPi.Encoder[PORT_A]-offset_A)-(BrickPi.Encoder[PORT_B]-offset_B)
             f.write(str(difference) + ',')
-            print "difference",difference
+            print "difference", difference
             pid_value = pid_controller.update(BrickPi.Encoder[PORT_A],BrickPi.Encoder[PORT_B])
             if ((time.time()-last_update)>update_interval):
+                last_update = time.time()
                 if pid_value < difference:
                     #rechts sneller
         ##          left_power -= abs(difference-pid_value)
@@ -108,7 +109,6 @@ def go_straight_duration(power, duration):
                     set_right(power)
             print 'left: ' + str(left_power) +", right: "+ str(right_power)
             BrickPiUpdateValues()
-            last_update = time.time()
     # f.close()
 
 def make_circle_left(power, radius): #radius in cm

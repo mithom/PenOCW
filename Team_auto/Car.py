@@ -17,6 +17,8 @@ BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
 def calibrate():
     global offset_A,offset_B
     print "start calibrate"
+    BrickPi.MotorEnable[PORT_A] = 1
+    BrickPi.MotorEnable[PORT_B] = 1
     set_left(1)
     set_right(1)
     offset_A= None
@@ -137,14 +139,12 @@ def make_circle_right(power, radius):
 
 def rotate_angle_left(power, angle):
     """Angle in degrees"""
-    BrickPi.Encoder[PORT_A] = 0
     goal_angle_wheel = int((angle * car_width * 2)/ 5.6)  # in graden
     motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_B, PORT_A])
 
 
 def rotate_angle_right(power, angle):
     """Angle in degrees"""
-    BrickPi.Encoder[PORT_A] = 0
     goal_angle_wheel = int((angle * car_width * 2)/ 5.6)  # in graden
     motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_A, PORT_B])
 
@@ -214,7 +214,12 @@ calibrate()
 if __name__ == '__main__':
     print "i am the main module, running the go straight distance"
     #go_straight_distance(120,100)
-    rotate_angle_left(250, 90)
+    go_straight_distance(150, 100)
+    time.sleep(2)
+    #turn_straight_left(150, 3)
+    rotate_angle_left(150, 90)
+    time.sleep(2)
+    go_straight_distance(150, 100)
 ##turn_straight_left(200)
 
 ##            print 'left',

@@ -57,6 +57,8 @@ def go_straight_distance(power, distance):
         difference = (BrickPi.Encoder[PORT_A]-offset_A)-(BrickPi.Encoder[PORT_B]-offset_B)
         pid_value = pid_controller.update(BrickPi.Encoder[PORT_A],BrickPi.Encoder[PORT_B])
         if ((time.time()-last_update)>update_interval):
+            last_update = time.time()
+            print "time to update our values"
             if pid_value < difference:
                 #left_power -= int(abs(difference-pid_value))
                 right_power += int(abs(difference-pid_value))
@@ -71,7 +73,6 @@ def go_straight_distance(power, distance):
                 set_left(power)
                 set_right(power)
         BrickPiUpdateValues()
-        last_update = time.time()
 
 
 def go_straight_duration(power, duration):

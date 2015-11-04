@@ -13,6 +13,7 @@ offset_A = None
 offset_B = None
 BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
 
+
 def calibrate():
     global offset_A,offset_B
     print "start calibrate"
@@ -117,6 +118,7 @@ def go_straight_duration(power, duration):
     # f.close()
 
 def make_circle_left(power, radius): #radius in cm
+    calibrate()
     left_power = int(((radius - car_width) / radius) * power)
     set_left(left_power)
     set_right(power)
@@ -124,6 +126,7 @@ def make_circle_left(power, radius): #radius in cm
 
 
 def make_circle_right(power, radius):
+    calibrate()
     right_power = int(((radius - car_width) / radius) * power)
     set_left(power)
     set_right(right_power)
@@ -131,19 +134,17 @@ def make_circle_right(power, radius):
 
 
 def rotate_angle_left(power, angle):
-    """Angle in radians"""
-    BrickPi.Encoder[PORT_B] = 0
+    """Angle in degrees"""
+    BrickPi.Encoder[PORT_A] = 0
     goal_angle_wheel = int((angle * car_width * 360) / (2 * wheel_contour))  # in graden
-    while BrickPi.Encoder[PORT_B] < goal_angle_wheel:
-        turn_straight_left(power, 0.01)
+    motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_B, PORT_A])
 
 
 def rotate_angle_right(power, angle):
-    """Angle in radians"""
+    """Angle in degrees"""
     BrickPi.Encoder[PORT_A] = 0
     goal_angle_wheel = int((angle * car_width * 360) / (2 * wheel_contour))  # in graden
-    while BrickPi.Encoder[PORT_A] < goal_angle_wheel:
-        turn_straight_right(power, 0.01)
+    motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_A, PORT_B])
 
 def turn_straight_left(power, duration):      # Voor rechte hoek buitenste wiel 360 laten draaien (via motorRotateDegree)
     start_time = time.time()

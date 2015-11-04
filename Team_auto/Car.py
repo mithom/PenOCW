@@ -9,26 +9,30 @@ BrickPi.MotorEnable[PORT_A] = 1  # Enable the Motor A
 BrickPi.MotorEnable[PORT_B] = 1  # Enable the Motor B
 car_width = 11.5
 wheel_contour = 17.8
-
+offset_A = None
+offset_B = None
 BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
 
 def calibrate():
+    global offset_A,offset_B
     print "start calibrate"
     set_left(1)
     set_right(1)
     offset_A= None
     offset_B= None
+    offset_A = BrickPi.Encoder[PORT_A]
+    offset_B = BrickPi.Encoder[PORT_B]
     while offset_A is None or offset_B is None:
         BrickPiUpdateValues()
         offset_A = BrickPi.Encoder[PORT_A]
         offset_B = BrickPi.Encoder[PORT_B]
     print "end calibrate"
-    return (offset_A, offset_B)
 
 
 def go_straight_distance(power, distance):
     print 'start go straight distance'
     global offset_A, offset_B
+    calibrate()
     left_power = power
     right_power = power
     set_left(left_power)
@@ -71,6 +75,7 @@ def go_straight_distance(power, distance):
 
 def go_straight_duration(power, duration):
     global offset_A, offset_B
+    calibrate()
     print 'start'
     left_power = power
     right_power = power
@@ -201,7 +206,7 @@ def brake():
     power = 0"""
 
 
-(offset_A,offset_B) = calibrate()
+calibrate()
 
 if __name__ == '__main__':
     print "i am the main module, running the go straight distance"

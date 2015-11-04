@@ -39,5 +39,5 @@ class PID:
 
         self.previous_error = error
         # self.integral += error
-
+	print "pid output:" + str(output)
         return output

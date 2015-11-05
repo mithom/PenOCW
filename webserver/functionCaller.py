@@ -1,5 +1,6 @@
 import sys
 import functionDivider
+import hostfile
 
 __ioStream__ = None
 __webCaller__ = None
@@ -139,9 +140,8 @@ class __WebCaller__:
     def __init__(self):
         pass
 
+    def sendPower(self, *args):
 
-
-    def setPi(self):
         pass
 
 

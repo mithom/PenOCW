@@ -20,20 +20,19 @@ app = Flask(__name__)
 jsglue = JSGlue(app)  # this allows us to use url_for in the javascript frontend
 app.config['SECRET_KEY'] = 'secret!'
 
+nameSpace = None
 
-def sendPower(nameSpace):
-    last = time.time()
-    while True:
-        #gevent.sleep(0)
-        if (time.time() - last) > 0.5:
-            last = time.time()
-            nameSpace.emit('power', [FC.functionDivider.car.get_power_values()])
+def sendPower():
+    global nameSpace
+    nameSpace.broadcast_event('power', [FC.functionDivider.car.get_power_values()])
 
 
 class ManueelNamespace(BaseNamespace, RoomsMixin,
                        BroadcastMixin):  # breaks omwille van chrome die event.onpress hertrggered elke 0.05 seconden
     def __init__(self, *args, **kwargs):
+        global namespace
         super(ManueelNamespace, self).__init__(*args, **kwargs)
+        namespace = self
 
     def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,

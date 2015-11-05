@@ -1,7 +1,9 @@
-from BrickPi import *  # import BrickPi.py file to use BrickPi operations
+from BrickPi import BrickPi, BrickPiSetup, BrickPiSetupSensors, PORT_A, PORT_B # import BrickPi.py file to use BrickPi operations
+from BrickPi import BrickPiUpdateValues as update
 import time
 import math
 import PID
+from functionCaller import getWebCaller
 
 BrickPiSetup()  # setup the serial port for communicationfrom BrickPi import *
 
@@ -17,6 +19,11 @@ O = math.pi * d
 
 last_left_power = 0
 last_right_power = 0
+
+
+def BrickPiUpdateValues():
+    update()
+    getWebCaller().sendPower()
 
 
 def calibrate():

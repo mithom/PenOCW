@@ -31,8 +31,10 @@ class PID:
         # self.integral = 0
 
     def update(self, encoder_A, encoder_B):
-        difference = (encoder_A - self.offset_A) - (encoder_B - self.offset_B)
-        error = self.setpoint - difference
+        encoder_A = BrickPi.Encoder[PORT_A] - offset_A
+        encoder_B = BrickPi.Encoder[PORT_B] - offset_B
+        ratio = encoder_A / float(encoder_B)
+        error = self.setpoint - ratio
 
         derivative = (error - self.previous_error) / self.dt
         output = self.kp * error + self.kd * derivative  # + self.ki*self.integral

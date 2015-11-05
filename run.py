@@ -1,5 +1,5 @@
 import webserver.hostfile as hostfile
-import webserver.functionDivider as functionDivider
+import webserver.functionDivider
 import webserver.functionCaller
 import sys, os, threading
 import time
@@ -21,15 +21,17 @@ def proces_forever():
 
 def updateValues():
     while True:
+        print "updating is so fun: ", webserver.functionDivider.car.isUpdated
         time.sleep(0.1)
         if webserver.functionDivider.car.isUpdated:
-            hostfile.sendPower()
+            hostfile.sendPower(webserver.functionDivider.car.get_power_values())
+            print "is was TRUEEEEEEEEEEEEEEEEEEEEEE-----------------------------"
             webserver.functionDivider.car.isUpdated = False
 
 
 def main():
     global FD
-    FD = functionDivider.getFunctionDivider()
+    FD = webserver.functionDivider.getFunctionDivider()
     process = threading.Thread(target=proces_forever, name='processing')
     process.setDaemon(True)
     process.start()

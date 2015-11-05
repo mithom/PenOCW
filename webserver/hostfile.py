@@ -23,13 +23,13 @@ app.config['SECRET_KEY'] = 'secret!'
 nameSpace = None
 
 
-def sendPower():
+def sendPower(*args):
     global nameSpace
     if nameSpace is not None:
-        "sending power"
-        nameSpace.broadcast_event('power', [FC.functionDivider.car.get_power_values()])
+        print "sending power"
+        nameSpace.broadcast_event('power', *args)
     else:
-        "nameSpace was None"
+        print "nameSpace was None"
 
 
 class ManueelNamespace(BaseNamespace, RoomsMixin,
@@ -48,8 +48,8 @@ class ManueelNamespace(BaseNamespace, RoomsMixin,
         self.emit('alert', "welkom  bij manuele aansturing")
         # self.broadcast_event('alert', 'nieuwe gebruiker!')
         # process = threading.Thread(target=sendPower,args=(self,), name='processing')
-        process.setDaemon(True)
-        process.start()
+        # process.setDaemon(True)
+        # process.start()
         # gevent.joinall([gevent.spawn(sendPower, self)])
 
     def recv_disconnect(self):

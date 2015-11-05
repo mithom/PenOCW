@@ -3,7 +3,7 @@ from BrickPi import BrickPiUpdateValues as update
 import time
 import math
 import PID
-from .webserver import functioncaller as fc
+fc = __import__("webserver.functionCaller").fucntionCaller
 
 BrickPiSetup()  # setup the serial port for communicationfrom BrickPi import *
 

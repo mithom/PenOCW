@@ -145,10 +145,6 @@ class __WebCaller__:
             yield functionDivider.car.isUpdated
 
 
-    def sendPower(self, *args):
-        pass
-
-
 def getIOStream():
     if __ioStream__ is None:
         print "None"

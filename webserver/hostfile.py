@@ -47,7 +47,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin,
         print "manueel connect"
         self.emit('alert', "welkom  bij manuele aansturing")
         # self.broadcast_event('alert', 'nieuwe gebruiker!')
-        process = threading.Thread(target=sendPower,args=(self,), name='processing')
+        # process = threading.Thread(target=sendPower,args=(self,), name='processing')
         process.setDaemon(True)
         process.start()
         # gevent.joinall([gevent.spawn(sendPower, self)])

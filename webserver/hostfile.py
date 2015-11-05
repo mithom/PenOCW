@@ -48,8 +48,8 @@ class ManueelNamespace(BaseNamespace, RoomsMixin,
         self.emit('alert', "welkom  bij manuele aansturing")
         # self.broadcast_event('alert', 'nieuwe gebruiker!')
         # process = threading.Thread(target=sendPower,args=(self,), name='processing')
-        process.setDaemon(True)
-        process.start()
+        # process.setDaemon(True)
+        # process.start()
         # gevent.joinall([gevent.spawn(sendPower, self)])
 
     def recv_disconnect(self):

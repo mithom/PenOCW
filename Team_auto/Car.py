@@ -26,7 +26,7 @@ def BrickPiUpdateValues():
     global isUpdated
     update()
     isUpdated = True
-
+    print "isUpdated: ", isUpdated
 
 def calibrate():
     global offset_A, offset_B

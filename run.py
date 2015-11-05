@@ -21,6 +21,7 @@ def proces_forever():
 
 def updateValues():
     while True:
+        print "updating is so fun: ", webserver.functionDivider.car.isUpdated
         time.sleep(0.1)
         if webserver.functionDivider.car.isUpdated:
             hostfile.sendPower()

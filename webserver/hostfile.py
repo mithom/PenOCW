@@ -40,8 +40,7 @@ class ManueelNamespace(BaseNamespace, RoomsMixin,
         print "manueel connect"
         self.emit('alert', "welkom  bij manuele aansturing")
         # self.broadcast_event('alert', 'nieuwe gebruiker!')
-        gevent.joinall([gevent.spawn(sendPower, self)])
-
+        # gevent.joinall([gevent.spawn(sendPower, self)])
 
     def on_up(self, params):
         if params.get("status") == "active":

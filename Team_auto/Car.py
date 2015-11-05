@@ -95,14 +95,18 @@ def go_straight_duration1(power, duration):
     BrickPiUpdateValues()
     start_time = time.time()
     update_interval = 0.1
-    proportional_factor = 1.5
-    derivative_factor = 0.3
-    integral_factor = 1
+    proportional_factor = 1.6
+    derivative_factor = 0.01
+    integral_factor = 1.5
     pid_controller = PID.PID(proportional_factor,derivative_factor, integral_factor, 1, offset_A, offset_B, update_interval)
-    last_update = 0
+    last_update = time.time()
     with open('values.txt', 'w') as f:
         f.write('New PID --------')
         while (time.time() - start_time) < duration:
+	    if derivative_factor < 0.5:
+	        derivative_factor += 0.02
+	    else:
+	        print 'MAX DERIVATIVE ---------------------------------------------------------'
             encoder_A = BrickPi.Encoder[PORT_A] - offset_A
             encoder_B = BrickPi.Encoder[PORT_B] - offset_B
             if encoder_B != 0:

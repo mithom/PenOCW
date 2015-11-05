@@ -31,13 +31,14 @@ class PID:
         self.integral = 0
 
     def update(self, encoder_A, encoder_B):
-        encoder_A = BrickPi.Encoder[PORT_A] - offset_A
-        encoder_B = BrickPi.Encoder[PORT_B] - offset_B
+        encoder_A = encoder_A - self.offset_A
+        encoder_B = encoder_B - self.offset_B
         if encoder_B != 0:
             ratio = encoder_A / float(encoder_B)
         else:
-            ratio = 1
-
+            ratio = self.setpoint
+	if ratio < (self.setpoint + 0.00001) and ratio > (self.setpoint - 0.00001):
+	    self.integral = 0
         error = self.setpoint - ratio
 
         encoder_A = encoder_A  - self.offset_A
@@ -50,5 +51,5 @@ class PID:
         output = self.setpoint - self.kp * error - self.kd * derivative - self.ki*self.integral
 
         self.previous_error = error
-        self.integral += error*dt
+        self.integral += error*self.dt
         return output

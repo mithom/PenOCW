@@ -20,16 +20,11 @@ app = Flask(__name__)
 jsglue = JSGlue(app)  # this allows us to use url_for in the javascript frontend
 app.config['SECRET_KEY'] = 'secret!'
 
-update_interval = 0.5
-
 
 def sendPower(nameSpace):
-    last_update = time.time()
     while True:
-        gevent.sleep()
-        if time.time() - last_update > update_interval:
-            last_update = time.time()
-            nameSpace.emit('power', [FC.functionDivider.car.get_power_values()])
+        gevent.sleep(0.5)
+        nameSpace.emit('power', [FC.functionDivider.car.get_power_values()])
 
 
 class ManueelNamespace(BaseNamespace, RoomsMixin,

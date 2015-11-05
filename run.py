@@ -25,6 +25,7 @@ def updateValues():
         time.sleep(0.1)
         if webserver.functionDivider.car.isUpdated:
             hostfile.sendPower()
+            print "is was TRUEEEEEEEEEEEEEEEEEEEEEE-----------------------------"
             webserver.functionDivider.car.isUpdated = False
 
 

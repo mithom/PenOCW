@@ -3,9 +3,6 @@ from BrickPi import BrickPiUpdateValues as update
 import time
 import math
 import PID
-import webserver.functionCaller as functionCaller
-from ..webserver.functionCaller import getWebCaller
-#fc = __import__("webserver.functionCaller").fucntionCaller
 
 BrickPiSetup()  # setup the serial port for communicationfrom BrickPi import *
 
@@ -22,10 +19,13 @@ O = math.pi * d
 last_left_power = 0
 last_right_power = 0
 
+isUpdated = False
+
 
 def BrickPiUpdateValues():
+    global isUpdated
     update()
-    getWebCaller().sendPower()
+    isUpdated = True
 
 
 def calibrate():

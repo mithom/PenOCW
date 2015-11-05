@@ -140,8 +140,12 @@ class __WebCaller__:
     def __init__(self):
         pass
 
-    def sendPower(self, *args):
+    def isUpdateAvailable(self):
+        while True:
+            yield functionDivider.car.isUpdated
 
+
+    def sendPower(self, *args):
         pass
 
 

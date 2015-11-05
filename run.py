@@ -17,6 +17,9 @@ def proces_forever():
         print "running"
         FD.processTime(100)
 
+def updateValues():
+    if webserver.functionDivider.car.isUpdated:
+        hostfile.sendPower()
 
 def main():
     global FD
@@ -24,6 +27,11 @@ def main():
     process = threading.Thread(target=proces_forever, name='processing')
     process.setDaemon(True)
     process.start()
+
+    process2 = threading.Thread(target=updateValues, name='processing')
+    process2.setDaemon(True)
+    process2.start()
+
     app.debug = True
     server = SocketIOServer(
         ('0.0.0.0', 4848),

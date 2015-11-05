@@ -94,9 +94,9 @@ def go_straight_duration1(power, duration):
     set_motors(left_power,right_power)
     BrickPiUpdateValues()
     start_time = time.time()
-    update_interval = 0.01
-    proportional_factor = 3
-    derivative_factor = 1
+    update_interval = 0.1
+    proportional_factor = 1.5
+    derivative_factor = 0.3
     pid_controller = PID.PID(proportional_factor,derivative_factor, 1, offset_A, offset_B, update_interval)
     last_update = 0
     with open('values.txt', 'w') as f:
@@ -116,8 +116,8 @@ def go_straight_duration1(power, duration):
                 last_update = time.time()
                 right_power = int((2*power)/(pid_ratio+1))
                 left_power = int(pid_ratio*right_power)
-                set_motors(left_power, right_power)
-                BrickPiUpdateValues()
+                set_motors(left_power, right_power) 
+	    BrickPiUpdateValues()
 
 def go_straight_duration(power, duration):
     global offset_A, offset_B

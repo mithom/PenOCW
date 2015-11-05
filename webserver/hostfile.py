@@ -6,8 +6,9 @@ import functionCaller as FC
 import cameraPi
 from platform import system
 from flask_jsglue import JSGlue
-from gevent.pool import Pool
+# from gevent.pool import Pool
 import gevent
+import time
 # from flask_socketio import SocketIO, emit
 # http = WSGIServer(('127.0.0.1', 5000), app)
 # socket = SocketIO(app)
@@ -19,9 +20,20 @@ app = Flask(__name__)
 jsglue = JSGlue(app)  # this allows us to use url_for in the javascript frontend
 app.config['SECRET_KEY'] = 'secret!'
 
+update_interval = 0.5
+
+
+def sendPower(nameSpace):
+    last_update = time.time()
+    while True:
+        gevent.sleep()
+        if time.time() - last_update > update_interval:
+            last_update = time.time()
+            nameSpace.emit('power', [FC.functionDivider.car.get_power_values()])
+
 
 class ManueelNamespace(BaseNamespace, RoomsMixin,
-                       BroadcastMixin):  # TODO: breaks actief maken wanner js bug is gefixed van klikken op pijltjes
+                       BroadcastMixin):  # breaks omwille van chrome die event.onpress hertrggered elke 0.05 seconden
     def __init__(self, *args, **kwargs):
         super(ManueelNamespace, self).__init__(*args, **kwargs)
 
@@ -33,9 +45,8 @@ class ManueelNamespace(BaseNamespace, RoomsMixin,
         print "manueel connect"
         self.emit('alert', "welkom  bij manuele aansturing")
         # self.broadcast_event('alert', 'nieuwe gebruiker!')
+        gevent.joinall([gevent.spawn(sendPower, self)])
 
-    def recv_message(self, message):
-        print "PING!!!", message
 
     def on_up(self, params):
         if params.get("status") == "active":
@@ -201,20 +212,22 @@ def disconnectBeschrijving():
 
 def gen(cam):
     while True:
+        gevent.sleep(0)
         frame = cam.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         gevent.sleep(0)
 
 
-pool = Pool(5)
+# pool = Pool(5)
 
 
 @app.route('/video_feed.mjpg')
 def video_feed():
     thread = gevent.spawn(gen, camera)
-    pool.add(thread)
-    pool.join()
+    # pool.add(thread)
+    # pool.join()
+    gevent.joinall([thread])
     return Response(thread.value,
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 

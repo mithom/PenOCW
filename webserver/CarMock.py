@@ -1,5 +1,5 @@
 import time
-
+import random
 
 def go_straight_distance(*args, **kwargs):
     time.sleep(1)
@@ -42,3 +42,7 @@ def get_functions():
                     'rotate_angle_left': rotate_angle_left, 'rotate_angle_right': rotate_angle_left,
                     'turn_straight_left': turn_straight_left, 'turn_straight_right': turn_straight_right}
     return functions
+
+
+def get_power_values():
+    return random.randint(0,255), random.randint(0,255)

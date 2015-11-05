@@ -5,8 +5,15 @@ var manueel = null;
 var beschrijving = null;
 var complex = null;
 
+var last_update = 0;
+var timer = null;
+var updateTime = function(){
+    last_update += 0.1;
+    $("#last_updated_power").text(Math.round10(last_update,-1));
+};
+
 $(document).ready(function(){
-    //TODO: script on startup
+    timer = setInterval(updateTime, 1000);
     manueel = io.connect('http://' + document.domain + ':' + location.port + '/manueel');
     beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving');
     complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');
@@ -15,7 +22,17 @@ $(document).ready(function(){
         // window.alert('connected manueel');
         //manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
         manueel.on('disconnect',function(){window.alert('manueel disconnected')});
-        });
+
+        manueel.on('power', function(data){
+            $("#value_power").text(data)
+            if(timer != null){
+                clearInterval(timer);
+                last_update = 0;
+                $("#last_updated_power").text(0);
+            }
+            timer = setInterval(updateTime, 100);
+        })
+    });
 
     beschrijving.on('connect',function(){
         //beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
@@ -199,7 +216,7 @@ var post = function(dataToSend, doOnSuccess){
 var startStream = function(){
     if($("#video_button").text() == "start stream") {
         $("#video_button").text("stop stream");
-        var img = $("<img>").attr("src", Flask.url_for('video_feed'));
+        var img = $("<img>").attr("src", Flask.url_for('video_feed')).attr("height","120px");
         $("#video_stream").append(img)
     }else{
         $("#video_button").text("start stream");
@@ -217,6 +234,55 @@ var getAllfunctionsInQueue = function(){
 var cancelFunction = function(id){
     //TODO: implement this function
 };
+
+// Closure to expand the Math module, source form: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/round
+(function() {
+    /**
+     * Decimal adjustment of a number.
+     *
+     * @param {String}  type  The type of adjustment.
+     * @param {Number}  value The number.
+     * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
+     * @returns {Number} The adjusted value.
+     */
+    function decimalAdjust(type, value, exp) {
+        // If the exp is undefined or zero...
+        if (typeof exp === 'undefined' || +exp === 0) {
+            return Math[type](value);
+        }
+        value = +value;
+        exp = +exp;
+        // If the value is not a number or the exp is not an integer...
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+            return NaN;
+        }
+        // Shift
+        value = value.toString().split('e');
+        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+    }
+
+    // Decimal round
+    if (!Math.round10) {
+        Math.round10 = function(value, exp) {
+            return decimalAdjust('round', value, exp);
+        };
+    }
+    // Decimal floor
+    if (!Math.floor10) {
+        Math.floor10 = function(value, exp) {
+            return decimalAdjust('floor', value, exp);
+        };
+    }
+    // Decimal ceil
+    if (!Math.ceil10) {
+        Math.ceil10 = function(value, exp) {
+            return decimalAdjust('ceil', value, exp);
+        };
+    }
+})();
 
 
 /*document.addEventListener('mousedown',function(){

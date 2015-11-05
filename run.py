@@ -37,7 +37,7 @@ def main():
 ##    hostfile.socket.run(hostfile.app, host='0.0.0.0', port=4848)
 
 if __name__ == "__main__":
-    print "i am main"
+    print "run.py is main"
     main()
 else:
     print "running main function"

@@ -15,6 +15,9 @@ BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
 d = 5.6
 O = math.pi * d
 
+last_left_power = 0
+last_right_power = 0
+
 
 def calibrate():
     global offset_A, offset_B
@@ -43,22 +46,21 @@ def go_straight_distance(power, distance):
     set_left(left_power)
     set_right(right_power)
     BrickPiUpdateValues()
-    start_time = time.time()
     update_interval = 0.01
-    difference = 0
     pid_controller = PID.PID(5, 5, 0, offset_A, offset_B, update_interval)
     last_update = 0
-    counter = 0
     average = 0
     print O, "omtrek"
     degree = (distance / O) * 360
     print degree, "degree"
+    # counter = 0  # uitgecomment omdat niet nodig (eerst inwhile geset voor gebruikt
+    # difference = 0
     while average < degree:
         print "while"
         average = ((BrickPi.Encoder[PORT_A] - offset_A) + (BrickPi.Encoder[PORT_B] - offset_B)) / 2
         difference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
         pid_value = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
-        if ((time.time() - last_update) > update_interval):
+        if (time.time() - last_update) > update_interval:
             last_update = time.time()
             print "time to update our values"
             if pid_value < difference:
@@ -89,29 +91,29 @@ def go_straight_duration(power, duration):
     BrickPiUpdateValues()
     start_time = time.time()
     update_interval = 0.01
-    difference = 0
     pid_controller = PID.PID(5, 5, 0, offset_A, offset_B, update_interval)
     last_update = 0
-    counter = 0
+    # difference = 0  # uitgecomment omdat eerst geset in while, dus nog niet nodig
+    # counter = 0
     with open('values.txt', 'w') as f:
         # f = open('values.txt','w')
-        while ((time.time() - start_time) < duration):
+        while (time.time() - start_time) < duration:
             difference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
             f.write(str(difference) + ',')
             print "difference", difference
             pid_value = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
-            if ((time.time() - last_update) > update_interval):
+            if (time.time() - last_update) > update_interval:
                 last_update = time.time()
                 if pid_value < difference:
                     # rechts sneller
-                    ##          left_power -= abs(difference-pid_value)
+                    # left_power -= abs(difference-pid_value)
                     right_power += int(abs(difference - pid_value))
                     set_left(power)
                     set_right(right_power)
                 elif pid_value > difference:
                     # rechts sneller
                     left_power += int(abs(difference - pid_value))
-                    ##          right_power += abs(difference-pid_value)power
+                    # right_power += abs(difference-pid_value)power
                     set_left(left_power)
                     set_right(power)
                 else:
@@ -171,20 +173,28 @@ deviations_per_power = {50: 1.2, 100: 1.0}
 
 
 def set_left(power):
+    global last_left_power
     if power > 255:
+        last_left_power = 255
         BrickPi.MotorSpeed[PORT_A] = 255
     elif power < -255:
+        last_left_power = -255
         BrickPi.MotorSpeed[PORT_A] = -255
     else:
+        last_left_power = power
         BrickPi.MotorSpeed[PORT_A] = power  # Set the speed of MotorA (-255 to 255)
 
 
 def set_right(power):
+    global last_right_power
     if power > 255:
+        last_right_power = 255
         BrickPi.MotorSpeed[PORT_B] = 255
     elif power < -255:
+        last_right_power = -255
         BrickPi.MotorSpeed[PORT_B] = -255
     else:
+        last_right_power = power
         BrickPi.MotorSpeed[PORT_B] = power  # Set the speed of MotorA (-255 to 255)
 
 
@@ -196,9 +206,12 @@ def get_functions():
     return functions
 
 
-def get_motor_values():
-    return (BrickPi.Encoder[PORT_A] - offset_A, BrickPi.Encoder[PORT_B] - offset_B);
+def get_encoder_values():
+    return BrickPi.Encoder[PORT_A] - offset_A, BrickPi.Encoder[PORT_B] - offset_B
 
+
+def get_power_values():
+    return last_left_power, last_right_power
 
 """
 def brake():
@@ -215,20 +228,11 @@ def brake():
 calibrate()
 
 if __name__ == '__main__':
-    print "i am the main module, running the go straight distance"
+    print "car.py is the main module, running the go straight distance"
     # go_straight_distance(120,100)
     go_straight_distance(150, 100)
     time.sleep(2)
     # turn_straight_left(150, 3)
     rotate_angle_left(150, 90)
     time.sleep(2)
-    go_straight_distance(150, 100)
-##turn_straight_left(200)
-
-##            print 'left',
-##            print left_power,
-##            print
-##            print 'right',
-##            print right_power,
-##            print left_power
-##            print right_power
+    go_straight_distance(150, 100)  # turn_straight_left(200)

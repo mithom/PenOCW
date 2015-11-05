@@ -3,7 +3,7 @@ import time
 import math
 import PID
 
-BrickPiSetup()  # setup the serial port for communicationfrom BrickPi import *
+BrickPiSetup()  # setup the serial port for communication from BrickPi import *
 
 BrickPi.MotorEnable[PORT_A] = 1  # Enable the Motor A
 BrickPi.MotorEnable[PORT_B] = 1  # Enable the Motor B
@@ -12,8 +12,8 @@ wheel_contour = 17.8
 offset_A = None
 offset_B = None
 BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
-d = 5.6
-O = math.pi * d
+d = 5.6 # diameter of the wheels
+O = math.pi * d # circumference of the wheels
 
 last_left_power = 0
 last_right_power = 0
@@ -26,8 +26,6 @@ def calibrate():
     BrickPi.MotorEnable[PORT_B] = 1
     set_left(1)
     set_right(1)
-    offset_A = None
-    offset_B = None
     offset_A = BrickPi.Encoder[PORT_A]
     offset_B = BrickPi.Encoder[PORT_B]
     while offset_A is None or offset_B is None:
@@ -79,6 +77,36 @@ def go_straight_distance(power, distance):
         print 'left: ' + str(left_power) + ", right: " + str(right_power)
         BrickPiUpdateValues()
 
+
+def go_straight_duration1(power, duration):
+    global offset_A, offset_B
+    calibrate()
+    left_power = power
+    right_power = power
+    set_motors(left_power,right_power)
+    BrickPiUpdateValues()
+    start_time = time.time()
+    update_interval = 0.01
+    proportional_factor = 3
+    derivative_factor = 1
+    pid_controller = PID.PID(proportional_factor,derivative_factor, 1, offset_A, offset_B, update_interval)
+    last_update = 0
+    with open('values.txt', 'w') as f:
+        f.write('New PID --------')
+        while (time.time() - start_time) < duration:
+            encoder_A = BrickPi.Encoder[PORT_A] - offset_A
+            encoder_B = BrickPi.Encoder[PORT_B] - offset_B
+            ratio = encoder_A / float(encoder_B)
+            f.write(str(ratio) + ',')
+            print 'Ratio: ', ratio
+            pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
+            print 'PID ratio: ', pid_ratio
+            if (time.time() - last_update) > update_interval:
+                last_update = time.time()
+                right_power = (2*power)/(pid_ratio+1)
+                left_power = pid_ratio*right_power
+                set_motors(left_power, right_power)
+                BrickPiUpdateValues()
 
 def go_straight_duration(power, duration):
     global offset_A, offset_B
@@ -185,6 +213,16 @@ def set_left(power):
         BrickPi.MotorSpeed[PORT_A] = power  # Set the speed of MotorA (-255 to 255)
 
 
+def set_motors(power_A, power_B):
+    if abs(power_A - power_B) < 100:
+        if power_A >= 50 and power_A < 100:
+            power_A = power_A*0.952
+        elif power_B > 150:
+            power_B = power_B*0.96
+    set_left(power_A)
+    set_right(power_B)
+
+
 def set_right(power):
     global last_right_power
     if power > 255:
@@ -229,10 +267,4 @@ calibrate()
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
-    # go_straight_distance(120,100)
-    go_straight_distance(150, 100)
-    time.sleep(2)
-    # turn_straight_left(150, 3)
-    rotate_angle_left(150, 90)
-    time.sleep(2)
-    go_straight_distance(150, 100)  # turn_straight_left(200)
+    go_straight_duration1()

@@ -24,7 +24,7 @@ app.config['SECRET_KEY'] = 'secret!'
 def sendPower(nameSpace):
     last = time.time()
     while True:
-        gevent.sleep(0)
+        #gevent.sleep(0)
         if (time.time() - last) > 0.5:
             last = time.time()
             nameSpace.emit('power', [FC.functionDivider.car.get_power_values()])

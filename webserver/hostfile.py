@@ -25,10 +25,10 @@ def sendPower(nameSpace):
     while True:
         gevent.sleep(0)
         last = time.time()
-        if time.time() - last > 0.5:
+        if (time.time() - last) > 0.5:
             last = time.time()
             nameSpace.emit('power', [FC.functionDivider.car.get_power_values()])
-
+    
 
 class ManueelNamespace(BaseNamespace, RoomsMixin,
                        BroadcastMixin):  # breaks omwille van chrome die event.onpress hertrggered elke 0.05 seconden
@@ -44,6 +44,9 @@ class ManueelNamespace(BaseNamespace, RoomsMixin,
         self.emit('alert', "welkom  bij manuele aansturing")
         # self.broadcast_event('alert', 'nieuwe gebruiker!')
         gevent.joinall([gevent.spawn(sendPower, self)])
+
+    def recv_disconnect(self):
+        print 'disconnected manueel'
 
     def on_up(self, params):
         if params.get("status") == "active":

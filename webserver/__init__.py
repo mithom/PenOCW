@@ -1,1 +1,1 @@
-__all__ = ['cameraPi','CarMock','fucntionCaller','functionDivider','hostfile']
+__all__ = ['cameraPi','CarMock','functionCaller','functionDivider','hostfile']

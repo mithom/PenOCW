@@ -23,8 +23,11 @@ app.config['SECRET_KEY'] = 'secret!'
 
 def sendPower(nameSpace):
     while True:
-        gevent.sleep(0.5)
-        nameSpace.emit('power', [FC.functionDivider.car.get_power_values()])
+        gevent.sleep(0)
+        last = time.time()
+        if time.time() - last > 0.5:
+            last = time.time()
+            nameSpace.emit('power', [FC.functionDivider.car.get_power_values()])
 
 
 class ManueelNamespace(BaseNamespace, RoomsMixin,

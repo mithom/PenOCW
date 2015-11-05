@@ -34,7 +34,7 @@ class Camera(object):
 
     def get_frame(self):
         Camera.last_access = time.time()
-        self.initialize()
+        # self.initialize()
         return self.frame
 
     @classmethod
@@ -64,8 +64,9 @@ class Camera(object):
                 # if there hasn't been any clients asking for frames in
                 # the last 10 seconds stop the thread
                 if time.time() - cls.last_access > 10:
-                    break
-        cls.thread = None
+                    pass
+                    # break
+        # cls.thread = None
 
 
 class ECamera(object):

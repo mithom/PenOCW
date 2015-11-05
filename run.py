@@ -24,6 +24,7 @@ def updateValues():
         time.sleep(0.1)
         if webserver.functionDivider.car.isUpdated:
             hostfile.sendPower()
+            webserver.functionDivider.car.isUpdated = False
 
 
 def main():

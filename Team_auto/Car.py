@@ -13,7 +13,7 @@ wheel_contour = 17.8
 offset_A = None
 offset_B = None
 BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
-d = 5.6 # diameter of the wheels
+d = 5.6  # diameter of the wheels
 O = math.pi * d # circumference of the wheels
 
 last_left_power = 0

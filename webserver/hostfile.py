@@ -23,13 +23,13 @@ app.config['SECRET_KEY'] = 'secret!'
 nameSpace = None
 
 
-def sendPower():
+def sendPower(*args):
     global nameSpace
     if nameSpace is not None:
-        "sending power"
-        nameSpace.broadcast_event('power', [FC.functionDivider.car.get_power_values()])
+        print "sending power"
+        nameSpace.broadcast_event('power', *args)
     else:
-        "nameSpace was None"
+        print "nameSpace was None"
 
 
 class ManueelNamespace(BaseNamespace, RoomsMixin,

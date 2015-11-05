@@ -22,13 +22,13 @@ app.config['SECRET_KEY'] = 'secret!'
 
 
 def sendPower(nameSpace):
+    last = time.time()
     while True:
         gevent.sleep(0)
-        last = time.time()
         if (time.time() - last) > 0.5:
             last = time.time()
             nameSpace.emit('power', [FC.functionDivider.car.get_power_values()])
-    
+
 
 class ManueelNamespace(BaseNamespace, RoomsMixin,
                        BroadcastMixin):  # breaks omwille van chrome die event.onpress hertrggered elke 0.05 seconden

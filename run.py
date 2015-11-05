@@ -34,12 +34,19 @@ def main():
     # hostfile.http.serve_forever()
 
 
-##    hostfile.socket.run(hostfile.app, host='0.0.0.0', port=4848)
+def gunicorn():
+    global FD
+    FD = functionDivider.getFunctionDivider()
+    process = threading.Thread(target=proces_forever, name='processing')
+    process.setDaemon(True)
+    process.start()
+
+#    hostfile.socket.run(hostfile.app, host='0.0.0.0', port=4848)
 
 if __name__ == "__main__":
     print "run.py is main"
     main()
 else:
-    print "running main function"
-    main()
+    print "running thread function, server must be started with gunicorn"
+    gunicorn()
 ##    main()

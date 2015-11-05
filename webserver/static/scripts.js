@@ -13,7 +13,7 @@ var updateTime = function () {
 };
 
 $(document).ready(function () {
-    timer = setInterval(updateTime, 1000);
+    timer = setInterval(updateTime, 100);
     manueel = io.connect('http://' + document.domain + ':' + location.port + '/manueel');
     beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving');
     complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');

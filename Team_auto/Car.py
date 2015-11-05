@@ -97,7 +97,8 @@ def go_straight_duration1(power, duration):
     update_interval = 0.1
     proportional_factor = 1.5
     derivative_factor = 0.3
-    pid_controller = PID.PID(proportional_factor,derivative_factor, 1, offset_A, offset_B, update_interval)
+    integral_factor = 1
+    pid_controller = PID.PID(proportional_factor,derivative_factor, integral_factor, 1, offset_A, offset_B, update_interval)
     last_update = 0
     with open('values.txt', 'w') as f:
         f.write('New PID --------')
@@ -105,9 +106,9 @@ def go_straight_duration1(power, duration):
             encoder_A = BrickPi.Encoder[PORT_A] - offset_A
             encoder_B = BrickPi.Encoder[PORT_B] - offset_B
             if encoder_B != 0:
-		ratio = encoder_A / float(encoder_B)
-	    else:
-		ratio = 1
+                ratio = encoder_A / float(encoder_B)
+            else:
+                ratio = 1
             f.write(str(ratio) + ',')
             print 'Ratio: ', ratio
             pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
@@ -117,7 +118,7 @@ def go_straight_duration1(power, duration):
                 right_power = int((2*power)/(pid_ratio+1))
                 left_power = int(pid_ratio*right_power)
                 set_motors(left_power, right_power) 
-	    BrickPiUpdateValues()
+            BrickPiUpdateValues()
 
 def go_straight_duration(power, duration):
     global offset_A, offset_B

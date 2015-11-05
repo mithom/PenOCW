@@ -24,7 +24,8 @@ nameSpace = None
 
 def sendPower():
     global nameSpace
-    nameSpace.broadcast_event('power', [FC.functionDivider.car.get_power_values()])
+    if nameSpace is not None:
+        nameSpace.broadcast_event('power', [FC.functionDivider.car.get_power_values()])
 
 
 class ManueelNamespace(BaseNamespace, RoomsMixin,

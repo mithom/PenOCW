@@ -17,9 +17,9 @@ __author__ = 'Gilles'
 # ---- PSEUDOCODE ----
 
 class PID:
-    def __init__(self, kp, kd, setpoint, offset_A, offset_B, dt):
+    def __init__(self, kp, kd, ki, setpoint, offset_A, offset_B, dt):
         self.kp = kp
-        # self.ki = ki
+        self.ki = ki
         self.kd = kd
         self.setpoint = setpoint
         self.dt = dt
@@ -28,18 +28,19 @@ class PID:
         self.offset_B = offset_B
 
         self.previous_error = 0
-        # self.integral = 0
+        self.integral = 0
 
     def update(self, encoder_A, encoder_B):
         encoder_A = BrickPi.Encoder[PORT_A] - offset_A
         encoder_B = BrickPi.Encoder[PORT_B] - offset_B
         ratio = encoder_A / float(encoder_B)
+
         error = self.setpoint - ratio
 
         derivative = (error - self.previous_error) / self.dt
-        output = self.kp * error + self.kd * derivative  # + self.ki*self.integral
+
+        output = self.kp * error - self.kd * derivative - self.ki*self.integral
 
         self.previous_error = error
-        # self.integral += error
-        # print "pid output:" + str(output)
+        self.integral += error*dt
         return output

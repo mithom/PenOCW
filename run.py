@@ -1,5 +1,5 @@
 import webserver.hostfile as hostfile
-import webserver.functionDivider as functionDivider
+import webserver.functionDivider
 import webserver.functionCaller
 import sys, os, threading
 import time
@@ -30,7 +30,7 @@ def updateValues():
 
 def main():
     global FD
-    FD = functionDivider.getFunctionDivider()
+    FD = webserver.functionDivider.getFunctionDivider()
     process = threading.Thread(target=proces_forever, name='processing')
     process.setDaemon(True)
     process.start()

@@ -1,4 +1,4 @@
-from BrickPi import BrickPi, BrickPiSetup, BrickPiSetupSensors, PORT_A, PORT_B # import BrickPi.py file to use BrickPi operations
+from BrickPi import BrickPi, BrickPiSetup, BrickPiSetupSensors, PORT_A, PORT_B, motorRotateDegree # import BrickPi.py file to use BrickPi operations
 from BrickPi import BrickPiUpdateValues as update
 import time
 import math

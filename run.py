@@ -18,8 +18,9 @@ def proces_forever():
         FD.processTime(100)
 
 def updateValues():
-    if webserver.functionDivider.car.isUpdated:
-        hostfile.sendPower()
+    while True:
+        if webserver.functionDivider.car.isUpdated:
+            hostfile.sendPower()
 
 def main():
     global FD

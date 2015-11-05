@@ -15,7 +15,7 @@ import time
 from socketio import socketio_manage
 from socketio.namespace import BaseNamespace
 from socketio.mixins import BroadcastMixin, RoomsMixin
-
+import threading
 app = Flask(__name__)
 jsglue = JSGlue(app)  # this allows us to use url_for in the javascript frontend
 app.config['SECRET_KEY'] = 'secret!'
@@ -43,7 +43,10 @@ class ManueelNamespace(BaseNamespace, RoomsMixin,
         print "manueel connect"
         self.emit('alert', "welkom  bij manuele aansturing")
         # self.broadcast_event('alert', 'nieuwe gebruiker!')
-        gevent.joinall([gevent.spawn(sendPower, self)])
+        process = threading.Thread(target=sendPower,args=(self,), name='processing')
+        process.setDaemon(True)
+        process.start()
+        # gevent.joinall([gevent.spawn(sendPower, self)])
 
     def recv_disconnect(self):
         print 'disconnected manueel'

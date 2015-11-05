@@ -2,6 +2,7 @@ import webserver.hostfile as hostfile
 import webserver.functionDivider as functionDivider
 import webserver.functionCaller
 import sys, os, threading
+import time
 # import Team_auto.Car as car
 import werkzeug.serving
 
@@ -17,10 +18,13 @@ def proces_forever():
         print "running"
         FD.processTime(100)
 
+
 def updateValues():
     while True:
+        time.sleep(0.1)
         if webserver.functionDivider.car.isUpdated:
             hostfile.sendPower()
+
 
 def main():
     global FD

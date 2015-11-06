@@ -84,6 +84,8 @@ def go_straight_distance(power, distance):
                 set_right(power)
         print 'left: ' + str(left_power) + ", right: " + str(right_power)
         BrickPiUpdateValues()
+    set_motors(0,0)
+    BrickPiUpdateValues()
 
 def go_straight_duration1(power, duration):
     global offset_A, offset_B
@@ -138,6 +140,8 @@ def go_straight_duration1(power, duration):
                 set_motors(left_power, right_power) 
             BrickPiUpdateValues()
         print BrickPi.Encoder[PORT_A]
+    set_motors(0,0)
+    BrickPiUpdateValues()
 
 
 def go_straight_duration(power, duration):
@@ -182,6 +186,8 @@ def go_straight_duration(power, duration):
             print 'left: ' + str(left_power) + ", right: " + str(right_power)
             BrickPiUpdateValues()
             # f.close()
+        set_motors(0,0)
+        BrickPiUpdateValues()
 
 
 def make_circle_left(power, radius):  # radius in cm
@@ -189,6 +195,8 @@ def make_circle_left(power, radius):  # radius in cm
     left_power = int(((radius - car_width) / radius) * power)
     set_left(left_power)
     set_right(power)
+    BrickPiUpdateValues()
+    set_motors(0,0)
     BrickPiUpdateValues()
 
 
@@ -198,35 +206,45 @@ def make_circle_right(power, radius):
     set_left(power)
     set_right(right_power)
     BrickPiUpdateValues()
+    set_motors(0,0)
+    BrickPiUpdateValues()
 
 
 def rotate_angle_left(power, angle):
     """Angle in degrees"""
     goal_angle_wheel = int((angle * car_width * 2) / 5.6)  # in graden
     motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_B, PORT_A])
+    set_motors(0,0)
+    BrickPiUpdateValues()
 
 
 def rotate_angle_right(power, angle):
     """Angle in degrees"""
     goal_angle_wheel = int((angle * car_width * 2) / 5.6)  # in graden
     motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_A, PORT_B])
+    set_motors(0,0)
+    BrickPiUpdateValues()
 
 
 def turn_straight_left(power, duration):  # Voor rechte hoek buitenste wiel 360 laten draaien (via motorRotateDegree)
     start_time = time.time()
-    if (time.time() - start_time) < duration:
+    while (time.time() - start_time) < duration:
         set_left(-power)
         set_right(power)
         BrickPiUpdateValues()
         # motorRotateDegree([power],[360],[PORT_B])
+    set_motors(0,0)
+    BrickPiUpdateValues()
 
 
 def turn_straight_right(power, duration):
     start_time = time.time()
-    if (time.time() - start_time) < duration:
+    while (time.time() - start_time) < duration:
         set_left(power)
         set_right(-power)
         BrickPiUpdateValues()
+    set_motors(0,0)
+    BrickPiUpdateValues()
 
 
 deviations_per_power = {50: 1.2, 100: 1.0}

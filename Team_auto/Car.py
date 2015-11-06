@@ -67,7 +67,7 @@ def go_straight_distance(power, distance):
     set_right(right_power)
     BrickPiUpdateValues()
     update_interval = 0.1
-    pid_controller = PID.PID(5, 5, 5, 0, offset_A, offset_B, update_interval)
+    pid_controller = PID.PID(5, 5, 5, 1, offset_A, offset_B, update_interval)
     last_update = 0
     average = 0
     print O, "omtrek"

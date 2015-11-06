@@ -116,7 +116,7 @@ def circle_test(power, duration):
     update_interval = 0.01
     proportional_factor = 0
     derivative_factor = 0
-    integral_factor = 18
+    integral_factor = 5
     pid_controller = PID.PID(proportional_factor,derivative_factor, integral_factor, 1.2987, offset_A, offset_B, update_interval)
     last_update = time.time()
     with open('values.txt', 'w') as f:
@@ -127,15 +127,11 @@ def circle_test(power, duration):
                 right_power += power_increase
                 main_power += power_increase
                 step += 1
-            if derivative_factor < 11:
-                derivative_factor += 0.05
-            else:
-                print 'MAX DERIVATIVE ---------------------------------------------------------'
             if time.time() - start_time > 1:
                 pid_controller.set_proportional(main_power/10)
             if time.time() - start_time > 3:
-                pid_controller.set_derivative(20)
-                pid_controller.set_integral(25)
+                pid_controller.set_derivative(15)
+                pid_controller.set_integral(18)
             encoder_A = BrickPi.Encoder[PORT_A] - offset_A
             encoder_B = BrickPi.Encoder[PORT_B] - offset_B
             if encoder_B != 0:

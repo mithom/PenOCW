@@ -216,22 +216,27 @@ def disconnectBeschrijving():
 
 def gen(cam):
     while True:
-        gevent.sleep(0)
+        gevent.sleep()
         frame = cam.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-        gevent.sleep(0)
 
 
 # pool = Pool(5)
 
+def test():
+    while True:
+        time.sleep(0.5)
+        print "lel"
+        gevent.sleep()
 
 @app.route('/video_feed.mjpg')
 def video_feed():
     thread = gevent.spawn(gen, camera)
     # pool.add(thread)
     # pool.join()
-    gevent.joinall([thread])
+    gevent.joinall([thread, gevent.spawn(test)])
+    # thread.join(10000000000000000000)
     return Response(thread.value,
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 

@@ -177,11 +177,11 @@ def go_straight_duration1(power, duration):
                 right_power += power_increase
                 main_power += power_increase
                 step += 1
+            if time.time() - start_time > 0:
+                pid_controller.set_proportional(5*(main_power/power))
             if time.time() - start_time > 1:
-                pid_controller.set_proportional((main_power/20))
-            if time.time() - start_time > 3:
-                pid_controller.set_derivative(5)
-                pid_controller.set_integral(18)
+                pid_controller.set_derivative(1)
+                pid_controller.set_integral(8)
             encoder_A = BrickPi.Encoder[PORT_A] - offset_A
             encoder_B = BrickPi.Encoder[PORT_B] - offset_B
             if encoder_B != 0:
@@ -192,7 +192,7 @@ def go_straight_duration1(power, duration):
             print 'Ratio: ', ratio
             pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
             print 'PID ratio: ', pid_ratio
-            if (time.time() - last_update) > update_interval and (time.time()-start_time) > 1:
+            if (time.time() - last_update) > update_interval:
                 last_update = time.time()
                 right_power = int((2*main_power)/(pid_ratio+1))
                 left_power = int(pid_ratio*right_power)
@@ -360,5 +360,5 @@ calibrate()
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
-    go_straight_duration1(150,10)
+    go_straight_duration1(100,10)
 

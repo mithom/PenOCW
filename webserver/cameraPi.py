@@ -6,7 +6,7 @@ http://blog.miguelgrinberg.com/post/video-streaming-with-flask
 import time
 import io
 import threading
-import gevent.thread
+#import gevent.thread
 
 
 class Camera(object):
@@ -21,12 +21,12 @@ class Camera(object):
     def initialize(self):
         if Camera.thread is None:
             print "getting camera"
-            if Camera.picamera == None:
+            if Camera.picamera is None:
                 Camera.picamera = __import__('picamera')
             # start background frame thread
-            Camera.thread = gevent.thread.start_new_thread(self._thread)
-            #Camera.thread = threading.Thread(target=self._thread)
-            #Camera.thread.start()
+            # Camera.thread = gevent.thread.start_new_thread(self._thread)
+            Camera.thread = threading.Thread(target=self._thread)
+            Camera.thread.start()
 
             # wait until frames start to be available
             while self.frame is None:

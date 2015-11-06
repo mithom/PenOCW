@@ -89,10 +89,14 @@ def go_straight_distance(power, distance):
 def go_straight_duration1(power, duration):
     global offset_A, offset_B
     calibrate()
-    left_power = power/2
-    right_power = power/2
+    left_power = 60
+    right_power = 60
     set_motors(left_power,right_power)
     BrickPiUpdateValues()
+
+    power_increase = (power-60)/(duration*10)
+    step = 0.1
+
     start_time = time.time()
     update_interval = 0.01
     proportional_factor = 11
@@ -103,10 +107,14 @@ def go_straight_duration1(power, duration):
     with open('values.txt', 'w') as f:
         f.write('New PID --------')
         while (time.time() - start_time) < duration:
-	    if derivative_factor < 11:
-	        derivative_factor += 0.05
-	    else:
-	        print 'MAX DERIVATIVE ---------------------------------------------------------'
+            if (time.time()-start_time) > step:
+                left_power += power_increase
+                right_power += power_increase
+                step += 0.1
+            if derivative_factor < 11:
+                derivative_factor += 0.05
+            else:
+                print 'MAX DERIVATIVE ---------------------------------------------------------'
             encoder_A = BrickPi.Encoder[PORT_A] - offset_A
             encoder_B = BrickPi.Encoder[PORT_B] - offset_B
             if encoder_B != 0:
@@ -122,8 +130,7 @@ def go_straight_duration1(power, duration):
                 right_power = int((2*power)/(pid_ratio+1))
                 left_power = int(pid_ratio*right_power)
                 set_motors(left_power, right_power) 
-            
-	    BrickPiUpdateValues()
+            BrickPiUpdateValues()
 
 def go_straight_duration(power, duration):
     global offset_A, offset_B

@@ -6,7 +6,7 @@ http://blog.miguelgrinberg.com/post/video-streaming-with-flask
 import time
 import io
 import threading
-#import gevent.thread
+import gevent
 
 
 class Camera(object):
@@ -52,7 +52,7 @@ class Camera(object):
             print "let camera warm up"
             camera.start_preview()
             print "preview started"
-            time.sleep(2)
+            gevent.sleep(2)
             print "from now on there are pictures"
             stream = io.BytesIO()
             for foo in camera.capture_continuous(stream, 'jpeg',

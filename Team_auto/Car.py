@@ -52,7 +52,7 @@ def go_straight_distance(power, distance):
     set_left(left_power)
     set_right(right_power)
     BrickPiUpdateValues()
-    update_interval = 0.01
+    update_interval = 0.05
     pid_controller = PID.PID(5, 5, 0, offset_A, offset_B, update_interval)
     last_update = 0
     average = 0
@@ -94,17 +94,17 @@ def go_straight_duration1(power, duration):
     set_motors(left_power,right_power)
     BrickPiUpdateValues()
     start_time = time.time()
-    update_interval = 0.1
-    proportional_factor = 1.6
-    derivative_factor = 0.01
-    integral_factor = 1.5
+    update_interval = 0.01
+    proportional_factor = 11
+    derivative_factor = 0.5
+    integral_factor = 18
     pid_controller = PID.PID(proportional_factor,derivative_factor, integral_factor, 1, offset_A, offset_B, update_interval)
     last_update = time.time()
     with open('values.txt', 'w') as f:
         f.write('New PID --------')
         while (time.time() - start_time) < duration:
-	    if derivative_factor < 0.5:
-	        derivative_factor += 0.02
+	    if derivative_factor < 11:
+	        derivative_factor += 0.05
 	    else:
 	        print 'MAX DERIVATIVE ---------------------------------------------------------'
             encoder_A = BrickPi.Encoder[PORT_A] - offset_A
@@ -117,7 +117,7 @@ def go_straight_duration1(power, duration):
             print 'Ratio: ', ratio
             pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
             print 'PID ratio: ', pid_ratio
-            if (time.time() - last_update) > update_interval:
+            if (time.time() - last_update) > update_interval and (time.time()-start_time) > 0.15:
                 last_update = time.time()
                 right_power = int((2*power)/(pid_ratio+1))
                 left_power = int(pid_ratio*right_power)

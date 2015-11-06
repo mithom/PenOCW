@@ -100,6 +100,60 @@ def go_straight_distance(power, distance):
         BrickPiUpdateValues()
 
 
+def circle_test(power, duration):
+    global offset_A, offset_B
+    calibrate()
+    main_power = 80
+    left_power = main_power
+    right_power = main_power
+    set_motors(left_power,right_power)
+    BrickPiUpdateValues()
+
+    power_increase = (power-main_power)/(duration/2)
+    step = 1
+
+    start_time = time.time()
+    update_interval = 0.01
+    proportional_factor = 0
+    derivative_factor = 0
+    integral_factor = 18
+    pid_controller = PID.PID(proportional_factor,derivative_factor, integral_factor, 1.2987, offset_A, offset_B, update_interval)
+    last_update = time.time()
+    with open('values.txt', 'w') as f:
+        f.write('New PID --------')
+        while (time.time() - start_time) < duration:
+            if (time.time()-start_time) > step and main_power < power:
+                left_power += power_increase
+                right_power += power_increase
+                main_power += power_increase
+                step += 1
+            if derivative_factor < 11:
+                derivative_factor += 0.05
+            else:
+                print 'MAX DERIVATIVE ---------------------------------------------------------'
+            if time.time() - start_time > 1:
+                pid_controller.set_proportional(main_power/10)
+            if time.time() - start_time > 3:
+                pid_controller.set_derivative(20)
+                pid_controller.set_integral(25)
+            encoder_A = BrickPi.Encoder[PORT_A] - offset_A
+            encoder_B = BrickPi.Encoder[PORT_B] - offset_B
+            if encoder_B != 0:
+                ratio = encoder_A / float(encoder_B)
+            else:
+                ratio = 1
+            f.write(str(ratio) + ',')
+            print 'Ratio: ', ratio
+            pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
+            print 'PID ratio: ', pid_ratio
+            if (time.time() - last_update) > update_interval and (time.time()-start_time) > 1:
+                last_update = time.time()
+                right_power = int((2*main_power)/(pid_ratio+1))
+                left_power = int(pid_ratio*right_power)
+                set_motors(left_power, right_power)
+            BrickPiUpdateValues()
+        print BrickPi.Encoder[PORT_A]
+
 def go_straight_duration1(power, duration):
     global offset_A, offset_B
     calibrate()

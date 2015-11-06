@@ -49,15 +49,15 @@ class PID:
         derivative = (error - self.previous_error) / self.dt
 
 	self.integral += error*self.dt
-	if self.integral > self.integral_limit:
-	    self.integral = self.integral_limit
-	    print '///////////// MAX INTEGRAL'
-	elif self.integral < -self.integral_limit:
-	    self.integral = -self.integral_limit
-	    print '///////////// MAX INTEGRAL'
+	#if self.integral > self.integral_limit:
+	 #   self.integral = self.integral_limit
+	 #   print '///////////// MAX INTEGRAL'
+	#elif self.integral < -self.integral_limit:
+	 #   self.integral = -self.integral_limit
+	 #   print '///////////// MAX INTEGRAL'
 	
-	if ratio > 1.5:
-	    self.integral = 0
+	#if ratio > 1.5:
+	 #   self.integral = 0
 	
         output = self.setpoint - self.kp * error - self.kd * derivative - self.ki*self.integral
 

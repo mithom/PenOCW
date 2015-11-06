@@ -165,8 +165,8 @@ def go_straight_duration1(power, duration):
     start_time = time.time()
     update_interval = 0.01
     proportional_factor = 3
-    derivative_factor = 0.5
-    integral_factor = 1
+    derivative_factor = 0.3
+    integral_factor = 4
     pid_controller = PID.PID(proportional_factor,derivative_factor, integral_factor, 1, offset_A, offset_B, update_interval)
     last_update = time.time()
     with open('values.txt', 'w') as f:
@@ -307,11 +307,11 @@ def set_left(power):
 
 
 def set_motors(power_A, power_B):
-    if abs(power_A - power_B) < 100:
-        if power_A >= 50 and power_A < 100:
-            power_A = int(power_A*0.952)
-        elif power_B > 150:
-            power_B = int(power_B*0.96)
+    #if abs(power_A - power_B) < 100:
+        #if power_A >= 50 and power_A < 100:
+            #power_A = int(power_A*0.952)
+        #elif power_B > 150:
+            #power_B = int(power_B*0.96)
     set_left(power_A)
     set_right(power_B)
 

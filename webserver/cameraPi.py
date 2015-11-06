@@ -25,7 +25,7 @@ class Camera(object):
                 Camera.picamera = __import__('picamera')
             # start background frame thread
             # Camera.thread = gevent.thread.start_new_thread(self._thread)
-            Camera.thread = threading.Thread(target=self._thread)
+            Camera.thread = threading.Thread(target=self._geventThread)
             Camera.thread.setDaemon(True)
             Camera.thread.start()
 
@@ -38,6 +38,13 @@ class Camera(object):
         Camera.last_access = time.time()
         # self.initialize()
         return self.frame
+
+
+    @classmethod
+    def _geventThread(cls):
+        print "pawning gevent thread"
+        thread = gevent.spawn(cls._thread)
+        thread.join()
 
     @classmethod
     def _thread(cls):

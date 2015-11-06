@@ -1,5 +1,5 @@
 import gevent.monkey
-gevent.monkey.patch_all(thread=False)
+gevent.monkey.patch_all(thread=False, time=False)
 
 import webserver.hostfile as hostfile
 import webserver.functionDivider

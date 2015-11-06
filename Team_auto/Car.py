@@ -89,8 +89,8 @@ def go_straight_distance(power, distance):
 def go_straight_duration1(power, duration):
     global offset_A, offset_B
     calibrate()
-    left_power = power
-    right_power = power
+    left_power = power/2
+    right_power = power/2
     set_motors(left_power,right_power)
     BrickPiUpdateValues()
     start_time = time.time()
@@ -122,7 +122,8 @@ def go_straight_duration1(power, duration):
                 right_power = int((2*power)/(pid_ratio+1))
                 left_power = int(pid_ratio*right_power)
                 set_motors(left_power, right_power) 
-            BrickPiUpdateValues()
+            
+	    BrickPiUpdateValues()
 
 def go_straight_duration(power, duration):
     global offset_A, offset_B

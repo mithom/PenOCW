@@ -55,7 +55,10 @@ class PID:
 	elif self.integral < -self.integral_limit:
 	    self.integral = -self.integral_limit
 	    print '///////////// MAX INTEGRAL'
-
+	
+	if ratio > 1.5:
+	    self.integral = 0
+	
         output = self.setpoint - self.kp * error - self.kd * derivative - self.ki*self.integral
 
         self.previous_error = error

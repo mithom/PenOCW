@@ -35,9 +35,9 @@ def sendPower(*args):
 class ManueelNamespace(BaseNamespace, RoomsMixin,
                        BroadcastMixin):  # breaks omwille van chrome die event.onpress hertrggered elke 0.05 seconden
     def __init__(self, *args, **kwargs):
-        global namespace
+        global nameSpace
         super(ManueelNamespace, self).__init__(*args, **kwargs)
-        namespace = self
+        nameSpace = self
 
     def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,

@@ -125,7 +125,7 @@ class FunctionDivider:
                     time.sleep(0.1)
                     dt -= 0.1
 
-    def processCommand(self, dt):  # TODO: fix dubbele true prints
+    def processCommand(self, dt):
         #  print "processing command"
         while dt > 0:
             #  print "command time left: ", dt
@@ -136,6 +136,9 @@ class FunctionDivider:
             elif len(self.currentCommand) > 0:
                 self.currentFunction = self.currentCommand.pop(0)
             else:
+                car.last_left_power = 0
+                car.last_right_power = 0
+                car.isUpdated = True
                 self.currentCommand = None
                 return dt
         return 0

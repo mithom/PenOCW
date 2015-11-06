@@ -1,6 +1,3 @@
-import gevent.monkey
-
-gevent.monkey.patch_all()
 from flask import Flask, render_template, request, send_file, Response
 import functionCaller as FC
 import cameraPi

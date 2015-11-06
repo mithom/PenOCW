@@ -181,14 +181,10 @@ def go_straight_duration1(power, duration):
                 right_power += power_increase
                 main_power += power_increase
                 step += 1
-            if derivative_factor < 11:
-                derivative_factor += 0.05
-            else:
-                print 'MAX DERIVATIVE ---------------------------------------------------------'
             if time.time() - start_time > 1:
                 pid_controller.set_proportional(main_power/10)
             if time.time() - start_time > 3:
-                pid_controller.set_derivative(20)
+                pid_controller.set_derivative(15)
                 pid_controller.set_integral(25)
             encoder_A = BrickPi.Encoder[PORT_A] - offset_A
             encoder_B = BrickPi.Encoder[PORT_B] - offset_B

@@ -1,3 +1,6 @@
+import gevent.monkey
+gevent.monkey.patch_all()
+
 import webserver.hostfile as hostfile
 import webserver.functionDivider
 import webserver.functionCaller

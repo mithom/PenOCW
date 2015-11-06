@@ -107,9 +107,10 @@ def go_straight_duration1(power, duration):
     with open('values.txt', 'w') as f:
         f.write('New PID --------')
         while (time.time() - start_time) < duration:
-            if (time.time()-start_time) > step:
+            if (time.time()-start_time) > step and main_power < power:
                 left_power += power_increase
                 right_power += power_increase
+                main_power += power_increase
                 step += 0.1
             if derivative_factor < 11:
                 derivative_factor += 0.05
@@ -127,7 +128,7 @@ def go_straight_duration1(power, duration):
             print 'PID ratio: ', pid_ratio
             if (time.time() - last_update) > update_interval and (time.time()-start_time) > 0.15:
                 last_update = time.time()
-                right_power = int((2*power)/(pid_ratio+1))
+                right_power = int((2*main_power)/(pid_ratio+1))
                 left_power = int(pid_ratio*right_power)
                 set_motors(left_power, right_power) 
             BrickPiUpdateValues()

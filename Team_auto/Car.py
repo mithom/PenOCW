@@ -164,8 +164,8 @@ def go_straight_duration1(power, duration):
 
     start_time = time.time()
     update_interval = 0.01
-    proportional_factor = 0
-    derivative_factor = 0
+    proportional_factor = 3
+    derivative_factor = 0.5
     integral_factor = 1
     pid_controller = PID.PID(proportional_factor,derivative_factor, integral_factor, 1, offset_A, offset_B, update_interval)
     last_update = time.time()

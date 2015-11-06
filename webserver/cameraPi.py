@@ -25,7 +25,7 @@ class Camera(object):
                 Camera.picamera = __import__('picamera')
             # start background frame thread
             # Camera.thread = gevent.thread.start_new_thread(self._thread)
-            Camera.thread = threading.Thread(target=self._thread())
+            Camera.thread = threading.Thread(target=self._thread)
             Camera.thread.setDaemon(True)
             Camera.thread.start()
 
@@ -67,7 +67,7 @@ class Camera(object):
                 # store frame
                 stream.seek(0)
                 cls.frame = stream.read()
-                print "new frame available"
+                #print "new frame available"
 
                 # reset stream for next frame
                 stream.seek(0)

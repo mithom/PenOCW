@@ -1,3 +1,4 @@
+
 from BrickPi import BrickPi, BrickPiSetup, BrickPiSetupSensors, PORT_A, PORT_B, motorRotateDegree # import BrickPi.py file to use BrickPi operations
 from BrickPi import BrickPiUpdateValues as update
 import time
@@ -283,7 +284,7 @@ def set_right(power):
 
 
 def get_functions():
-    functions = {'go_straight_distance': go_straight_distance, 'go_straight_duration1': go_straight_duration1,
+    functions = {'go_straight_distance': go_straight_distance, 'go_straight_duration1': go_straight_manual,
                  'make_circle_left': make_circle_left, 'make_circle_right': make_circle_right,
                  'rotate_angle_left': rotate_angle_left, 'rotate_angle_right': rotate_angle_left,
                  'turn_straight_left': turn_straight_left, 'turn_straight_right': turn_straight_right}
@@ -313,4 +314,4 @@ calibrate()
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
-    go_straight_duration1(150,20)
+    go_straight_duration1(150,10)

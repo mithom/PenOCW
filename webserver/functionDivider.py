@@ -79,7 +79,7 @@ class FunctionDivider:
                            #			"goForwardRigth"
                            #			"goBackwardLeft"
                            #			"goBackwardRight"
-                           "makeLine": [Function(functions.get('go_straight_distance'), distance=200, power=200)],
+                           "makeLine": [Function(functions.get('go_straight_distance'), distance=200, power=250)],
                            "makeSquare": [Function(functions.get('go_straight_distance'), distance=100, power=150),
                                           Function(functions.get('rotate_angle_left'), angle=90, power=150),
                                           Function(functions.get('go_straight_distance'), distance=100, power=150),

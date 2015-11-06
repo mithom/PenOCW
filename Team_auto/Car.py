@@ -56,8 +56,22 @@ def calibrate():
         offset_B = BrickPi.Encoder[PORT_B]
     print "end calibrate"
 
-
 def go_straight_distance(power, distance):
+    global offset_A, offset_B
+    calibrate()
+    left_power = power
+    right_power = power
+    set_motors(left_power,right_power)
+    BrickPiUpdateValues()
+    average=0
+    degree = (distance / O) * 360
+    while average < degree:
+        set_motors(left_power,right_power)
+        BrickPiUpdateValues()
+        average = ((BrickPi.Encoder[PORT_A] - offset_A) + (BrickPi.Encoder[PORT_B] - offset_B)) / 2
+
+
+def go_straight_distance2(power, distance):
     global offset_A, offset_B, O, d
     print 'start go straight distance'
     calibrate()

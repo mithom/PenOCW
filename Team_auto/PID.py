@@ -29,7 +29,7 @@ class PID:
 
         self.previous_error = 0
         self.integral = 0
-	self.integral_limit = 2
+        self.integral_limit = 2
 
     def update(self, encoder_A, encoder_B):
         encoder_A = encoder_A - self.offset_A
@@ -41,38 +41,38 @@ class PID:
 
         error = self.setpoint - ratio
 
-        encoder_A = encoder_A  - self.offset_A
-        encoder_B = encoder_B  - self.offset_B
+        encoder_A = encoder_A - self.offset_A
+        encoder_B = encoder_B - self.offset_B
 
         error = ratio - self.setpoint
 
         derivative = (error - self.previous_error) / self.dt
 
-	self.integral += error*self.dt
-	#if self.integral > self.integral_limit:
-	 #   self.integral = self.integral_limit
-	 #   print '///////////// MAX INTEGRAL'
-	#elif self.integral < -self.integral_limit:
-	 #   self.integral = -self.integral_limit
-	 #   print '///////////// MAX INTEGRAL'
-	
-	#if ratio > 1.5:
-	 #   self.integral = 0
-	
-        output = self.setpoint - self.kp * error - self.kd * derivative - self.ki*self.integral
+        self.integral += error * self.dt
+        # if self.integral > self.integral_limit:
+        #   self.integral = self.integral_limit
+        #   print '///////////// MAX INTEGRAL'
+        # elif self.integral < -self.integral_limit:
+        #   self.integral = -self.integral_limit
+        #   print '///////////// MAX INTEGRAL'
+
+        # if ratio > 1.5:
+        #   self.integral = 0
+
+        output = self.setpoint - self.kp * error - self.kd * derivative - self.ki * self.integral
 
         self.previous_error = error
 
         return output
 
     def set_proportional(self, kp):
-	self.kp = kp
+        self.kp = kp
 
-    def set_derivative(self,kd):
-	self.kd = kd
+    def set_derivative(self, kd):
+        self.kd = kd
 
     def get_derivative(self):
-	return self.kd
+        return self.kd
 
-    def set_integral(self,ki):
-	self.ki = ki
+    def set_integral(self, ki):
+        self.ki = ki

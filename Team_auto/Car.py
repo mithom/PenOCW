@@ -27,6 +27,18 @@ def BrickPiUpdateValues():
     update()
     isUpdated = True
 
+def go_straight_manual(power, duration):
+    global offset_A, offset_B
+    calibrate()
+    left_power = power
+    right_power = power
+    set_motors(left_power,right_power)
+    BrickPiUpdateValues()
+    start_time = time.time()
+    while time.time() - start_time < duration:
+        set_motors(left_power,right_power)
+        BrickPiUpdateValues()
+
 def calibrate():
     global offset_A, offset_B
     print "start calibrate"

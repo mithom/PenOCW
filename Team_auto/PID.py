@@ -64,3 +64,15 @@ class PID:
         self.previous_error = error
 
         return output
+
+    def set_proportional(self, kp):
+	self.kp = kp
+
+    def set_derivative(self,kd):
+	self.kd = kd
+
+    def get_derivative(self):
+	return self.kd
+
+    def set_integral(self,ki):
+	self.ki = ki

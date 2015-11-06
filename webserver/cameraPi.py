@@ -26,6 +26,7 @@ class Camera(object):
             # start background frame thread
             # Camera.thread = gevent.thread.start_new_thread(self._thread)
             Camera.thread = threading.Thread(target=self._thread)
+            Camera.thread.setDaemon(True)
             Camera.thread.start()
 
             # wait until frames start to be available

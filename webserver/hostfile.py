@@ -242,7 +242,7 @@ Otherwise the real camera is used.
 """
 if system() == 'Linux':
     camera = cameraPi.Camera()
-    camera.initialize()
+    #camera.initialize()
     # make shure you don't have to wait once stream starts, but also start consuming battery (250mA)
 else:
     camera = cameraPi.ECamera()

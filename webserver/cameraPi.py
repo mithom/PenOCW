@@ -31,7 +31,7 @@ class Camera(object):
 
             # wait until frames start to be available
             while self.frame is None:
-                time.sleep(0)
+                time.sleep(0.01)
             print "eerste beeld gevonden"
 
     def get_frame(self):
@@ -41,14 +41,17 @@ class Camera(object):
 
     @classmethod
     def _thread(cls):
+        print "thread started"
         with Camera.picamera.PiCamera() as camera:
             # camera setup
+            print "camera gevonden"
             camera.resolution = (320, 240)
             camera.hflip = True
             camera.vflip = True
 
-            # let camera warm up
+            print "let camera warm up"
             camera.start_preview()
+            print "preview started"
             time.sleep(2)
             print "from now on there are pictures"
             stream = io.BytesIO()

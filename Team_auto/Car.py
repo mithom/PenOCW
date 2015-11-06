@@ -194,8 +194,9 @@ def go_straight_duration1(power, duration):
             print 'PID ratio: ', pid_ratio
             if (time.time() - last_update) > update_interval:
                 last_update = time.time()
-                right_power = int((2*main_power)/(pid_ratio+1))
-                left_power = int(pid_ratio*right_power)
+                #right_power = int((2*main_power)/(pid_ratio+1))
+                right_power = int(main_power/(pid_ratio/2.0))
+                left_power = int((pid_ratio/2.0)*right_power)
                 set_motors(left_power, right_power) 
             BrickPiUpdateValues()
         print BrickPi.Encoder[PORT_A]
@@ -246,11 +247,16 @@ def go_straight_duration(power, duration):
 
 
 def make_circle_left(power, radius):  # radius in cm
+    global O,car_width
     calibrate()
-    left_power = int(((radius - car_width) / radius) * power)
-    set_left(left_power)
-    set_right(power)
-    BrickPiUpdateValues()
+    outer_distance = ((radius+car_width/2.0)**2)*math.pi
+    inned_distance = ((radius - car_width/2.0)**2)*math.pi
+    outer_rotations = outer_distance/O
+    inner_rotations = inned_distance/O
+    inner_degrees = inner_rotations*360
+    outer_degrees = outer_rotations*360
+    ratio = inner_degrees/outer_degrees
+    motorRotateDegree([power, power*ratio],[outer_degrees,inner_degrees],[PORT_B,PORT_A])
 
 
 def make_circle_right(power, radius):
@@ -307,11 +313,11 @@ def set_left(power):
 
 
 def set_motors(power_A, power_B):
-    #if abs(power_A - power_B) < 100:
-        #if power_A >= 50 and power_A < 100:
-            #power_A = int(power_A*0.952)
-        #elif power_B > 150:
-            #power_B = int(power_B*0.96)
+    if abs(power_A - power_B) < 100:
+        if power_A >= 50 and power_A < 100:
+            power_A = int(power_A*0.952)
+        elif power_B > 150:
+            power_B = int(power_B*0.96)
     set_left(power_A)
     set_right(power_B)
 
@@ -331,7 +337,7 @@ def set_right(power):
 
 def get_functions():
     functions = {'go_straight_distance': go_straight_distance, 'go_straight_duration1': go_straight_manual,
-                 'make_circle_left': circle_test, 'make_circle_right': make_circle_right,
+                 'make_circle_left': make_circle_left, 'make_circle_right': make_circle_right,
                  'rotate_angle_left': rotate_angle_left, 'rotate_angle_right': rotate_angle_left,
                  'turn_straight_left': turn_straight_left, 'turn_straight_right': turn_straight_right}
     return functions

@@ -21,7 +21,7 @@ def proces_forever():
 
 def updateValues():
     while True:
-        print "updating is so fun: ", webserver.functionDivider.car.isUpdated
+        # print "updating is so fun: ", webserver.functionDivider.car.isUpdated
         time.sleep(0.1)
         if webserver.functionDivider.car.isUpdated:
             hostfile.sendPower(webserver.functionDivider.car.get_power_values())
@@ -53,7 +53,7 @@ def main():
 
 def gunicorn():
     global FD
-    FD = functionDivider.getFunctionDivider()
+    FD = webserver.functionDivider.getFunctionDivider()
     process = threading.Thread(target=proces_forever, name='processing')
     process.setDaemon(True)
     process.start()

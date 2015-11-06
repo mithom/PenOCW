@@ -115,7 +115,7 @@ class FunctionDivider:
         """
         #  print "processing time"
         while dt > 0:
-            print "isUpdated: ", car.isUpdated
+            # print "isUpdated: ", car.isUpdated
             if self.currentCommand is not None:
                 dt = self.processCommand(dt)
             else:

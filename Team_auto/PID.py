@@ -19,6 +19,7 @@ __author__ = 'Gilles'
 class PID:
     def __init__(self, kp, kd, ki, setpoint, offset_A, offset_B, dt):
         self.kp = kp
+	self.kp_backup = kp
         self.ki = ki
         self.kd = kd
         self.setpoint = setpoint
@@ -29,7 +30,7 @@ class PID:
 
         self.previous_error = 0
         self.integral = 0
-        self.integral_limit = 0.5
+        self.integral_limit = 0.001
 
     def update(self, encoder_A, encoder_B):
         encoder_A = encoder_A - self.offset_A
@@ -40,8 +41,16 @@ class PID:
 
         derivative = (error - self.previous_error) / self.dt
 
-	if ratio > (self.setpoint - 0.000001) and ratio < (self.setpoint + 0.000001):
+#	if ratio > (self.setpoint - 0.00000001) and ratio < (self.setpoint + 0.00000001):
+#	    self.integral = 0
+#	    self.kp = self.kp/2
+
+	if ratio > (self.setpoint + 0.00001) and self.integral < 0:
 	    self.integral = 0
+	    print 'TIS GEBEURD ----------------------------'
+	elif ratio < (self.setpoint - 0.000001) and self.integral > 0:
+	    self.integral = 0
+	    print 'TIS GEBEURD ///////////////////////////'
 
         self.integral += error * self.dt
         if self.integral > self.integral_limit:
@@ -56,6 +65,8 @@ class PID:
 	print 'Integral value :', self.integral
 
         self.previous_error = error
+
+	self.kp = self.kp_backup
 
         return output
 

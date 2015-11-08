@@ -40,8 +40,8 @@ def calibrate():
         BrickPiUpdateValues()
         offset_A = BrickPi.Encoder[PORT_A]
         offset_B = BrickPi.Encoder[PORT_B]
-    offset_A -= 3000
-    offset_B -= 3000
+    offset_A -= 100000
+    offset_B -= 100000
 
 def go_straight_manual(power, duration):
     left_power = power
@@ -86,10 +86,10 @@ def go_straight_duration(power, duration):
     # proportional_factor = 3
     # derivative_factor = 0.3
     # integral_factor = 4
-    proportional_factor = 10 # 12
+    proportional_factor = 0 # 12 # 100
 #    derivative_factor = 7
     derivative_factor = 0
-    integral_factor = 10 # 20
+    integral_factor = 2000 # 20 # 300
     pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
                              1, offset_A, offset_B, update_interval)
     last_update = time.time()
@@ -99,11 +99,6 @@ def go_straight_duration(power, duration):
             right_power += power_increase
             main_power += power_increase
             step += 1
-        # if time.time() - start_time > 0:
-        #     pid_controller.set_proportional(5*(main_power/power))
-        # if time.time() - start_time > 1:
-        #     pid_controller.set_derivative(1)
-        #     pid_controller.set_integral(8)
         encoder_A = BrickPi.Encoder[PORT_A] - offset_A
         encoder_B = BrickPi.Encoder[PORT_B] - offset_B
         ratio = encoder_A / float(encoder_B)
@@ -116,9 +111,9 @@ def go_straight_duration(power, duration):
             # right_power = int(main_power/(pid_ratio/2.0))
             # left_power = int((pid_ratio/2.0)*right_power)
             left_power = int(pid_ratio*right_power)
-        set_left(left_power)
-	set_right(right_power)
-	# set_motors(left_power, right_power)
+#        set_left(left_power)
+#	set_right(right_power)
+	set_motors(left_power, int(0.9999*right_power))
         BrickPiUpdateValues()
     print BrickPi.Encoder[PORT_A]
 
@@ -233,4 +228,4 @@ calibrate()
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
-    go_straight_duration(100, 10)
+    go_straight_duration(100, 20)

@@ -39,6 +39,8 @@ def calibrate():
     while offset_A is None or offset_B is None:
         BrickPiUpdateValues()
         offset_A = BrickPi.Encoder[PORT_A]
+	print offset_A
+	print offset_B
         offset_B = BrickPi.Encoder[PORT_B]
     offset_A -= 100000
     offset_B -= 100000

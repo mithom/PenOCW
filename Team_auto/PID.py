@@ -41,28 +41,18 @@ class PID:
 
         derivative = (error - self.previous_error) / self.dt
 
-#	if ratio > (self.setpoint - 0.00000001) and ratio < (self.setpoint + 0.00000001):
-#	    self.integral = 0
-#	    self.kp = self.kp/2
-
 	if ratio > (self.setpoint + 0.00001) and self.integral < 0:
 	    self.integral = 0
-	    print 'TIS GEBEURD ----------------------------'
 	elif ratio < (self.setpoint - 0.000001) and self.integral > 0:
 	    self.integral = 0
-	    print 'TIS GEBEURD ///////////////////////////'
 
         self.integral += error * self.dt
         if self.integral > self.integral_limit:
             self.integral = self.integral_limit
-            print '///////////// MAX INTEGRAL'
         elif self.integral < -self.integral_limit:
             self.integral = -self.integral_limit
-            print '///////////// MAX INTEGRAL'
 
         output = self.setpoint - self.kp * error - self.kd * derivative - self.ki * self.integral
-
-	print 'Integral value :', self.integral
 
         self.previous_error = error
 

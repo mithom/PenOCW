@@ -65,7 +65,7 @@ def go_straight_distance(power, distance):
     set_motors(left_power, right_power)
     BrickPiUpdateValues()
 
-    power_increase = (power-main_power)/(duration/2)
+    power_increase = (power-main_power)/(distance/5)
     step = 1
 
     average = 0
@@ -252,4 +252,4 @@ calibrate()
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
-    go_straight_duration(100, 20)
+    go_straight_distance(100, 400)

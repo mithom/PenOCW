@@ -32,11 +32,18 @@ class PID:
 
         self.previous_error = 0
         self.integral = 0
-        self.integral_limit = 0.001
+        self.integral_limit = 0.01
 
     def update(self, encoder_A, encoder_B):
         encoder_A = encoder_A - self.offset_A
         encoder_B = encoder_B - self.offset_B
+	
+	smallest = min(encoder_A, encoder_B)
+	encoder_A += 10000 - smallest
+	encoder_B += 10000 - smallest
+	
+	print 'Encoder A: ', encoder_A, ' , Encoder B: ', encoder_B
+
         ratio = encoder_A / float(encoder_B)
 
         error = ratio - self.setpoint

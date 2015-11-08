@@ -29,22 +29,13 @@ class PID:
 
         self.previous_error = 0
         self.integral = 0
-        self.integral_limit = 2
+        self.integral_limit = 0.01
 
     def update(self, encoder_A, encoder_B):
-        encoder_A = encoder_A - self.offset_A
-        encoder_B = encoder_B - self.offset_B
-        if encoder_B != 0:
-            ratio = encoder_A / float(encoder_B)
-        else:
-            ratio = self.setpoint
+        encoder_A = encoder_A - self.offset_A + 1000
+        encoder_B = encoder_B - self.offset_B + 1000
+        ratio = encoder_A / float(encoder_B)
 
-        error = self.setpoint - ratio
-
-        encoder_A = encoder_A - self.offset_A
-        encoder_B = encoder_B - self.offset_B
-
-        #error = ratio - self.setpoint
         error = ratio - self.setpoint
 
         derivative = (error - self.previous_error) / self.dt

@@ -89,9 +89,9 @@ def go_straight_duration(power, duration):
     # proportional_factor = 3
     # derivative_factor = 0.3
     # integral_factor = 4
-    proportional_factor = 1
-    derivative_factor = 1
-    integral_factor = 1
+    proportional_factor = 5
+    derivative_factor = 3
+    integral_factor = 5
     pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
                              1, offset_A, offset_B, update_interval)
     last_update = time.time()
@@ -233,4 +233,4 @@ calibrate()
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
-    go_straight_duration1(100, 10)
+    go_straight_duration(100, 10)

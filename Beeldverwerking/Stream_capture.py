@@ -5,7 +5,7 @@ import urllib
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
 
-stream = urllib.urlopen('http://192.168.137.4:4848//video_feed.mjpg')
+stream = urllib.urlopen('http://192.168.137.67:4848//video_feed.mjpg')
 byte = ''
 while True:
     byte += stream.read(1024)

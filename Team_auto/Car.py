@@ -43,6 +43,7 @@ def calibrate():
     offset_A -= 100000
     offset_B -= 100000
 
+
 def go_straight_manual(power, duration):
     left_power = power
     right_power = power
@@ -57,16 +58,42 @@ def go_straight_manual(power, duration):
 def go_straight_distance(power, distance):
     global offset_A, offset_B
     calibrate()
-    left_power = power
-    right_power = power
+
+    main_power = 80
+    left_power = main_power
+    right_power = main_power
     set_motors(left_power, right_power)
     BrickPiUpdateValues()
+
+    power_increase = (power-main_power)/(duration/2)
+    step = 1
+
     average = 0
     degree = (distance / O) * 360
+
+    proportional_factor = 0
+    derivative_factor = 0
+    integral_factor = 2000
+    update_interval = 0.01
+    pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
+                             1, offset_A, offset_B, update_interval)
+    start_time = time.time()
+    last_update = time.time()
     while average < degree:
-        set_motors(left_power, right_power)
+        if (time.time()-start_time) > step and main_power < power:
+            left_power += power_increase
+            right_power += power_increase
+            main_power += power_increase
+            step += 1
+        pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
+        if (time.time() - last_update) > update_interval:
+            last_update = time.time()
+            right_power = int((2*main_power)/(pid_ratio+1))
+            left_power = int(pid_ratio*right_power)
+        set_motors(left_power, int(0.9999*right_power))
         BrickPiUpdateValues()
-        average = ((BrickPi.Encoder[PORT_A] - offset_A) + (BrickPi.Encoder[PORT_B] - offset_B)) / 2
+        average = ((BrickPi.Encoder[PORT_A] - offset_A - 100000) +
+                   (BrickPi.Encoder[PORT_B] - offset_B - 100000)) / 2
 
 
 def go_straight_duration(power, duration):
@@ -86,10 +113,10 @@ def go_straight_duration(power, duration):
     # proportional_factor = 3
     # derivative_factor = 0.3
     # integral_factor = 4
-    proportional_factor = 0 # 12 # 100
+    proportional_factor = 0  # 12 # 100
 #    derivative_factor = 7
     derivative_factor = 0
-    integral_factor = 2000 # 20 # 300
+    integral_factor = 2000  # 20 # 300
     pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
                              1, offset_A, offset_B, update_interval)
     last_update = time.time()
@@ -99,23 +126,20 @@ def go_straight_duration(power, duration):
             right_power += power_increase
             main_power += power_increase
             step += 1
-        encoder_A = BrickPi.Encoder[PORT_A] - offset_A
-        encoder_B = BrickPi.Encoder[PORT_B] - offset_B
-        ratio = encoder_A / float(encoder_B)
-        print 'Ratio: ', ratio
+        # encoder_A = BrickPi.Encoder[PORT_A] - offset_A
+        # encoder_B = BrickPi.Encoder[PORT_B] - offset_B
+#        ratio = encoder_A / float(encoder_B)
+#        print 'Ratio: ', ratio
         pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
-        print 'PID ratio: ', pid_ratio
+#        print 'PID ratio: ', pid_ratio
         if (time.time() - last_update) > update_interval:
             last_update = time.time()
             right_power = int((2*main_power)/(pid_ratio+1))
             # right_power = int(main_power/(pid_ratio/2.0))
             # left_power = int((pid_ratio/2.0)*right_power)
             left_power = int(pid_ratio*right_power)
-#        set_left(left_power)
-#	set_right(right_power)
-	set_motors(left_power, int(0.9999*right_power))
+        set_motors(left_power, int(0.9999*right_power))
         BrickPiUpdateValues()
-    print BrickPi.Encoder[PORT_A]
 
 
 def make_circle_left(power, radius):  # radius in cm
@@ -145,7 +169,7 @@ def make_circle_right(power, radius):
 def rotate_angle_left(power, angle):
     # Angle in degrees
     goal_angle_wheel = int((angle * car_width * 2) / 5.6)  # in graden
-    motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_B, PORT_A],0.01)
+    motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_B, PORT_A], 0.01)
 
 
 def rotate_angle_right(power, angle):

@@ -78,6 +78,10 @@ class __IOStream__:
     def addCommandToQueue(self, commandName, **kwargs):
         if len(self.queue) == sys.maxint:
             return Exception("queue too long")
+        if commandName in self.manueelCommands:
+            for command in self.queue:
+                if command.getCommandName() == commandName:
+                    return command.getId()
         newFunction = Command(commandName, **kwargs)
         self.queue.append(newFunction)
         print str(self.queue)

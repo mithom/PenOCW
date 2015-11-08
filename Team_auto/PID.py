@@ -44,22 +44,20 @@ class PID:
         encoder_A = encoder_A - self.offset_A
         encoder_B = encoder_B - self.offset_B
 
+        #error = ratio - self.setpoint
         error = ratio - self.setpoint
 
         derivative = (error - self.previous_error) / self.dt
 
         self.integral += error * self.dt
-        # if self.integral > self.integral_limit:
-        #   self.integral = self.integral_limit
-        #   print '///////////// MAX INTEGRAL'
-        # elif self.integral < -self.integral_limit:
-        #   self.integral = -self.integral_limit
-        #   print '///////////// MAX INTEGRAL'
+        if self.integral > self.integral_limit:
+            self.integral = self.integral_limit
+            print '///////////// MAX INTEGRAL'
+        elif self.integral < -self.integral_limit:
+            self.integral = -self.integral_limit
+            print '///////////// MAX INTEGRAL'
 
-        # if ratio > 1.5:
-        #   self.integral = 0
-
-        output = self.setpoint + self.kp * error - self.kd * derivative - self.ki * self.integral
+        output = self.setpoint - self.kp * error - self.kd * derivative - self.ki * self.integral
 
         self.previous_error = error
 

@@ -45,10 +45,10 @@ class PID:
 
         self.integral += error * self.dt
 
-        if ratio > (self.setpoint + 0.00001) and self.integral < 0:
-            self.integral = self.integral * 0.95
+        if ratio > (self.setpoint + 0.000001) and self.integral < 0:
+            self.integral = self.integral * 0.9  #  0.94 # 0.6 # 0.5
         elif ratio < (self.setpoint - 0.000001) and self.integral > 0:
-            self.integral = self.integral * 0.5
+            self.integral = self.integral * 0.9 # 0.5
 
         if self.integral > self.integral_limit:
             self.integral = self.integral_limit

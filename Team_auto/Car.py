@@ -284,7 +284,7 @@ def make_circle_right(power, radius):
 def rotate_angle_left(power, angle):
     """Angle in degrees"""
     goal_angle_wheel = int((angle * car_width * 2) / 5.6)  # in graden
-    motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_B, PORT_A])
+    motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_B, PORT_A],0.01)
 
 
 def rotate_angle_right(power, angle):

@@ -42,8 +42,8 @@ def calibrate():
 	print offset_A
 	print offset_B
         offset_B = BrickPi.Encoder[PORT_B]
-    offset_A -= 100000
-    offset_B -= 100000
+    offset_A -= 200000
+    offset_B -= 200000
 
 
 def go_straight_manual(power, duration):
@@ -94,8 +94,8 @@ def go_straight_distance(power, distance):
             left_power = int(pid_ratio*right_power)
         set_motors(left_power, int(0.9999*right_power))
         BrickPiUpdateValues()
-        average = ((BrickPi.Encoder[PORT_A] - offset_A - 100000) +
-                   (BrickPi.Encoder[PORT_B] - offset_B - 100000)) / 2
+        average = ((BrickPi.Encoder[PORT_A] - offset_A - 200000) +
+                   (BrickPi.Encoder[PORT_B] - offset_B - 200000)) / 2
 
 
 def go_straight_duration(power, duration):

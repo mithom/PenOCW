@@ -47,7 +47,7 @@ class PID:
 	if ratio > (self.setpoint + 0.00001) and self.integral < 0:
 	    self.integral = self.integral*0.95
 	elif ratio < (self.setpoint - 0.000001) and self.integral > 0:
-	    self.integral = 0
+	    self.integral = self.integral*0.5
 
         if self.integral > self.integral_limit:
             self.integral = self.integral_limit

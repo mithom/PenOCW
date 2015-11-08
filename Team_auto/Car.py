@@ -163,11 +163,14 @@ def make_circle_left(power, radius):  # radius in cm
 
 
 def make_circle_right(power, radius):
+    print 'Tis aangeroepen'
     calibrate()
     right_power = int(((radius - car_width) / radius) * power)
-    set_left(power)
-    set_right(right_power)
-    BrickPiUpdateValues()
+    start_time = time.time()
+    while time.time() - start_time < 10:
+        set_left(power)
+        set_right(right_power)
+        BrickPiUpdateValues()
 
 
 def rotate_angle_left(power, angle):
@@ -257,6 +260,7 @@ calibrate()
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
+    make_circle_left(100,25)
 #    go_straight_distance(100,40)
 #    rotate_angle_right(100,100)
 #    go_straight_distance(100,40)
@@ -264,4 +268,4 @@ if __name__ == '__main__':
 #    go_straight_distance(100,40)
 #    rotate_angle_right(100,100)
 #    go_straight_distance(100,40)
-    go_straight_distance(100,200)
+#    go_straight_distance(100,200)

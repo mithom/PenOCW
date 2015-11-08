@@ -75,7 +75,7 @@ def go_straight_distance(power, distance):
 
     proportional_factor = 0
     derivative_factor = 0
-    integral_factor = 2000
+    integral_factor = 2000 #2000
     update_interval = 0.01
     pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
                              1, offset_A, offset_B, update_interval)

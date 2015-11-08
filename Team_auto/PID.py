@@ -1,5 +1,6 @@
 __author__ = 'Gilles'
 
+import time
 
 # ---- PSEUDOCODE ----
 
@@ -41,12 +42,13 @@ class PID:
 
         derivative = (error - self.previous_error) / self.dt
 
+	self.integral += error * self.dt
+
 	if ratio > (self.setpoint + 0.00001) and self.integral < 0:
-	    self.integral = 0
+	    self.integral = self.integral*0.95
 	elif ratio < (self.setpoint - 0.000001) and self.integral > 0:
 	    self.integral = 0
 
-        self.integral += error * self.dt
         if self.integral > self.integral_limit:
             self.integral = self.integral_limit
         elif self.integral < -self.integral_limit:
@@ -56,8 +58,9 @@ class PID:
 
         self.previous_error = error
 
-	self.kp = self.kp_backup
+	self.kp = self.kp_backup	
 
+	print 'Ratio: ', ratio, ', PID: ', output  
         return output
 
     def set_proportional(self, kp):

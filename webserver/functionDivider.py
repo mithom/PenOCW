@@ -81,13 +81,13 @@ class FunctionDivider:
                            #			"goBackwardRight"
                            "makeLine": [Function(functions.get('go_straight_distance'), distance=200, power=250)],
                            "makeSquare": [Function(functions.get('go_straight_distance'), distance=100, power=150),
-                                          Function(functions.get('rotate_angle_left'), angle=100, power=150),
+                                          Function(functions.get('rotate_angle_left'), angle=90, power=255),
                                           Function(functions.get('go_straight_distance'), distance=100, power=150),
-                                          Function(functions.get('rotate_angle_left'), angle=100, power=150),
+                                          Function(functions.get('rotate_angle_left'), angle=90, power=255),
                                           Function(functions.get('go_straight_distance'), distance=100, power=150),
-                                          Function(functions.get('rotate_angle_left'), angle=100, power=150),
+                                          Function(functions.get('rotate_angle_left'), angle=90, power=255),
                                           Function(functions.get('go_straight_distance'), distance=100, power=150),
-                                          Function(functions.get('rotate_angle_left'), angle=100, power=150)],
+                                          Function(functions.get('rotate_angle_left'), angle=90, power=255)],
                            "makeCircle": [Function(functions.get('make_circle_left'), radius=50, power=255)]}
         self.currentCommandObject = None
         if firstCommand is not None:

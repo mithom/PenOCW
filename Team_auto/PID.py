@@ -29,16 +29,19 @@ class PID:
 
         self.previous_error = 0
         self.integral = 0
-        self.integral_limit = 0.01
+        self.integral_limit = 0.5
 
     def update(self, encoder_A, encoder_B):
-        encoder_A = encoder_A - self.offset_A + 1000
-        encoder_B = encoder_B - self.offset_B + 1000
+        encoder_A = encoder_A - self.offset_A
+        encoder_B = encoder_B - self.offset_B
         ratio = encoder_A / float(encoder_B)
 
         error = ratio - self.setpoint
 
         derivative = (error - self.previous_error) / self.dt
+
+	if ratio > (self.setpoint - 0.000001) and ratio < (self.setpoint + 0.000001):
+	    self.integral = 0
 
         self.integral += error * self.dt
         if self.integral > self.integral_limit:
@@ -49,6 +52,8 @@ class PID:
             print '///////////// MAX INTEGRAL'
 
         output = self.setpoint - self.kp * error - self.kd * derivative - self.ki * self.integral
+
+	print 'Integral value :', self.integral
 
         self.previous_error = error
 

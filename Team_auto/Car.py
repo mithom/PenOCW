@@ -30,7 +30,6 @@ def BrickPiUpdateValues():
 
 def calibrate():
     global offset_A, offset_B
-    print "start calibrate"
     BrickPi.MotorEnable[PORT_A] = 1
     BrickPi.MotorEnable[PORT_B] = 1
     set_left(1)
@@ -41,12 +40,10 @@ def calibrate():
         BrickPiUpdateValues()
         offset_A = BrickPi.Encoder[PORT_A]
         offset_B = BrickPi.Encoder[PORT_B]
-    print "end calibrate"
-
+    offset_A -= 3000
+    offset_B -= 3000
 
 def go_straight_manual(power, duration):
-    global offset_A, offset_B
-    calibrate()
     left_power = power
     right_power = power
     set_motors(left_power, right_power)
@@ -89,9 +86,10 @@ def go_straight_duration(power, duration):
     # proportional_factor = 3
     # derivative_factor = 0.3
     # integral_factor = 4
-    proportional_factor = 5
-    derivative_factor = 3
-    integral_factor = 5
+    proportional_factor = 10 # 12
+#    derivative_factor = 7
+    derivative_factor = 0
+    integral_factor = 10 # 20
     pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
                              1, offset_A, offset_B, update_interval)
     last_update = time.time()
@@ -106,8 +104,8 @@ def go_straight_duration(power, duration):
         # if time.time() - start_time > 1:
         #     pid_controller.set_derivative(1)
         #     pid_controller.set_integral(8)
-        encoder_A = BrickPi.Encoder[PORT_A] - offset_A + 1000
-        encoder_B = BrickPi.Encoder[PORT_B] - offset_B + 1000
+        encoder_A = BrickPi.Encoder[PORT_A] - offset_A
+        encoder_B = BrickPi.Encoder[PORT_B] - offset_B
         ratio = encoder_A / float(encoder_B)
         print 'Ratio: ', ratio
         pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
@@ -118,7 +116,9 @@ def go_straight_duration(power, duration):
             # right_power = int(main_power/(pid_ratio/2.0))
             # left_power = int((pid_ratio/2.0)*right_power)
             left_power = int(pid_ratio*right_power)
-        set_motors(left_power, right_power)
+        set_left(left_power)
+	set_right(right_power)
+	# set_motors(left_power, right_power)
         BrickPiUpdateValues()
     print BrickPi.Encoder[PORT_A]
 

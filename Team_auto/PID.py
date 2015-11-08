@@ -2,6 +2,7 @@ __author__ = 'Gilles'
 
 import time
 
+
 # ---- PSEUDOCODE ----
 
 # previous_error = 0
@@ -20,7 +21,7 @@ import time
 class PID:
     def __init__(self, kp, kd, ki, setpoint, offset_A, offset_B, dt):
         self.kp = kp
-	self.kp_backup = kp
+        self.kp_backup = kp
         self.ki = ki
         self.kd = kd
         self.setpoint = setpoint
@@ -42,12 +43,12 @@ class PID:
 
         derivative = (error - self.previous_error) / self.dt
 
-	self.integral += error * self.dt
+        self.integral += error * self.dt
 
-	if ratio > (self.setpoint + 0.00001) and self.integral < 0:
-	    self.integral = self.integral*0.95
-	elif ratio < (self.setpoint - 0.000001) and self.integral > 0:
-	    self.integral = self.integral*0.5
+        if ratio > (self.setpoint + 0.00001) and self.integral < 0:
+            self.integral = self.integral * 0.95
+        elif ratio < (self.setpoint - 0.000001) and self.integral > 0:
+            self.integral = self.integral * 0.5
 
         if self.integral > self.integral_limit:
             self.integral = self.integral_limit
@@ -58,9 +59,9 @@ class PID:
 
         self.previous_error = error
 
-	self.kp = self.kp_backup	
+        self.kp = self.kp_backup
 
-	print 'Ratio: ', ratio, ', PID: ', output  
+        print 'Ratio: ', ratio, ', PID: ', output
         return output
 
     def set_proportional(self, kp):

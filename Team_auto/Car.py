@@ -39,8 +39,8 @@ def calibrate():
     while offset_A is None or offset_B is None:
         BrickPiUpdateValues()
         offset_A = BrickPi.Encoder[PORT_A]
-	print offset_A
-	print offset_B
+        print offset_A
+        print offset_B
         offset_B = BrickPi.Encoder[PORT_B]
     offset_A -= 200000
     offset_B -= 200000
@@ -81,7 +81,7 @@ def go_straight_distance(power, distance):
                              1, offset_A, offset_B, update_interval)
     start_time = time.time()
     last_update = time.time()
-    while average < degree:
+    while average < degree*2: # encoders are in half degrees
         if (time.time()-start_time) > step and main_power < power:
             left_power += power_increase
             right_power += power_increase
@@ -116,7 +116,7 @@ def go_straight_duration(power, duration):
     # derivative_factor = 0.3
     # integral_factor = 4
     proportional_factor = 0  # 12 # 100
-#    derivative_factor = 7
+    #    derivative_factor = 7
     derivative_factor = 0
     integral_factor = 2000  # 20 # 300
     pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
@@ -128,12 +128,12 @@ def go_straight_duration(power, duration):
             right_power += power_increase
             main_power += power_increase
             step += 1
-        # encoder_A = BrickPi.Encoder[PORT_A] - offset_A
-        # encoder_B = BrickPi.Encoder[PORT_B] - offset_B
-#        ratio = encoder_A / float(encoder_B)
-#        print 'Ratio: ', ratio
+            # encoder_A = BrickPi.Encoder[PORT_A] - offset_A
+            # encoder_B = BrickPi.Encoder[PORT_B] - offset_B
+        #        ratio = encoder_A / float(encoder_B)
+        #        print 'Ratio: ', ratio
         pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
-#        print 'PID ratio: ', pid_ratio
+        #        print 'PID ratio: ', pid_ratio
         if (time.time() - last_update) > update_interval:
             last_update = time.time()
             right_power = int((2*main_power)/(pid_ratio+1))
@@ -154,10 +154,8 @@ def make_circle_left(power, radius):  # radius in cm
     inner_degrees = inner_rotations*360
     outer_degrees = outer_rotations*360
     ratio = inner_degrees/outer_degrees
-    
-    # TODO: merge conflict, weet niet welke het moet worden (Gilles, zondag 8 november)
-    # motorRotateDegree([power, int(power*ratio)],[int(outer_degrees),int(inner_degrees)],[PORT_B,PORT_A])
-    # motorRotateDegree([power, power*ratio], [outer_degrees, inner_degrees], [PORT_B, PORT_A])
+    motorRotateDegree([power, int(power*ratio)],[int(outer_degrees),int(inner_degrees)],[PORT_B,PORT_A])
+    #int versie want floats mogen niet vor deze functie. geeft kleine afrondingsfiout bij reiden cirkel!
 
 
 def make_circle_right(power, radius):

@@ -102,11 +102,11 @@ def go_straight_distance(power, distance):
                    (BrickPi.Encoder[PORT_B] - offset_B - 10000)) / 2
     encoder_difference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
     if encoder_difference > 0:
-        sleep.time(5)
-        motorRotateDegree([100],[int(encoder_difference)],[PORT_B])
+        sleep.time(1)
+        motorRotateDegree([100],[encoder_difference],[PORT_B])
     if encoder_difference < 0:
-        sleep.time(5)
-        motorRotateDegree([100],[int(encoder_difference)],[PORT_A])
+        sleep.time(1)
+        motorRotateDegree([100],[-encoder_difference],[PORT_A])
 
 
 

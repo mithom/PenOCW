@@ -100,6 +100,12 @@ def go_straight_distance(power, distance):
         BrickPiUpdateValues()
         average = ((BrickPi.Encoder[PORT_A] - offset_A - 10000) +
                    (BrickPi.Encoder[PORT_B] - offset_B - 10000)) / 2
+    encoderDifference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
+    if enconderDifference > 0:
+         motorRotateDegree([100],[int(encoderDifference/2)],[PORT_B])
+    if enconderDifference < 0:
+         motorRotateDegree([100],[int(encoderDifference/2)],[PORT_A])
+
 
 
 def go_straight_duration(power, duration):

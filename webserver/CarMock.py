@@ -1,6 +1,9 @@
 import time
 import random
 
+isUpdated = True
+
+
 def go_straight_distance(*args, **kwargs):
     time.sleep(1)
 

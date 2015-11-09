@@ -22,7 +22,9 @@ for j in range(len(imglist)):
     # Gaussian blur
     blur = cv.GaussianBlur(gray, (5, 5), 0)
 
-    # TODO: threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
+    # threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
+    average = np.average(blur)
+    print average
 
     # Thresholding
     ret, bw = cv.threshold(blur, 200, 255, cv.THRESH_BINARY)

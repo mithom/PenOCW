@@ -82,3 +82,54 @@ class PID:
 
     def set_integral(self, ki):
         self.ki = ki
+
+
+# ---- PSEUDOCODE ----
+
+# previous_error = 0
+# integral = 0
+# start:
+#   error = setpoint - measured_value
+#   integral = integral + error*dt
+#   derivative = (error - previous_error)/dt
+#   output = Kp*error + Ki*integral + Kd*derivative
+#   previous_error = error
+#   wait(dt)
+#   goto start
+
+class PID2:
+
+    def __init__(self, kp, kd, ki, offset_A, offset_B, end_offset_A, end_offset_B, max_power=255):
+        self.kp = kp
+        self.ki = ki
+        self.kd = kd
+        self.end_A = end_offset_A - offset_A
+        self.end_B = end_offset_B - offset_B
+        self.max_power = max_power
+
+        self.end_difference = self.end_A - self.end_B
+        self.difference_per_value_A = 1.0*self.end_difference/self.end_A
+
+        self.offset_A = offset_A
+        self.offset_B = offset_B
+
+        self.previous_error = 0
+        self.integral = 0
+        self.passed_time = 0
+
+    def update(self, encoder_A, encoder_B, dt):
+        self.passed_time += dt
+        value_A = encoder_A - self.offset_A
+        value_B = encoder_B - self.offset_B
+
+        current_difference = value_A - value_B
+        error = current_difference - self.difference_per_value_A * value_A
+
+        derivative = (error - self.previous_error) / dt
+        self.integral += error * dt
+
+        power_compensation = (self.max_power / 255.0) * \
+                             (self.kp * error + self.kd * derivative + self.ki * self.integral)
+        self.previous_error = error
+        return power_compensation  # mogelijks is dit het negatieve van dit
+        pass

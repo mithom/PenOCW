@@ -260,7 +260,7 @@ calibrate()
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
-    make_circle_left(100,25)
+#    make_circle_left(100,25)
 #    go_straight_distance(100,40)
 #    rotate_angle_right(100,100)
 #    go_straight_distance(100,40)
@@ -269,3 +269,4 @@ if __name__ == '__main__':
 #    rotate_angle_right(100,100)
 #    go_straight_distance(100,40)
 #    go_straight_distance(100,200)
+    go_straight_duration(100, 10)

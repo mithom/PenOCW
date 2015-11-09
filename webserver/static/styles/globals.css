@@ -29,7 +29,7 @@ div {
 }
 
 #up.active {
-    background-color: red;
+    background-color: #00AAC3;
 }
 
 #down{
@@ -42,7 +42,7 @@ div {
 }
 
 #down.active {
-    background-color: red;
+    background-color: #00AAC3;
 }
 
 #left {
@@ -55,7 +55,7 @@ div {
 }
 
 #left.active {
-    background-color: red;
+    background-color: #00AAC3;
 }
 
 #right {
@@ -68,7 +68,7 @@ div {
 }
 
 #right.active {
-    background-color: red;
+    background-color: #00AAC3;
 }
 
 .commands {
@@ -90,5 +90,3 @@ div {
     width: 65px;
     margin: 2px;
 }
-
-

@@ -256,6 +256,9 @@ def go_straight_distance2(power, distance):
     average = 0
     degree = (distance / O) * 360
 
+    left_power = power
+    right_power = power
+
     proportional_factor = 1
     derivative_factor = 0.2
     integral_factor = 0.5

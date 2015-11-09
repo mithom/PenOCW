@@ -5,6 +5,7 @@ var manueel = null;
 var beschrijving = null;
 var complex = null;
 
+var heldKeys = {};
 var last_update = 0;
 var timer = null;
 var updateTime = function () {
@@ -103,6 +104,8 @@ $(document).ready(function () {
     //TODO: antwoorden opvangen
 
     var keyDown = function (e) {
+        if(!(e.keyCode in heldKeys)){
+        heldKeys[e.keyCode] = true
         switch (e.keyCode) {
             case upKey:
                 doUp();
@@ -116,10 +119,11 @@ $(document).ready(function () {
             case rightKey:
                 doRight();
                 break;
-        }
+        }}
     };
 
     var keyUp = function (e) {
+        delete heldKeys[e.keyCode];
         switch (e.keyCode) {
             case upKey:
                 stopUp();

@@ -42,8 +42,6 @@ def calibrate():
         print offset_A
         print offset_B
         offset_B = BrickPi.Encoder[PORT_B]
-    offset_A -= 10000
-    offset_B -= 10000
 
 
 def go_straight_manual(power, duration):

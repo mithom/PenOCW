@@ -73,13 +73,13 @@ class FunctionDivider:
         functions = car.get_functions()
         self.commandLib = {"goForward": [Function(functions.get('go_straight_manual'), duration=0.1, power=250)],
                            "goBackward": [Function(functions.get('go_straight_manual'), duration=0.1, power=-250)],
-                           "goLeft": [Function(functions.get('turn_straight_left'), duration=0.1, power=250)],
-                           "goRight": [Function(functions.get('turn_straight_right'), duration=0.1, power=250)],
+                           "goLeft": [Function(functions.get('turn_straight_left'), duration=0.1, power=150)],
+                           "goRight": [Function(functions.get('turn_straight_right'), duration=0.1, power=150)],
                            #			"goForwardLeft"
                            #			"goForwardRigth"
                            #			"goBackwardLeft"
                            #			"goBackwardRight"
-                           "makeLine": [Function(functions.get('go_straight_distance'), distance=200, power=150)],
+                           "makeLine": [Function(functions.get('go_straight_distance'), distance=200, power=100)],
                            "makeSquare": [Function(functions.get('go_straight_distance'), distance=100, power=100),
                                           Function(functions.get('sleep'),duration=1),
                                           Function(functions.get('rotate_angle_left'), angle=90, power=155),

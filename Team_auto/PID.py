@@ -39,8 +39,8 @@ class PID:
         encoder_B = encoder_B - self.offset_B
 	
 	smallest = min(encoder_A, encoder_B)
-	encoder_A += 10000 - smallest
-	encoder_B += 10000 - smallest
+	encoder_A += 5000 - smallest
+	encoder_B += 5000 - smallest
 	
 	print 'Encoder A: ', encoder_A, ' , Encoder B: ', encoder_B
 

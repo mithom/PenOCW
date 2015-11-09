@@ -18,44 +18,57 @@ div {
     min-height: 60px;
 }
 
-#up.passive {
+#up{
     background-image: url(arrow-up.png);
     background-size: 100%;
 }
 
-#up.active {
-    background-image: url(arrow-up-active.png);
-    background-size: 100%;
+#up.passive {
+    background-color: white;
+    
 }
 
-#down.passive {
+#up.active {
+    background-color: red;
+}
+
+#down{
     background-image: url(arrow-down.png);
     background-size: 100%;
 }
 
-#down.active {
-    background-image: url(arrow-down-active.png);
-    background-size: 100%;
+#down.passive {
+    background-color: white;
 }
 
-#left.passive {
+#down.active {
+    background-color: red;
+}
+
+#left {
     background-image: url(arrow-left.png);
     background-size: 100%;
 }
 
-#left.active {
-    background-image: url(arrow-left-active.png);
-    background-size: 100%;
+#left.passive {
+    background-color: white;
 }
 
-#right.passive {
+#left.active {
+    background-color: red;
+}
+
+#right {
     background-image: url(arrow-right.png);
     background-size: 100%;
 }
 
+#right.passive{
+    background-color: white;
+}
+
 #right.active {
-    background-image: url(arrow-right-active.png);
-    background-size: 100%;
+    background-color: red;
 }
 
 .commands {

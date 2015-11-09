@@ -24,7 +24,7 @@ div {
 }
 
 #up.passive {
-    background-color: black;
+    background-color: white;
     
 }
 
@@ -38,7 +38,7 @@ div {
 }
 
 #down.passive {
-    background-color: black;
+    background-color: white;
 }
 
 #down.active {
@@ -51,7 +51,7 @@ div {
 }
 
 #left.passive {
-    background-color: black;
+    background-color: white;
 }
 
 #left.active {
@@ -59,12 +59,12 @@ div {
 }
 
 #right {
-    background-image: url(arrow-right-active.png);
+    background-image: url(arrow-right.png);
     background-size: 100%;
 }
 
 #right.passive{
-    background-color: black;
+    background-color: white;
 }
 
 #right.active {

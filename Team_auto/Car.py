@@ -100,11 +100,9 @@ def go_straight_distance(power, distance):
                    (BrickPi.Encoder[PORT_B] - offset_B)) / 2 #-10000
     encoder_difference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
     if encoder_difference > 0:
-        sleep.time(1)
-        motorRotateDegree([100],[encoder_difference],[PORT_B])
+        motorRotateDegree([100],[int(encoder_difference/2)],[PORT_B])
     if encoder_difference < 0:
-        sleep.time(1)
-        motorRotateDegree([100],[-encoder_difference],[PORT_A])
+        motorRotateDegree([100],[-int(encoder_difference/2)],[PORT_A])
 
 
 
@@ -161,8 +159,8 @@ def make_circle_left(power, radius):  # radius in cm
     inned_distance = ((radius - car_width/2.0)*2)*math.pi
     outer_rotations = outer_distance/O
     inner_rotations = inned_distance/O
-    inner_degrees = inner_rotations*360
-    outer_degrees = outer_rotations*360
+    inner_degrees = inner_rotations*300
+    outer_degrees = outer_rotations*300
     ratio = inner_degrees/outer_degrees
     motorRotateDegree([power, int(power*ratio)],[int(outer_degrees),int(inner_degrees)],[PORT_B,PORT_A])
     #int versie want floats mogen niet vor deze functie. geeft kleine afrondingsfiout bij reiden cirkel!
@@ -276,8 +274,8 @@ def go_straight_distance2(power, distance):
             else:
                 right_power = power
                 left_power = power + power_correction
-        set_left(left_power)
-        set_right(right_power)
+        set_left(int(left_power))
+        set_right(int(right_power))
         #        set_motors(left_power, int(right_power))
         BrickPiUpdateValues()
         average = ((BrickPi.Encoder[PORT_A] - offset_A) +
@@ -285,7 +283,7 @@ def go_straight_distance2(power, distance):
 
 
 def get_functions():
-    functions = {'go_straight_distance': go_straight_distance2, 'go_straight_duration1': go_straight_duration,
+    functions = {'go_straight_distance': go_straight_distance, 'go_straight_duration1': go_straight_duration,
                  'go_straight_manual': go_straight_manual, 'make_circle_left': make_circle_left,
                  'make_circle_right': make_circle_right, 'rotate_angle_left': rotate_angle_left,
                  'rotate_angle_right': rotate_angle_left, 'turn_straight_left': turn_straight_left,
@@ -313,4 +311,11 @@ if __name__ == '__main__':
     #    go_straight_distance(100,40)
     #    rotate_angle_right(100,100)
     #    go_straight_distance(100,40)
-    go_straight_distance(100,200)
+    go_straight_distance(100,50)
+    rotate_angle_left(100,90)
+    go_straight_distance(100,50)
+    rotate_angle_left(100,90)
+    go_straight_distance(100,50)
+    rotate_angle_left(100,90)
+    go_straight_distance(100,50)
+    rotate_angle_left(100,90)

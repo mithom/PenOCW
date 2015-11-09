@@ -6,6 +6,10 @@ import PID
 
 BrickPiSetup()  # setup the serial port for communication from BrickPi import *
 
+last_right_power = 0
+last_left_power = 0
+
+
 BrickPi.MotorEnable[PORT_A] = 1  # Enable the Motor A
 BrickPi.MotorEnable[PORT_B] = 1  # Enable the Motor B
 car_width = 11.5
@@ -16,9 +20,6 @@ BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
 d = 5.6  # diameter of the wheels
 O = math.pi * d  # circumference of the wheels
 
-last_left_power = 0
-last_right_power = 0
-
 isUpdated = False
 
 
@@ -28,12 +29,13 @@ def BrickPiUpdateValues():
     isUpdated = True
 
 
-def calibrate():
+def calibrate(power_left = 1, power_right = 1):
     global offset_A, offset_B
-    BrickPi.MotorEnable[PORT_A] = 1
-    BrickPi.MotorEnable[PORT_B] = 1
+    BrickPi.MotorEnable[PORT_A] = power_left
+    BrickPi.MotorEnable[PORT_B] = power_right
     set_left(1)
     set_right(1)
+    BrickPiUpdateValues()
     offset_A = BrickPi.Encoder[PORT_A]
     offset_B = BrickPi.Encoder[PORT_B]
     while offset_A is None or offset_B is None:
@@ -45,7 +47,7 @@ def calibrate():
 def go_straight_manual(power, duration):
     # TODO: blijvende PID over functies heen, enkel bij starten 
     # opnieuw instellen, niet in deze functies dus
-    calibrate()
+    calibrate(power,power)
     left_power = power
     right_power = power
     set_motors(left_power, right_power)
@@ -58,9 +60,9 @@ def go_straight_manual(power, duration):
 
 def go_straight_distance(power, distance):
     global offset_A, offset_B
-    calibrate()
 
     main_power = 80
+    calibrate(main_power, main_power)
     left_power = main_power
     right_power = main_power
     set_motors(left_power, right_power)
@@ -192,7 +194,7 @@ def rotate_angle_right(power, angle):
 #	[PORT_A, PORT_B])
 
 def turn_straight_left(power, duration):  # Voor rechte hoek buitenste wiel 360 laten draaien (via motorRotateDegree)
-    calibrate()
+    calibrate(-power,power)
     start_time = time.time()
     while (time.time() - start_time) < duration:
         set_left(-power)
@@ -202,7 +204,7 @@ def turn_straight_left(power, duration):  # Voor rechte hoek buitenste wiel 360 
 
 
 def turn_straight_right(power, duration):
-    calibrate()
+    calibrate(power,-power)
     start_time = time.time()
     while (time.time() - start_time) < duration:
         set_left(power)
@@ -212,6 +214,7 @@ def turn_straight_right(power, duration):
 
 def set_left(power):
     global last_left_power
+    BrickPi.MotorEnable[PORT_A] = 1
     if power > 255:
         last_left_power = 255
         BrickPi.MotorSpeed[PORT_A] = 255
@@ -225,6 +228,7 @@ def set_left(power):
 
 def set_right(power):
     global last_right_power
+    BrickPi.MotorEnable[PORT_B] = 1
     if power > 255:
         last_right_power = 255
         BrickPi.MotorSpeed[PORT_B] = 255

@@ -31,10 +31,10 @@ def BrickPiUpdateValues():
 
 def calibrate(power_left = 1, power_right = 1):
     global offset_A, offset_B
-    BrickPi.MotorEnable[PORT_A] = power_left
-    BrickPi.MotorEnable[PORT_B] = power_right
-    set_left(1)
-    set_right(1)
+    BrickPi.MotorEnable[PORT_A] = 1
+    BrickPi.MotorEnable[PORT_B] = 1
+    set_left(power_left)
+    set_right(power_right)
     BrickPiUpdateValues()
     offset_A = BrickPi.Encoder[PORT_A]
     offset_B = BrickPi.Encoder[PORT_B]
@@ -74,9 +74,9 @@ def go_straight_distance(power, distance):
     average = 0
     degree = (distance / O) * 360
 
-    proportional_factor = 600 #1000 #80 magic value
+    proportional_factor = 250 #1000 #80 magic value #600
     derivative_factor = 0 # 10 / 0
-    integral_factor = 1600 #2000
+    integral_factor = 500 #2000 # 1600
     update_interval = 0.01
     pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
                              1, offset_A, offset_B, update_interval)
@@ -304,9 +304,6 @@ def get_encoder_values():
 
 def get_power_values():
     return last_left_power, last_right_power
-
-
-calibrate()
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"

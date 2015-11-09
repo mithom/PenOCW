@@ -159,8 +159,8 @@ def make_circle_left(power, radius):  # radius in cm
     inned_distance = ((radius - car_width/2.0)*2)*math.pi
     outer_rotations = outer_distance/O
     inner_rotations = inned_distance/O
-    inner_degrees = inner_rotations*260
-    outer_degrees = outer_rotations*260
+    inner_degrees = inner_rotations*310
+    outer_degrees = outer_rotations*310
     ratio = inner_degrees/outer_degrees
     motorRotateDegree([power, int(power*ratio)],[int(outer_degrees),int(inner_degrees)],[PORT_B,PORT_A])
     #int versie want floats mogen niet vor deze functie. geeft kleine afrondingsfiout bij reiden cirkel!

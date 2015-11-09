@@ -98,13 +98,15 @@ def go_straight_distance(power, distance):
         set_right(right_power)
         #        set_motors(left_power, int(right_power))
         BrickPiUpdateValues()
-        average = ((BrickPi.Encoder[PORT_A] - offset_A - 10000) +
-                   (BrickPi.Encoder[PORT_B] - offset_B - 10000)) / 2
-    encoderDifference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
-    if enconderDifference > 0:
-         motorRotateDegree([100],[int(encoderDifference/2)],[PORT_B])
-    if enconderDifference < 0:
-         motorRotateDegree([100],[int(encoderDifference/2)],[PORT_A])
+        average = ((BrickPi.Encoder[PORT_A] - offset_A) + #-10000
+                   (BrickPi.Encoder[PORT_B] - offset_B)) / 2 #-10000
+    encoder_difference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
+    if encoder_difference > 0:
+        sleep.time(5)
+        motorRotateDegree([100],[int(encoder_difference)],[PORT_B])
+    if encoder_difference < 0:
+        sleep.time(5)
+        motorRotateDegree([100],[int(encoder_difference)],[PORT_A])
 
 
 
@@ -285,7 +287,7 @@ def go_straight_distance2(power, distance):
 
 
 def get_functions():
-    functions = {'go_straight_distance': go_straight_distance, 'go_straight_duration1': go_straight_duration,
+    functions = {'go_straight_distance': go_straight_distance2, 'go_straight_duration1': go_straight_duration,
                  'go_straight_manual': go_straight_manual, 'make_circle_left': make_circle_left,
                  'make_circle_right': make_circle_right, 'rotate_angle_left': rotate_angle_left,
                  'rotate_angle_right': rotate_angle_left, 'turn_straight_left': turn_straight_left,

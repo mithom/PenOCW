@@ -73,9 +73,9 @@ def go_straight_distance(power, distance):
     average = 0
     degree = (distance / O) * 360
 
-    proportional_factor = 1000
-    derivative_factor = 10
-    integral_factor = 2000 #2000
+    proportional_factor = 800 #1000
+    derivative_factor = 0 # 10 / 0
+    integral_factor = 160 #2000
     update_interval = 0.01
     pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
                              1, offset_A, offset_B, update_interval)
@@ -98,12 +98,14 @@ def go_straight_distance(power, distance):
         BrickPiUpdateValues()
         average = ((BrickPi.Encoder[PORT_A] - offset_A) + #-10000
                    (BrickPi.Encoder[PORT_B] - offset_B)) / 2 #-10000
-    encoder_difference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
-    if encoder_difference > 0:
-        motorRotateDegree([100],[int(encoder_difference/2)],[PORT_B])
-    if encoder_difference < 0:
-        motorRotateDegree([100],[-int(encoder_difference/2)],[PORT_A])
-
+    #encoder_difference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
+    #if encoder_difference > 0:
+    #    motorRotateDegree([100],[int(encoder_difference/2)],[PORT_B])
+    #if encoder_difference < 0:
+    #    motorRotateDegree([100],[-int(encoder_difference/2)],[PORT_A])
+    set_motors(0,0)
+    BrickPiUpdateValues()
+    time.sleep(0.05)
 
 
 def go_straight_duration(power, duration):

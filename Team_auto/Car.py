@@ -48,7 +48,7 @@ def calibrate():
 
 def go_straight_manual(power, duration):
     # TODO: blijvende PID over functies heen, enkel bij starten 
-	# opnieuw instellen, niet in deze functies dus
+    # opnieuw instellen, niet in deze functies dus
     left_power = power
     right_power = power
     set_motors(left_power, right_power)
@@ -94,9 +94,9 @@ def go_straight_distance(power, distance):
             last_update = time.time()
             right_power = int((2*main_power)/(pid_ratio+1))
             left_power = int(pid_ratio*right_power)
-	set_left(left_power)
-	set_right(right_power)
-#        set_motors(left_power, int(right_power))
+        set_left(left_power)
+        set_right(right_power)
+        #        set_motors(left_power, int(right_power))
         BrickPiUpdateValues()
         average = ((BrickPi.Encoder[PORT_A] - offset_A - 10000) +
                    (BrickPi.Encoder[PORT_B] - offset_B - 10000)) / 2
@@ -246,8 +246,42 @@ def set_motors(power_A, power_B):
     set_left(power_A)
     set_right(power_B)
 
+
 def sleep(duration):
     time.sleep(duration)
+
+
+def go_straight_distance2(power, distance):
+    global offset_A, offset_B
+    calibrate()
+
+    average = 0
+    degree = (distance / O) * 360
+
+    proportional_factor = 1
+    derivative_factor = 0.2
+    integral_factor = 0.5
+    update_interval = 0.01
+    pid_controller = PID.PID2(proportional_factor, derivative_factor, integral_factor,
+                              offset_A, offset_B, offset_A+degree*2, offset_B+degree*2, 150)
+    last_update = time.time()
+    while average < degree*2:  # encoders are in half degrees
+        if (time.time() - last_update) > update_interval:
+            power_correction = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B], time.time() - last_update)
+            last_update = time.time()
+            if power_correction >= 0:
+                right_power = power - power_correction
+                left_power = power
+            else:
+                right_power = power
+                left_power = power + power_correction
+        set_left(left_power)
+        set_right(right_power)
+        #        set_motors(left_power, int(right_power))
+        BrickPiUpdateValues()
+        average = ((BrickPi.Encoder[PORT_A] - offset_A) +
+                   (BrickPi.Encoder[PORT_B] - offset_B)) / 2
+
 
 def get_functions():
     functions = {'go_straight_distance': go_straight_distance, 'go_straight_duration1': go_straight_duration,
@@ -270,12 +304,12 @@ calibrate()
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
-#    make_circle_left(100,25)
-#    go_straight_distance(100,40)
-#    rotate_angle_right(100,100)
-#    go_straight_distance(100,40)
-#    rotate_angle_right(100,100)
-#    go_straight_distance(100,40)
-#    rotate_angle_right(100,100)
-#    go_straight_distance(100,40)
+    #    make_circle_left(100,25)
+    #    go_straight_distance(100,40)
+    #    rotate_angle_right(100,100)
+    #    go_straight_distance(100,40)
+    #    rotate_angle_right(100,100)
+    #    go_straight_distance(100,40)
+    #    rotate_angle_right(100,100)
+    #    go_straight_distance(100,40)
     go_straight_distance(100,200)

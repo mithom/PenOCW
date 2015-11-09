@@ -75,8 +75,8 @@ def go_straight_distance(power, distance):
     average = 0
     degree = (distance / O) * 360
 
-    proportional_factor = 0
-    derivative_factor = 0
+    proportional_factor = 1000
+    derivative_factor = 10
     integral_factor = 2000 #2000
     update_interval = 0.01
     pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
@@ -238,13 +238,15 @@ def set_motors(power_A, power_B):
     set_left(power_A)
     set_right(power_B)
 
+def sleep(duration):
+    time.sleep(duration)
 
 def get_functions():
     functions = {'go_straight_distance': go_straight_distance, 'go_straight_duration1': go_straight_duration,
                  'go_straight_manual': go_straight_manual, 'make_circle_left': make_circle_left,
                  'make_circle_right': make_circle_right, 'rotate_angle_left': rotate_angle_left,
                  'rotate_angle_right': rotate_angle_left, 'turn_straight_left': turn_straight_left,
-                 'turn_straight_right': turn_straight_right}
+                 'turn_straight_right': turn_straight_right, 'sleep': sleep}
     return functions
 
 
@@ -260,7 +262,7 @@ calibrate()
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
-    make_circle_left(100,25)
+#    make_circle_left(100,25)
 #    go_straight_distance(100,40)
 #    rotate_angle_right(100,100)
 #    go_straight_distance(100,40)
@@ -268,4 +270,4 @@ if __name__ == '__main__':
 #    go_straight_distance(100,40)
 #    rotate_angle_right(100,100)
 #    go_straight_distance(100,40)
-#    go_straight_distance(100,200)
+    go_straight_distance(100,200)

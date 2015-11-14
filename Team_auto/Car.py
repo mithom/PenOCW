@@ -23,7 +23,7 @@ O = math.pi * d  # circumference of the wheels
 isUpdated = False
 
 
-def BrickPiUpdateValues():
+def     BrickPiUpdateValues():
     global isUpdated
     update()
     isUpdated = True
@@ -170,30 +170,32 @@ def make_circle_left(power, radius):  # radius in cm
 
 
 def make_circle_right(power, radius):
-    print 'Tis aangeroepen'
+    global O, car_width
     calibrate()
-    right_power = int(((radius - car_width) / radius) * power)
-    start_time = time.time()
-    while time.time() - start_time < 10:
-        set_left(power)
-        set_right(right_power)
-        BrickPiUpdateValues()
+    outer_distance = ((radius+car_width/2.0)*2)*math.pi
+    inned_distance = ((radius - car_width/2.0)*2)*math.pi
+    outer_rotations = outer_distance/O
+    inner_rotations = inned_distance/O
+    inner_degrees = inner_rotations*310
+    outer_degrees = outer_rotations*310
+    ratio = inner_degrees/outer_degrees
+    motorRotateDegree([power, int(power*ratio)],[int(outer_degrees),int(inner_degrees)],[PORT_A,PORT_B])
 
 
-def rotate_angle_left(power, angle):
+def rotate_left_angle(power, angle):
     # Angle in degrees
     goal_angle_wheel = int((angle * car_width * 2) / 5.6)  # in graden
     motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_B, PORT_A], 0.01)
 
 
-def rotate_angle_right(power, angle):
+def rotate_right_angle(power, angle):
     # Angle in degrees
     goal_angle_wheel = int((angle * car_width * 2) / 5.6)  # in graden
     motorRotateDegree([power, 0], [goal_angle_wheel, 0], [PORT_A, PORT_B])
 #    motorRotateDegree([power, -power], [goal_angle_wheel, -goal_angle_wheel],
 #	[PORT_A, PORT_B])
 
-def turn_straight_left(power, duration):  # Voor rechte hoek buitenste wiel 360 laten draaien (via motorRotateDegree)
+def rotate_left_duration(power, duration):
     calibrate(-power,power)
     start_time = time.time()
     while (time.time() - start_time) < duration:
@@ -203,7 +205,7 @@ def turn_straight_left(power, duration):  # Voor rechte hoek buitenste wiel 360 
         # motorRotateDegree([power],[360],[PORT_B])
 
 
-def turn_straight_right(power, duration):
+def rotate_right_duration(power, duration):
     calibrate(power,-power)
     start_time = time.time()
     while (time.time() - start_time) < duration:
@@ -253,48 +255,12 @@ def set_motors(power_A, power_B):
 def sleep(duration):
     time.sleep(duration)
 
-
-def go_straight_distance2(power, distance):
-    global offset_A, offset_B
-    calibrate()
-
-    average = 0
-    degree = (distance / O) * 360
-
-    left_power = power
-    right_power = power
-
-    proportional_factor = 1
-    derivative_factor = 0.2
-    integral_factor = 0.5
-    update_interval = 0.01
-    pid_controller = PID.PID2(proportional_factor, derivative_factor, integral_factor,
-                              offset_A, offset_B, offset_A+degree*2, offset_B+degree*2, 150)
-    last_update = time.time()
-    while average < degree*2:  # encoders are in half degrees
-        if (time.time() - last_update) > update_interval:
-            power_correction = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B], time.time() - last_update)
-            last_update = time.time()
-            if power_correction >= 0:
-                right_power = power - power_correction
-                left_power = power
-            else:
-                right_power = power
-                left_power = power + power_correction
-        set_left(int(left_power))
-        set_right(int(right_power))
-        #        set_motors(left_power, int(right_power))
-        BrickPiUpdateValues()
-        average = ((BrickPi.Encoder[PORT_A] - offset_A) +
-                   (BrickPi.Encoder[PORT_B] - offset_B)) / 2
-
-
 def get_functions():
     functions = {'go_straight_distance': go_straight_distance, 'go_straight_duration1': go_straight_duration,
                  'go_straight_manual': go_straight_manual, 'make_circle_left': make_circle_left,
-                 'make_circle_right': make_circle_right, 'rotate_angle_left': rotate_angle_left,
-                 'rotate_angle_right': rotate_angle_left, 'turn_straight_left': turn_straight_left,
-                 'turn_straight_right': turn_straight_right, 'sleep': sleep}
+                 'make_circle_right': make_circle_right, 'rotate_left_angle': rotate_left_angle,
+                 'rotate_right_angle': rotate_right_angle, 'rotate_left_duration': rotate_left_duration,
+                 'rotat_right_duration': rotate_right_duration, 'sleep': sleep}
     return functions
 
 
@@ -307,19 +273,5 @@ def get_power_values():
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
-    #    make_circle_left(100,25)
-    #    go_straight_distance(100,40)
-    #    rotate_angle_right(100,100)
-    #    go_straight_distance(100,40)
-    #    rotate_angle_right(100,100)
-    #    go_straight_distance(100,40)
-    #    rotate_angle_right(100,100)
-    #    go_straight_distance(100,40)
     go_straight_distance(100,200)
-#    rotate_angle_left(100,90)
-#    go_straight_distance(100,50)
-#    rotate_angle_left(100,90)
-#    go_straight_distance(100,50)
-#    rotate_angle_left(100,90)
-#    go_straight_distance(100,50)
-#    rotate_angle_left(100,90)
+

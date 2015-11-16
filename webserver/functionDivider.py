@@ -71,10 +71,10 @@ class FunctionDivider:
                            "goBackward": [Function(functions.get('go_straight_manual'), duration=0.1, power=-250)],
                            "goLeft": [Function(functions.get('rotate_left_duration'), duration=0.1, power=100)],
                            "goRight": [Function(functions.get('rotate_right_duration'), duration=0.1, power=100)],
-                           #			"goForwardLeft"
-                           #			"goForwardRigth"
-                           #			"goBackwardLeft"
-                           #			"goBackwardRight"
+                           "goForwardLeft": [Function(functions.get('make_circle_left'), radius=50, power=150, degree=5)],
+                           "goForwardRigth": [Function(functions.get('make_circle_right'), radius=50, power=150, degree=5)],
+                           "goBackwardLeft": [Function(functions.get('make_circle_left'), radius=50, power=150, degree=-5)],
+                           "goBackwardRight": [Function(functions.get('make_circle_right'), radius=50, power=150, degree=-5)],
                            "makeLine": [Function(functions.get('go_straight_distance'), distance=200, power=100)],
                            "makeSquare": [Function(functions.get('go_straight_distance'), distance=100, power=100),
                                           Function(functions.get('sleep'),duration=1),

@@ -23,19 +23,20 @@ while True:
         # TODO: threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
 
         # Thresholding
-        ret, bw = cv.threshold(blur, 200, 255, cv.THRESH_BINARY)
+        ret, bw = cv.threshold(blur, 150, 255, cv.THRESH_BINARY)
 
         # Canny edge detection
         edges = cv.Canny(bw, 5, 5)
 
         # Hough line transform
-        lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 100, 100)
+        lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 50, 150 ) #(edge image, rho, theta, threshold,
+                                                                        # lines, minLineLength, maxLineGap)
 
         # Print number of found lines
         # print 'Lines found: ', len(lines)
 
         # Filtering on/off
-        filtering = True
+        filtering = False
 
         # TODO: enkel beginpunt en rico opnieuw berekenen als index veranderd is
 

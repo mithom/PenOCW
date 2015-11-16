@@ -66,6 +66,7 @@ class __IOStream__:
                 return self._getCombinedCommand(toExecute, self.queue[1])
             else:
                 del self.queue[0]
+		#TODO: opvangen dat hier geen error komt als pijltje net gelost wordt en command verwijdert wordt
             return toExecute
         return None
 

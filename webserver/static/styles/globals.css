@@ -4,14 +4,15 @@ div {
 
 .info {
     float: left;
+    padding-left: 50px;
 }
 
-.direct-control {
+#direct-control {
     float: left;
     padding: 10px;
 }
 
-.direct-control button{
+#direct-control button{
     background-color: lightgray;
     display: block;
     min-width: 60px;
@@ -71,22 +72,27 @@ div {
     background-color: #00AAC3;
 }
 
-.commands {
-    clear: left;
+#commands {
+    float: left;
     padding: 5px 0px;
 }
 
-.route-input {
+#route-input {
+    float: left;
     padding: 5px 0px;
 }
 
-.route-input select {
+#route-input select {
     width: 65px;
     margin: 2px;
 }
 
-.route-input input {
+#route-input input {
     box-sizing: border-box;
     width: 65px;
     margin: 2px;
+}
+
+.hidden{
+    display: none;
 }

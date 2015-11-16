@@ -107,7 +107,8 @@ def go_straight_distance(power, distance):
     set_motors(0,0)
     BrickPiUpdateValues()
     time.sleep(0.05)
-
+    results = pid_controller.get_results()
+    print str(results)
 
 def go_straight_duration(power, duration):
     global offset_A, offset_B
@@ -260,7 +261,7 @@ def get_functions():
                  'go_straight_manual': go_straight_manual, 'make_circle_left': make_circle_left,
                  'make_circle_right': make_circle_right, 'rotate_left_angle': rotate_left_angle,
                  'rotate_right_angle': rotate_right_angle, 'rotate_left_duration': rotate_left_duration,
-                 'rotat_right_duration': rotate_right_duration, 'sleep': sleep}
+                 'rotate_right_duration': rotate_right_duration, 'sleep': sleep}
     return functions
 
 
@@ -274,4 +275,4 @@ def get_power_values():
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
     go_straight_distance(100,200)
-
+    rotate_left_angle(100,180)

@@ -70,22 +70,25 @@ $(document).ready(function () {
     //TODO: antwoorden opvangen
 
     var keyDown = function (e) {
-        if(!(e.keyCode in heldKeys)){
-        heldKeys[e.keyCode] = true
-        switch (e.keyCode) {
-            case upKey:
-                doUp();
-                break;
-            case downKey:
-                doDown();
-                break;
-            case leftKey:
-                doLeft();
-                break;
-            case rightKey:
-                doRight();
-                break;
-        }}
+        if($("input[type='radio'][name='controlType']:checked").val() == 'manueel') {
+            if (!(e.keyCode in heldKeys)) {
+                heldKeys[e.keyCode] = true;
+                switch (e.keyCode) {
+                    case upKey:
+                        doUp();
+                        break;
+                    case downKey:
+                        doDown();
+                        break;
+                    case leftKey:
+                        doLeft();
+                        break;
+                    case rightKey:
+                        doRight();
+                        break;
+                }
+            }
+        }
     };
 
     var keyUp = function (e) {

@@ -58,15 +58,13 @@ class __IOStream__:
 
     def pushCommand(self):
         if len(self.queue) > 0:
-            toExecute = self.queue[0]
-            if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 1:
+            toExecute = self.pop(0)
+            if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 0:
+                self.queue.insert(0,toExecute)
                 # self.addCommandFrontQueue(toExecute.getCommandName(), **toExecute.__params__)
-                pass
-            elif len(self.queue) > 1 and self.queue[1].getCommandName() in __IOStream__.manueelCommands:
-                return self._getCombinedCommand(toExecute, self.queue[1])
-            else:
-                del self.queue[0]
-		#TODO: opvangen dat hier geen error komt als pijltje net gelost wordt en command verwijdert wordt
+            elif len(self.queue) > 0 and self.queue[0].getCommandName() in __IOStream__.manueelCommands:
+                self.queue.insert(0,toExecute)
+                toExecute = self._getCombinedCommand(toExecute, self.queue[1])
             return toExecute
         return None
 

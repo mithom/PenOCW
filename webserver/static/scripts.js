@@ -248,7 +248,7 @@ var connectManueel = function(){
         // window.alert('connected manueel');
         //manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
         manueel.on('disconnect', function () {
-            window.alert('manueel disconnected')
+            //window.alert('manueel disconnected')
         }); //TODO: via kleurencodering weergeven of socket verbonden is of niet en automatisch proberen te reconnecten
 
         manueel.on('power', function (data) {
@@ -284,7 +284,7 @@ var connectComplex = function(){
         });
 
         complex.on('disconnect', function(){
-            window.alert("complex dc")
+            //window.alert("complex dc")
         })
     });
 };

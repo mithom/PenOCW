@@ -34,6 +34,8 @@ class PID:
         self.integral = 0
         self.integral_limit = 0.01
 
+	self.PID_results = [[0],[0],[0],[0]]
+
     def update(self, encoder_A, encoder_B):
         encoder_A = encoder_A - self.offset_A
         encoder_B = encoder_B - self.offset_B
@@ -69,6 +71,13 @@ class PID:
         self.kp = self.kp_backup
 
         print 'Ratio: ', ratio, ', PID: ', output
+
+	# Saving all results for analysis
+	self.PID_results[0].append(ratio)
+	self.PID_results[1].append(output)
+	self.PID_results[2].append(self.kp*error)
+	self.PID_results[3].append(self.ki*self.integral)
+
         return output
 
     def set_proportional(self, kp):
@@ -82,6 +91,9 @@ class PID:
 
     def set_integral(self, ki):
         self.ki = ki
+
+    def get_results(self):
+	return self.PID_results
 
 
 # ---- PSEUDOCODE ----

@@ -6,7 +6,7 @@ import math
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
 
-stream = urllib.urlopen('http://192.168.137.67:4848//video_feed.mjpg')
+stream = urllib.urlopen('http://192.168.137.153:4848//video_feed.mjpg')
 byte = ''
 while True:
     byte += stream.read(1024)
@@ -23,19 +23,24 @@ while True:
         # TODO: threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
 
         # Thresholding
-        ret, bw = cv.threshold(blur, 200, 255, cv.THRESH_BINARY)
+        ret, bw = cv.threshold(blur, 150, 255, cv.THRESH_BINARY)
 
         # Canny edge detection
         edges = cv.Canny(bw, 5, 5)
 
         # Hough line transform
+
         lines = cv.HoughLinesP(edges, 1, np.pi/180, 15, None, 1, 15)
+
+
+                                                                        # lines, minLineLength, maxLineGap)
+
 
         # Print number of found lines
         # print 'Lines found: ', len(lines)
 
         # Filtering on/off
-        filtering = True
+        filtering = False
 
         # TODO: enkel beginpunt en rico opnieuw berekenen als index veranderd is
 

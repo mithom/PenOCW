@@ -2,7 +2,7 @@
  * Created by Thomas on 05/10/2015.
  */
 var manueel = null;
-var beschrijving = null;
+var beschrijving = null;;
 var complex = null;
 
 var heldKeys = {};
@@ -14,54 +14,20 @@ var updateTime = function () {
 };
 
 $(document).ready(function () {
+    var selected = $("input[type='radio'][name='controlType']:checked").val();
+    switch(selected){
+        case 'manueel':
+            activateManueel();
+            break;
+        case 'complex':
+            activateComplex();
+            break;
+        case 'routeDescription':
+            activateRouteDescription();
+            break;
+    }
+
     timer = setInterval(updateTime, 100);
-    manueel = io.connect('http://' + document.domain + ':' + location.port + '/manueel');
-    beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving');
-    complex = io.connect('http://' + document.domain + ':' + location.port + '/complex');
-
-    manueel.on('connect', function () {
-        // window.alert('connected manueel');
-        //manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
-        manueel.on('disconnect', function () {
-            window.alert('manueel disconnected')
-        }); //TODO: via kleurencodering weergeven of socket verbonden is of niet en automatisch proberen te reconnecten
-
-        manueel.on('power', function (data) {
-            $("#value_power").text(data)
-            if (timer != null) {
-                clearInterval(timer);
-                last_update = 0;
-                $("#last_updated_power").text(0);
-            }
-            timer = setInterval(updateTime, 100);
-        })
-    });
-
-    beschrijving.on('connect', function () {
-        //beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
-
-        beschrijving.on('updateRouteDescription', function (route) {
-            var routeBody = $("#currentRoute table tbody");
-            routeBody.empty();
-
-            route.forEach(function () {
-                var newRow = document.createElement('tr');
-                var newName = document.createElement('td');
-                var newId = document.createElement('td');
-                var newIdContent = document.createTextNode('id: ' + route.id);
-                var newNameContent = document.createTextNode('command: ' + route.commandName);
-                newName.appendChild(newNameContent);
-                newId.appendChild(newIdContent);
-                newRow.appendChild(newName);
-                newRow.appendChild(newId);
-                routeBody.append(newRow);
-            })
-        });
-    });
-
-    complex.on('connect', function () {
-        //complex.on('alert', function(msg){window.alert("complex meldt: " + JSON.stringify(msg));});
-    });
 
     //here comes all the submit overrides
 
@@ -104,22 +70,25 @@ $(document).ready(function () {
     //TODO: antwoorden opvangen
 
     var keyDown = function (e) {
-        if(!(e.keyCode in heldKeys)){
-        heldKeys[e.keyCode] = true
-        switch (e.keyCode) {
-            case upKey:
-                doUp();
-                break;
-            case downKey:
-                doDown();
-                break;
-            case leftKey:
-                doLeft();
-                break;
-            case rightKey:
-                doRight();
-                break;
-        }}
+        if($("input[type='radio'][name='controlType']:checked").val() == 'manueel') {
+            if (!(e.keyCode in heldKeys)) {
+                heldKeys[e.keyCode] = true;
+                switch (e.keyCode) {
+                    case upKey:
+                        doUp();
+                        break;
+                    case downKey:
+                        doDown();
+                        break;
+                    case leftKey:
+                        doLeft();
+                        break;
+                    case rightKey:
+                        doRight();
+                        break;
+                }
+            }
+        }
     };
 
     var keyUp = function (e) {
@@ -248,6 +217,107 @@ var getAllfunctionsInQueue = function () {
 
 var cancelFunction = function (id) {
     //TODO: implement this function
+};
+
+var activateManueel = function(){
+    $("#direct-control").removeClass('hidden');
+    $("#commands").addClass('hidden');
+    $("#route-input").addClass('hidden');
+    connectManueel()
+};
+
+var activateComplex = function(){
+    $("#direct-control").addClass('hidden');
+    $("#commands").removeClass('hidden');
+    $("#route-input").addClass('hidden');
+    connectComplex()
+};
+
+var activateRouteDescription = function(){
+    $("#direct-control").addClass('hidden');
+    $("#commands").addClass('hidden');
+    $("#route-input").removeClass('hidden');
+    connectRoute()
+};
+
+var connectManueel = function(){
+    disconnect(complex);
+    disconnect(beschrijving);
+    manueel = io.connect('http://' + document.domain + ':' + location.port + '/manueel', {'forceNew': true});
+    manueel.on('connect', function () {
+        // window.alert('connected manueel');
+        //manueel.on('alert', function(msg){window.alert("manueel meldt: " + JSON.stringify(msg));});
+        manueel.on('disconnect', function () {
+            window.alert('manueel disconnected')
+        }); //TODO: via kleurencodering weergeven of socket verbonden is of niet en automatisch proberen te reconnecten
+
+        manueel.on('power', function (data) {
+            $("#value_power").text(data);
+            if (timer != null) {
+                clearInterval(timer);
+                last_update = 0;
+                $("#last_updated_power").text(0);
+            }
+            timer = setInterval(updateTime, 100);
+        });
+
+        manueel.on('askDisconnect', function(data){
+            disconnect(manueel);//TODO: switch page
+        });
+    });
+};
+var disconnect = function(socket){
+    if(socket != null){
+        socket.disconnect()
+    }
+};
+
+var connectComplex = function(){
+    disconnect(manueel);
+    disconnect(beschrijving);
+    complex = io.connect('http://' + document.domain + ':' + location.port + '/complex', {'forceNew': true});
+
+    complex.on('connect', function () {
+        //complex.on('alert', function(msg){window.alert("complex meldt: " + JSON.stringify(msg));});
+        complex.on('askDisconnect', function(data){
+            disconnect(complex);//TODO: switch page
+        });
+
+        complex.on('disconnect', function(){
+            window.alert("complex dc")
+        })
+    });
+};
+
+var connectRoute = function(){
+    disconnect(complex);
+    disconnect(manueel);
+    beschrijving = io.connect('http://' + document.domain + ':' + location.port + '/beschrijving', {'forceNew': true});
+    beschrijving.on('connect', function () {
+        //beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
+
+        beschrijving.on('updateRouteDescription', function (route) {
+            var routeBody = $("#currentRoute table tbody");
+            routeBody.empty();
+
+            route.forEach(function (elem) {
+                var newRow = document.createElement('tr');
+                var newName = document.createElement('td');
+                var newId = document.createElement('td');
+                var newIdContent = document.createTextNode('id: ' + elem.id);
+                var newNameContent = document.createTextNode('command: ' + elem.commandName);
+                newName.appendChild(newNameContent);
+                newId.appendChild(newIdContent);
+                newRow.appendChild(newName);
+                newRow.appendChild(newId);
+                routeBody.append(newRow);
+            });
+        });
+
+        beschrijving.on('askDisconnect', function(data){
+            disconnect(beschrijving);//TODO: switch page
+        });
+    });
 };
 
 // Closure to expand the Math module, source form: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/round

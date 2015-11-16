@@ -29,7 +29,7 @@ while True:
         edges = cv.Canny(bw, 5, 5)
 
         # Hough line transform
-        lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 100, 100)
+        lines = cv.HoughLinesP(edges, 1, np.pi/180, 15, None, 1, 15)
 
         # Print number of found lines
         # print 'Lines found: ', len(lines)
@@ -110,7 +110,7 @@ while True:
                         line2 += 1
                 line1 += 1
                 line2 = 0
-            # print 'Lines after filtering: ', len(lines)
+            print 'Lines after filtering: ', len(lines)
 
         # Grayscale to RGB for color line drawing
         line_image = cv.cvtColor(frame, cv.COLOR_GRAY2RGB)

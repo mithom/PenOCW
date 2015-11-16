@@ -10,7 +10,7 @@ number_of_test_files = 6
 imglist = []
 # for i in range(1,number_of_test_files + 1):
 for i in range(3, 4):
-    imglist.append(cv.imread('C:\\Users\\Gilles\\Desktop\\P&O\\line_images\\line' + str(i) + '.jpg', 1))
+    imglist.append(cv.imread('/home/r0302418/repos/penocw/c3.png', 1))
 
 for j in range(len(imglist)):
 
@@ -33,10 +33,11 @@ for j in range(len(imglist)):
     edges = cv.Canny(bw, 5, 5)
 
     # Hough line transform
-    lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 100, 100)
+
+    lines = cv.HoughLinesP(edges, 1, np.pi/180, 15, None, 1, 15)
 
     # Print number of found lines
-    print 'Lines found: ', len(lines)
+    print 'Lines found: ', len(lines[0])
 
     # Filtering on/off
     filtering = True
@@ -114,7 +115,7 @@ for j in range(len(imglist)):
                     line2 += 1
             line1 += 1
             line2 = 0
-        print 'Lines after filtering: ', len(lines)
+        print 'Lines after filtering: ', len(lines[0])
 
     # Grayscale to RGB for color line drawing
     line_image = cv.cvtColor(bw, cv.COLOR_GRAY2RGB)

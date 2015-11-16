@@ -156,29 +156,29 @@ def go_straight_duration(power, duration):
         BrickPiUpdateValues()
 
 
-def make_circle_left(power, radius):  # radius in cm
+def make_circle_left(power, radius, degree):  # radius in cm
     global O, car_width
     calibrate()
     outer_distance = ((radius+car_width/2.0)*2)*math.pi
     inned_distance = ((radius - car_width/2.0)*2)*math.pi
     outer_rotations = outer_distance/O
     inner_rotations = inned_distance/O
-    inner_degrees = inner_rotations*310
-    outer_degrees = outer_rotations*310
+    inner_degrees = inner_rotations*degree
+    outer_degrees = outer_rotations*degree
     ratio = inner_degrees/outer_degrees
     motorRotateDegree([power, int(power*ratio)],[int(outer_degrees),int(inner_degrees)],[PORT_B,PORT_A])
     #int versie want floats mogen niet vor deze functie. geeft kleine afrondingsfiout bij reiden cirkel!
 
 
-def make_circle_right(power, radius):
+def make_circle_right(power, radius, degree):
     global O, car_width
     calibrate()
     outer_distance = ((radius+car_width/2.0)*2)*math.pi
     inned_distance = ((radius - car_width/2.0)*2)*math.pi
     outer_rotations = outer_distance/O
     inner_rotations = inned_distance/O
-    inner_degrees = inner_rotations*310
-    outer_degrees = outer_rotations*310
+    inner_degrees = inner_rotations*degree
+    outer_degrees = outer_rotations*degree
     ratio = inner_degrees/outer_degrees
     motorRotateDegree([power, int(power*ratio)],[int(outer_degrees),int(inner_degrees)],[PORT_A,PORT_B])
 

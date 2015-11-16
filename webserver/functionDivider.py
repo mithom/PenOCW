@@ -57,10 +57,6 @@ class Function:
         return str(self)
 
 
-def haha(power=1):
-    print "power: ", power
-
-
 class FunctionDivider:
     """
     transforms commands into functions that the Car can execute. Also allows interuption of these commands.
@@ -96,6 +92,7 @@ class FunctionDivider:
                                           Function(functions.get('sleep'),duration=1),
                                           Function(functions.get('rotate_angle_left'), angle=90, power=100)],
                            "makeCircle": [Function(functions.get('make_circle_left'), radius=50, power=150)]}
+
         self.currentCommandObject = None
         if firstCommand is not None:
             self.executeCommand(firstCommand)

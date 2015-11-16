@@ -74,7 +74,7 @@ def go_straight_distance(power, distance):
     average = 0
     degree = (distance / O) * 360
 
-    proportional_factor = 190 #250 -> 300 -> 190 # 93
+    proportional_factor = 250 #250 -> 300 -> 190 # 93
     derivative_factor = 0 # 10 / 0
     integral_factor = 500 #500
     update_interval = 0.0001

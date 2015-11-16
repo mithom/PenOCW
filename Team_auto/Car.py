@@ -273,5 +273,5 @@ def get_power_values():
 
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
-    go_straight_distance(100,200)
+    go_straight_distance(100,100)
 

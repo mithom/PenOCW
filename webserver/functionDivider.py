@@ -75,6 +75,7 @@ class FunctionDivider:
                            "goForwardRigth": [Function(functions.get('make_circle_right'), radius=50, power=150, degree=5)],
                            "goBackwardLeft": [Function(functions.get('make_circle_left'), radius=50, power=150, degree=-5)],
                            "goBackwardRight": [Function(functions.get('make_circle_right'), radius=50, power=150, degree=-5)],
+                           "pass":[Function(functions.get('sleep'), duration=0.1)],
                            "makeLine": [Function(functions.get('go_straight_distance'), distance=200, power=100)],
                            "makeSquare": [Function(functions.get('go_straight_distance'), distance=100, power=100),
                                           Function(functions.get('sleep'),duration=1),

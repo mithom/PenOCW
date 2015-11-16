@@ -52,6 +52,8 @@ class __IOStream__:
     a class designed to communicate from the website to the BrickPi
     """
     manueelCommands = ["goForward", "goBackward", "goLeft", "goRight"]
+    manueelValues={"goForward":1, "goBackward":-1, "goLeft":10, "goRight":-10, "pass":0}
+    combinedValues={0: "pass", 11: "goForwardLeft", -9: "goForwardRight", 9: "goBackwardLeft", -11: "goBackwardRight", 1: "goForward", -1: "goBackward", 10: "goLeft", -10: "goRight"}
 
     def __init__(self):
         self.queue = []
@@ -60,7 +62,7 @@ class __IOStream__:
         if len(self.queue) > 0:
             toExecute = self.pop(0)
             if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 0:
-                self.queue.insert(0,toExecute)
+                self.queue.insert(0, toExecute)
                 # self.addCommandFrontQueue(toExecute.getCommandName(), **toExecute.__params__)
             elif len(self.queue) > 0 and self.queue[0].getCommandName() in __IOStream__.manueelCommands:
                 self.queue.insert(0,toExecute)
@@ -69,10 +71,11 @@ class __IOStream__:
         return None
 
     @classmethod
-    def _getCombinedCommand(cls, command1, command2):
-        return command1
-
-    # TODO: implementeren!!!
+    def _getCombinedCommand(cls, command1, *args):
+        naam = command1.getCommandName()
+        for command in args:
+            naam = cls.combinedValues[cls.manueelValues[naam] + cls.manueelValues[command.getCommandName()]]
+        return Command(naam)
 
     def addCommandToQueue(self, commandName, **kwargs):
         if len(self.queue) == sys.maxint:

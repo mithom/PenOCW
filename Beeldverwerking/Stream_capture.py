@@ -6,7 +6,7 @@ import math
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
 
-stream = urllib.urlopen('http://192.168.137.153:4848//video_feed.mjpg')
+stream = urllib.urlopen('http://192.168.137.136:4848//video_feed.mjpg')
 byte = ''
 while True:
     byte += stream.read(1024)
@@ -31,8 +31,7 @@ while True:
         # Hough line transform
 
         lines = cv.HoughLinesP(edges, 1, np.pi/180, 15, None, 1, 15)
-
-
+        #lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 50, 150 ) #(edge image, rho, theta, threshold,
                                                                         # lines, minLineLength, maxLineGap)
 
 
@@ -115,7 +114,7 @@ while True:
                         line2 += 1
                 line1 += 1
                 line2 = 0
-            print 'Lines after filtering: ', len(lines)
+            # print 'Lines after filtering: ', len(lines)
 
         # Grayscale to RGB for color line drawing
         line_image = cv.cvtColor(frame, cv.COLOR_GRAY2RGB)

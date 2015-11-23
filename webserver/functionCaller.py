@@ -14,15 +14,25 @@ class Command:
 
     def __init__(self, commandName, **params):
         if Command.__idGen__ is None:
-            Command.__idGen__ = getNextId()
+            Command.__idGen__ = Command.getNextId()
         self.id = Command.__idGen__.next()
         self.commandName = commandName
+        self.functions = None  # only used when command is interupted
         if params is not None:
             if params.get('id') is not None:
                 self.id = params['id']
             self.__params__ = params
         else:
             self.__params__ = {}
+
+    @staticmethod
+    def getNextId():
+        i = 0
+        while True:
+            if i == sys.maxint:
+                i = 0
+            i += 1
+            yield i
 
     def getId(self):
         return self.id
@@ -45,6 +55,15 @@ class Command:
 
     def __repr__(self):
         return str(self)
+
+    def is_paused(self):
+        return self.functions is not None
+
+    def get_functions(self):
+        return self.functions
+
+    def pause_with_updated_params(self, functions):
+        self.functions = functions
 
 
 class __IOStream__:
@@ -107,6 +126,7 @@ class __IOStream__:
         current = functionDivider.getFunctionDivider().currentCommandObject
         if current.getId() == commandId:
             functionDivider.getFunctionDivider().interuptCurrentCommand()
+            return True
         return False
 
     def cancelCurrentCommand(self):
@@ -159,15 +179,6 @@ def getIOStream():
 
 def getWebCaller():
     return __webCaller__
-
-
-def getNextId():
-    i = 0
-    while True:
-        if i == sys.maxint:
-            i = 0
-        i += 1
-        yield i
 
 
 __ioStream__ = __IOStream__()

@@ -121,7 +121,7 @@ class FunctionDivider:
         :return: the command with extra params to see how far it is already executed, it does finish the small functions
         """
         paused_command = self.currentCommandObject.pause_with_updated_params(self.currentCommand)
-        self.currentCommand = None
+        self.currentCommand = []
         self.currentCommandObject = None
         return paused_command
 

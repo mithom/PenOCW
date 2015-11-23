@@ -66,6 +66,12 @@ class PID:
 
         output = self.setpoint - self.kp * error - self.kd * derivative - self.ki * self.integral
 
+	if output > 2:
+	    output = 2
+	elif output < 0.2:
+	    output = 0.2
+
+
         self.previous_error = error
 
         self.kp = self.kp_backup

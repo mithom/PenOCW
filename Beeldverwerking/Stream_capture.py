@@ -24,7 +24,7 @@ while True:
         # TODO: threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
 
         # Thresholding
-        ret, bw = cv.threshold(blur, 150, 255, cv.THRESH_BINARY)
+        ret, bw = cv.threshold(blur, 200, 255, cv.THRESH_BINARY)
 
         # Canny edge detection
         edges = cv.Canny(bw, 5, 5)
@@ -40,7 +40,7 @@ while True:
         # print 'Lines found: ', len(lines)
 
         # Filtering on/off
-        filtering = False
+        filtering = True
 
         # TODO: enkel beginpunt en rico opnieuw berekenen als index veranderd is
 
@@ -60,6 +60,7 @@ while True:
                     distance3 = math.sqrt((line1_1[0]-line2_2[0])**2 + (line1_1[1]-line2_2[1])**2)
                     distance4 = math.sqrt((line1_2[0]-line2_1[0])**2 + (line1_2[1]-line2_1[1])**2)
                     distance = min(distance1, distance2, distance3, distance4)
+                    maxdist = max(distance1, distance2, distance3, distance4)
 
                     # Calculating line slopes
                     if max(line1_2[0], line1_1[0]) == line1_2[0]:
@@ -101,7 +102,7 @@ while True:
                     # Filtering lines based on similar starting point and slope
                     delete = False
                     switch = False
-                    if distance < 200 and flag == 1:
+                    if distance < 200 and flag == 1 and (maxdist < 30): #maxdist < max(length1,length2)
                         # We delete the shortest line
                         if length2 <= length1:
                             lines = np.delete(lines, line2, axis=0)

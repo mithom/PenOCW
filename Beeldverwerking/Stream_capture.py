@@ -31,8 +31,8 @@ while True:
         edges = cv.Canny(bw, 5, 5)
 
         # Hough line transform
-
-        lines = cv.HoughLinesP(edges, 1, np.pi/180, 15, None, 1, 15)
+        lines = cv.HoughLinesP(edges, 1, np.pi/180, tape_width, None, 1, 15)
+        #lines = cv.HoughLinesP(edges, 1, np.pi/180, 15, None, 1, 15)
         #lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 50, 150 ) #(edge image, rho, theta, threshold,
                                                                         # lines, minLineLength, maxLineGap)
 

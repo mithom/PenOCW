@@ -79,7 +79,7 @@ class __IOStream__:
 
     def pushCommand(self):
         if len(self.queue) > 0:
-            toExecute = self.pop(0)
+            toExecute = self.queue.pop(0)
             if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 0:
                 self.queue.insert(0, toExecute)
                 # self.addCommandFrontQueue(toExecute.getCommandName(), **toExecute.__params__)

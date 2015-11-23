@@ -3,6 +3,7 @@ import numpy as np
 import urllib
 import math
 import time
+from platform import system
 
 tape_width = 40
 # Stream capturing code copied from

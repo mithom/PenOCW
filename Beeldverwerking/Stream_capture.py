@@ -2,6 +2,7 @@ import cv2 as cv
 import numpy as np
 import urllib
 import math
+import time
 
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
@@ -116,16 +117,18 @@ while True:
                 line2 = 0
             # print 'Lines after filtering: ', len(lines)
 
-        filtering2 = True
+        filtering2 = False
 
         # Filtering 2
-        lines = lines[0]
-        if filtering2 is True:
+        #lines = lines[0]
+        if filtering2 is True and lines is not None:
             line1 = 0
             while line1 < len(lines):
                 line2 = line1 + 1
                 while line2 < len(lines):
                     # Calculating the distance between the line starting points
+                    print lines
+                    time.sleep(1)
                     line1_1 = [lines[line1][0], lines[line1][1]]
                     line1_2 = [lines[line1][2], lines[line1][3]]
                     line2_1 = [lines[line2][0], lines[line2][1]]
@@ -173,7 +176,7 @@ while True:
                     if not delete:
                         line2 += 1
                 line1 += 1
-        print 'Lines after filtering: ', len(lines)
+        #print 'Lines after filtering: ', len(lines)
 
 
         # Grayscale to RGB for color line drawing
@@ -181,11 +184,10 @@ while True:
 
         # Drawing the lines
         if lines is not None:
-            # for k in xrange(0, len(lines)):
-            #     print len(lines)
-            for x1, y1, x2, y2 in lines:
-                # cv.line(line_image, (x1,y1),(x2,y2),(0,255,0),2)
-                cv.line(line_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+            for k in xrange(0, len(lines)):
+                for x1, y1, x2, y2 in lines[k]:
+                    # cv.line(line_image, (x1,y1),(x2,y2),(0,255,0),2)
+                    cv.line(line_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
         # Image showing
         cv.imshow('Lines', line_image)

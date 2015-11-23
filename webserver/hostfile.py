@@ -17,6 +17,9 @@ app.config['SECRET_KEY'] = 'secret!'
 manueel = None
 complex = None
 beschrijving = None
+beeldverwerking = None
+
+# TODO:sockets omzetten naar get requests en 2 sockets overhouden, 1 voor laptop, 1 voor info zoals power en routeDescription
 
 
 def sendPower(*args):
@@ -29,7 +32,7 @@ def sendPower(*args):
 
 
 class ManueelNamespace(BaseNamespace, RoomsMixin,
-                       BroadcastMixin):  # breaks omwille van chrome die event.onpress hertrggered elke 0.05 seconden
+                       BroadcastMixin):
     def __init__(self, *args, **kwargs):
         global manueel
         super(ManueelNamespace, self).__init__(*args, **kwargs)
@@ -57,7 +60,6 @@ class ManueelNamespace(BaseNamespace, RoomsMixin,
 
     #def recv_disconnect(self):
         #print 'disconnected manueel'
-
 
     def on_up(self, params):
         if params.get("status") == "active":
@@ -177,6 +179,7 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         #print 'disconnected beschrijving'
 
     def updateRouteDesciption(self):
+        beeldverwerking.update_route_description()
         self.broadcast_event('updateRouteDescription', FC.getIOStream().getAllCommandOutputsInQueue())
 
     def on_start(self, params):
@@ -204,10 +207,37 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.updateRouteDesciption()
 
 
+class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
+    def __init__(self, *args, **kwargs):
+        global beeldverwerking
+        super(BeeldverwerkingNamespace, self).__init__(*args, **kwargs)
+        beeldverwerking = self
+
+    def emit(self, event, args):
+        self.socket.send_packet(dict(type="event", name=event,
+                                     args=args, endpoint=self.ns_name))
+
+    def update_route_description(self):
+        self.broadcast_event('updateRouteDescription', FC.getIOStream().getAllCommandOutputsInQueue())
+        pass
+
+    def on_command_finished(self, params):
+        succes = False
+        id = params.get('id', None)
+        if id is not None:
+            succes = FC.getIOStream().removeCommandFromQueue(id)
+            self.update_route_description()
+        if not succes:
+            self.emit("event_confirmation", False)
+        else:
+            self.emit("event_confirmation", True)
+
+
 @app.route("/socket.io/<path:rest>")
 def run_socketio(rest):
     socketio_manage(request.environ, {'/manueel': ManueelNamespace, '/complex': ComplexNamespace,
-                                      '/beschrijving': BeschrijvingNamespace})
+                                      '/beschrijving': BeschrijvingNamespace,
+                                      '/beeldverwerking': BeeldverwerkingNamespace})
     return ''
 
 
@@ -220,23 +250,6 @@ def index():
         #    params = request.json
         #    func = params.get('function')
         #    return procesFunctionCall(func)
-
-
-'''
-@socket.on("disconnect", namespace="/manueel")
-def disconnect():
-    print "nice to have met you."
-
-
-@socket.on("disconnect", namespace="/complex")
-def disconnectComplex():
-    print "nice to have met you."
-
-
-@socket.on("disconnect", namespace="/beschrijving")
-def disconnectBeschrijving():
-    print "nice to have met you."
-'''
 
 
 def gen(cam):

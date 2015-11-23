@@ -4,7 +4,7 @@ gevent.monkey.patch_all(thread=False, time=False)
 import webserver.hostfile as hostfile
 import webserver.functionDivider
 import webserver.functionCaller
-import sys, os, threading
+import threading
 import time
 # import Team_auto.Car as car
 import werkzeug.serving
@@ -28,7 +28,7 @@ def updateValues():
         time.sleep(0.1)
         if webserver.functionDivider.car.isUpdated:
             hostfile.sendPower(webserver.functionDivider.car.get_power_values())
-            print "is was TRUEEEEEEEEEEEEEEEEEEEEEE-----------------------------"
+            #print "is was TRUEEEEEEEEEEEEEEEEEEEEEE-----------------------------"
             webserver.functionDivider.car.isUpdated = False
 
 

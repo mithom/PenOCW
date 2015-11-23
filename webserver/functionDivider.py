@@ -10,7 +10,8 @@ from platform import system
 
 car = None  # this is going to be the module Team_auto.car or a mockup for it.
 
-functionDivider = None
+
+# functionDivider = None
 
 
 class Function:
@@ -71,46 +72,58 @@ class FunctionDivider:
                            "goBackward": [Function(functions.get('go_straight_manual'), duration=0.1, power=-250)],
                            "goLeft": [Function(functions.get('rotate_left_duration'), duration=0.1, power=100)],
                            "goRight": [Function(functions.get('rotate_right_duration'), duration=0.1, power=100)],
-                           "goForwardLeft": [Function(functions.get('make_circle_left'), radius=50, power=150, degree=5)],
-                           "goForwardRigth": [Function(functions.get('make_circle_right'), radius=50, power=150, degree=5)],
-                           "goBackwardLeft": [Function(functions.get('make_circle_left'), radius=50, power=150, degree=-5)],
-                           "goBackwardRight": [Function(functions.get('make_circle_right'), radius=50, power=150, degree=-5)],
-                           "pass":[Function(functions.get('sleep'), duration=0.1)],
+                           "goForwardLeft": [
+                               Function(functions.get('make_circle_left'), radius=50, power=150, degree=5)],
+                           "goForwardRigth": [
+                               Function(functions.get('make_circle_right'), radius=50, power=150, degree=5)],
+                           "goBackwardLeft": [
+                               Function(functions.get('make_circle_left'), radius=50, power=150, degree=-5)],
+                           "goBackwardRight": [
+                               Function(functions.get('make_circle_right'), radius=50, power=150, degree=-5)],
+                           "pass": [Function(functions.get('sleep'), duration=0.1)],
                            "makeLine": [Function(functions.get('go_straight_distance'), distance=200, power=100)],
                            "makeSquare": [Function(functions.get('go_straight_distance'), distance=100, power=100),
-                                          Function(functions.get('sleep'),duration=1),
+                                          Function(functions.get('sleep'), duration=1),
                                           Function(functions.get('rotate_left_angle'), angle=90, power=100),
-                                          Function(functions.get('sleep'),duration=1),
+                                          Function(functions.get('sleep'), duration=1),
                                           Function(functions.get('go_straight_distance'), distance=100, power=100),
-                                          Function(functions.get('sleep'),duration=1),
+                                          Function(functions.get('sleep'), duration=1),
                                           Function(functions.get('rotate_left_angle'), angle=90, power=100),
-                                          Function(functions.get('sleep'),duration=1),
+                                          Function(functions.get('sleep'), duration=1),
                                           Function(functions.get('go_straight_distance'), distance=100, power=100),
-                                          Function(functions.get('sleep'),duration=1),
+                                          Function(functions.get('sleep'), duration=1),
                                           Function(functions.get('rotate_left_angle'), angle=90, power=100),
-                                          Function(functions.get('sleep'),duration=1),
+                                          Function(functions.get('sleep'), duration=1),
                                           Function(functions.get('go_straight_distance'), distance=100, power=100),
-                                          Function(functions.get('sleep'),duration=1),
+                                          Function(functions.get('sleep'), duration=1),
                                           Function(functions.get('rotate_left_angle'), angle=90, power=100)],
-                           "makeCircle": [Function(functions.get('make_circle_left'), radius=50, power=150, degree=310)]}
+                           "makeCircle": [
+                               Function(functions.get('make_circle_left'), radius=50, power=150, degree=310)]}
 
         self.currentCommandObject = None
+        self.currentThread = None
         if firstCommand is not None:
             self.executeCommand(firstCommand)
 
     def executeCommand(self, command):  # TODO: take params into account
         if command is not None and command.getCommandName() in self.commandLib.keys():
-            self.currentCommand = [x.copy() for x in self.commandLib[command.getCommandName()]]
             self.currentCommandObject = command
+            if not command.is_paused():
+                self.currentCommand = [x.copy() for x in self.commandLib[command.getCommandName()]]
+            else:
+                self.currentCommand = command.get_functions()
         else:
             self.currentCommand = None
 
     def interuptCurrentCommand(self):
         """
         stops executing current command
-        :return: the command with extra params to see how far it is already executed
+        :return: the command with extra params to see how far it is already executed, it does finish the small functions
         """
-        pass
+        paused_command = self.currentCommandObject.pause_with_updated_params(self.currentCommand)
+        self.currentCommand = None
+        self.currentCommandObject = None
+        return paused_command
 
     def processTime(self, dt):
         """
@@ -126,7 +139,7 @@ class FunctionDivider:
             else:
                 self.executeCommand(functionCaller.getIOStream().pushCommand())
                 #  print self.currentCommand, "current command"
-                if self.currentCommand == None:  # geen commands in queue
+                if self.currentCommand is None:  # geen commands in queue
                     time.sleep(0.1)
                     dt -= 0.1
 

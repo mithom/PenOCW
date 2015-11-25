@@ -2,6 +2,7 @@ import cv2 as cv
 import numpy as np
 import urllib
 import math
+import time
 from platform import system
 
 tape_width = 40
@@ -33,6 +34,8 @@ while True:
         # Hough line transform
 
         lines = cv.HoughLinesP(edges, 1, np.pi/180, 15, None, tape_width, 15)
+        #lines = cv.HoughLinesP(edges, 1, np.pi/180, tape_width, None, 1, 15)
+        #lines = cv.HoughLinesP(edges, 1, np.pi/180, 15, None, 1, 15)
         #lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 50, 150 ) #(edge image, rho, theta, threshold,
                                                                         # lines, minLineLength, maxLineGap)
 

@@ -61,7 +61,7 @@ def go_straight_manual(power, duration):
 def go_straight_distance(power, distance):
     global offset_A, offset_B
 
-    main_power = 80
+    main_power = 150
     calibrate(main_power, main_power)
     left_power = main_power
     right_power = main_power
@@ -78,8 +78,9 @@ def go_straight_distance(power, distance):
     derivative_factor = 0 # 10 / 0
     integral_factor = 500 #500
     update_interval = 0.0001
+    target_ratio = 1
     pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
-                             1, offset_A, offset_B, update_interval)
+                             target_ratio, offset_A, offset_B, update_interval)
     start_time = time.time()
     last_update = time.time()
     while average < degree*2: # encoders are in half degrees
@@ -108,7 +109,7 @@ def go_straight_distance(power, distance):
     BrickPiUpdateValues()
     time.sleep(0.05)
     results = pid_controller.get_results()
-    print str(results)
+    # print str(results)
 
 def go_straight_duration(power, duration):
     global offset_A, offset_B
@@ -275,4 +276,3 @@ def get_power_values():
 if __name__ == '__main__':
     print "car.py is the main module, running the go straight distance"
     go_straight_distance(100,200)
-    rotate_left_angle(100,180)

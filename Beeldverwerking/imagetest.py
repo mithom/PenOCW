@@ -2,9 +2,12 @@ import cv2 as cv
 import numpy as np
 import math
 import time
+from platform import system
 
 number_of_test_files = 6
-tape_width = 35
+tape_width = 40
+lijn = [1,2,3]
+print lijn
 
 # Image loading
 # img = cv.imread('C:\\Users\\Gilles\\Desktop\\P&O\\line_images\\line6.jpg',1)
@@ -12,12 +15,11 @@ tape_width = 35
 imglist = []
 # for i in range(1,number_of_test_files + 1):
 for i in range(3, 4):
-    imglist.append(cv.imread('/home/r0450196/Desktop/experiment.jpeg', 1))
+    imglist.append(cv.imread('/home/r0450196/Desktop/nele_echte_lijn.jpg', 1))
 
 for j in range(len(imglist)):
 
     img = imglist[j]
-    img2 = imglist[j]
 
     # Image to grayscale
     gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
@@ -36,17 +38,85 @@ for j in range(len(imglist)):
     edges = cv.Canny(bw, 5, 5)
 
     # Hough line transform
-
     lines = cv.HoughLinesP(edges, 1, np.pi/180, tape_width, None, 1, 15)
-    print lines
+
+    # lines transformation
+    if system() == 'Linux':
+        new_lines = []
+        lines = lines[0]
+        for i in xrange(len(lines)):
+            new_lines.append([lines[i]])
+        lines = np.array(new_lines)
+
     # Print number of found lines
-    print 'Lines found: ', len(lines[0])
+    print lines
+    print 'Lines found: ', len(lines)
 
     # Filtering on/off
     filtering = True
     filtering2 = True
 
     # TODO: enkel beginpunt en rico opnieuw berekenen als index veranderd is
+################################################
+####### LIJN FILTERING 2
+#################################################
+    if filtering2 is True:
+        line1 = 0
+        while line1 < len(lines):
+            line2 = line1 + 1
+            while line2 < len(lines):
+                # Calculating the distance between the line starting points
+                line1_1 = [lines[line1][0][0], lines[line1][0][1]]
+                line1_2 = [lines[line1][0][2], lines[line1][0][3]]
+                line2_1 = [lines[line2][0][0], lines[line2][0][1]]
+                line2_2 = [lines[line2][0][2], lines[line2][0][3]]
+                mid_line_1 = [int((lines[line1][0][0] + lines[line1][0][2])/2), int((lines[line1][0][1] + lines[line1][0][3])/2)]
+                mid_line_2 = [int((lines[line2][0][0] + lines[line2][0][2])/2), int((lines[line2][0][1] + lines[line2][0][3])/2)]
+                distance = math.sqrt((mid_line_1[0]-mid_line_2[0])**2 + (mid_line_1[1]-mid_line_2[1])**2)
+
+                # Calculating line slopes
+                if max(line1_2[0], line1_1[0]) == line1_2[0]:
+                    dy = line1_2[1] - line1_1[1]
+                    dx = line1_2[0] - line1_1[0]
+                else:
+                    dy = line1_1[1] - line1_2[1]
+                    dx = line1_1[0] - line1_2[0]
+                if dx != 0:
+                    rico1 = dy / float(dx)
+                else:
+                    rico1 = 10000
+                if max(line2_2[0], line2_1[0]) == line2_2[0]:
+                    dy = line2_2[1] - line2_1[1]
+                    dx = line2_2[0] - line2_1[0]
+                else:
+                    dy = line2_1[1] - line2_2[1]
+                    dx = line2_1[0] - line2_2[0]
+                if dx != 0:
+                    rico2 = dy / float(dx)
+                else:
+                    rico2 = 10000
+
+                # Determining wether slopes approximately match
+                flag = 0
+                if (rico1 - rico2) < 7:
+                    flag = 1
+
+
+                # Filtering lines based on similar starting point and slope
+                delete = False
+                if distance < tape_width*2 and flag == 1:
+                    print lines[line1], lines[line2]
+                    new_line = [[int((lines[line1][0][0] + lines[line2][0][0])/2), int((lines[line1][0][1] + lines[line2][0][1])/2), int((lines[line1][0][2] + lines[line2][0][2])/2), int((lines[line1][0][3] + lines[line2][0][3])/2)]]
+                    lines[line1] = new_line
+                    lines = np.delete(lines, line2, axis = 0)
+                    delete = True
+                if not delete:
+                    line2 += 1
+            line1 += 1
+        print 'Lines after filtering2: ', len(lines)
+################################################
+####### LIJN FILTERING 2
+#################################################
 ################################################
 ####### LIJN FILTERING GILLES
 #################################################
@@ -120,73 +190,12 @@ for j in range(len(imglist)):
                     line2 += 1
             line1 += 1
             line2 = 0
+        print 'Lines after filtering1: ', len(lines)
 
 ################################################
 ####### LIJN FILTERING GILLES
 #################################################
-############################################################################################################################################################################################################
-################################################
-####### LIJN FILTERING 2
-#################################################
-    # Line filtering
-    lines = lines[0] 
-    if filtering2 is True:
-        line1 = 0
-        while line1 < len(lines):
-            line2 = line1 + 1
-            while line2 < len(lines):
-                # Calculating the distance between the line starting points
-                line1_1 = [lines[line1][0], lines[line1][1]]
-                line1_2 = [lines[line1][2], lines[line1][3]]
-                line2_1 = [lines[line2][0], lines[line2][1]]
-                line2_2 = [lines[line2][2], lines[line2][3]]
-                mid_line_1 = [int((lines[line1][0] + lines[line1][2])/2), int((lines[line1][1] + lines[line1][3])/2)]
-                mid_line_2 = [int((lines[line2][0] + lines[line2][2])/2), int((lines[line2][1] + lines[line2][3])/2)]
-                distance = math.sqrt((mid_line_1[0]-mid_line_2[0])**2 + (mid_line_1[1]-mid_line_2[1])**2)
 
-                # Calculating line slopes
-                if max(line1_2[0], line1_1[0]) == line1_2[0]:
-                    dy = line1_2[1] - line1_1[1]
-                    dx = line1_2[0] - line1_1[0]
-                else:
-                    dy = line1_1[1] - line1_2[1]
-                    dx = line1_1[0] - line1_2[0]
-                if dx != 0:
-                    rico1 = dy / float(dx)
-                else:
-                    rico1 = 10000
-                if max(line2_2[0], line2_1[0]) == line2_2[0]:
-                    dy = line2_2[1] - line2_1[1]
-                    dx = line2_2[0] - line2_1[0]
-                else:
-                    dy = line2_1[1] - line2_2[1]
-                    dx = line2_1[0] - line2_2[0]
-                if dx != 0:
-                    rico2 = dy / float(dx)
-                else:
-                    rico2 = 10000
-
-                # Determining wether slopes approximately match
-                flag = 0
-                if (rico1 - rico2) < 7:
-                    flag = 1
-
-
-                # Filtering lines based on similar starting point and slope
-                delete = False
-                if distance < tape_width*2 and flag == 1:
-                    print lines[line1], lines[line2]
-                    new_line = [int((lines[line1][0] + lines[line2][0])/2), int((lines[line1][1] + lines[line2][1])/2), int((lines[line1][2] + lines[line2][2])/2), int((lines[line1][3] + lines[line2][3])/2)]
-                    lines[line1] = new_line
-                    lines = np.delete(lines, line2, axis = 0)
-                    delete = True
-                if not delete:
-                    line2 += 1
-            line1 += 1
-        print 'Lines after filtering: ', len(lines)
-################################################
-####### LIJN FILTERING 2
-#################################################
 
     # Grayscale to RGB for color line drawing
     line_image = cv.cvtColor(bw, cv.COLOR_GRAY2RGB)
@@ -196,10 +205,12 @@ for j in range(len(imglist)):
     line_image = cv.cvtColor(bw, cv.COLOR_GRAY2RGB)
 
     # Drawing the lines
-    for x1, y1, x2, y2 in lines:
-            # cv.line(line_image, (x1,y1),(x2,y2),(0,255,0),2)
-        cv.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
+    if lines is not None:
+        for k in xrange(0, len(lines)):
+            for x1, y1, x2, y2 in lines[k]:
+                    # cv.line(line_image, (x1,y1),(x2,y2),(0,255,0),2)
+                cv.line(line_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
     # Image showing
-    cv.imshow('Lines', img)
+    cv.imshow('Lines', line_image)
     cv.waitKey(0)

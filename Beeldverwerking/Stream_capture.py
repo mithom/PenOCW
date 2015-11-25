@@ -3,12 +3,48 @@ import numpy as np
 import urllib
 import math
 import time
+from socketIO_client import SocketIO, BaseNamespace
+
+
+url = '192.168.137.136'
+port = 4848
+current_route_description = []
+
+
+class BeeldverwekingNameSpace(BaseNamespace):
+    
+    def __init__(self):
+        super(BeeldverwekingNameSpace, self).__init__()
+        self.awaiting_events = {}
+
+    def emit(self, event, args):
+        self.socket.send_packet(dict(type="event", name=event,
+                                     args=args, endpoint=self.ns_name))
+
+    def on_update_route_description(self, params):
+        global current_route_description
+        current_route_description = params
+
+    def on_event_confirmation(self, params):
+        if params['succes']:
+            del self.awaiting_events[params['id']]
+        else:
+            if params.get('id', False):
+                self.finish_command(params['id'])
+
+    def finish_command(self, command_id):
+        self.awaiting_events[command_id] = True
+        self.emit('command_finished', {'id': command_id})
+
+socketIO = SocketIO(url, port)
+beeldverwerking_namespace = socketIO.define(BeeldverwekingNameSpace, '/beeldverwerking')
+
 
 tape_width = 40
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
 
-stream = urllib.urlopen('http://192.168.137.136:4848//video_feed.mjpg')
+stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg'%{'url': url, 'port': port})
 byte = ''
 while True:
     byte += stream.read(1024)

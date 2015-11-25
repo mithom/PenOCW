@@ -218,19 +218,19 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
                                      args=args, endpoint=self.ns_name))
 
     def update_route_description(self):
-        self.broadcast_event('updateRouteDescription', FC.getIOStream().getAllCommandOutputsInQueue())
+        self.broadcast_event('update_route_description', FC.getIOStream().getAllCommandOutputsInQueue())
         pass
 
     def on_command_finished(self, params):
         succes = False
-        id = params.get('id', None)
-        if id is not None:
-            succes = FC.getIOStream().removeCommandFromQueue(id)
+        command_id = params.get('id', None)
+        if command_id is not None:
+            succes = FC.getIOStream().removeCommandFromQueue(command_id)
             self.update_route_description()
         if not succes:
-            self.emit("event_confirmation", False)
+            self.emit("event_confirmation", {'succes': False, 'id': command_id})
         else:
-            self.emit("event_confirmation", True)
+            self.emit("event_confirmation", {'succes': True, 'id': command_id})
 
 
 @app.route("/socket.io/<path:rest>")

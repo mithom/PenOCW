@@ -2,6 +2,11 @@
 import cv2 as cv
 import block
 import copy
+
+
+
+"""
+
 from beeldverwerkingNameSpace import BeeldverwekingNameSpace
 from socketIO_client import SocketIO
 
@@ -11,8 +16,7 @@ current_route_description = []
 socketIO = SocketIO(url, port)
 beeldverwerking_namespace = socketIO.define(BeeldverwekingNameSpace, '/beeldverwerking')
 
-# Image loading
-frame = cv.imread('/home/r0302418/repos/penocw/Beeldverwerking/pi_photos/cam4.jpg', 1)
+
 
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
@@ -27,6 +31,12 @@ while True:
         jpg = byte[a:b+2]
         byte = byte[b+2:]
         frame = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 0)'''
+
+
+"""
+# Image loading
+frame = cv.imread('/home/r0302418/repos/penocw/Beeldverwerking/pi_photos/cam4.jpg', 1)
+
 # Image to grayscale
 gray = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
 
@@ -170,7 +180,7 @@ def check_middle_y(y,x):
     else:
         return True
 
-
+list_of_blocks = []
 pxbackup = copy.deepcopy(px)
 for r in xrange(px.shape[0] - 1, 0, -1):
     found_white_row = False
@@ -277,4 +287,4 @@ elif show_x is show_result:
     ##########################
     ## hier bebingt de stuur logica
     ##########################
-beeldverwerking_namespace.set_powers(0, 200)
+#beeldverwerking_namespace.set_powers(0, 200)

@@ -58,6 +58,19 @@ def go_straight_manual(power, duration):
         BrickPiUpdateValues()
 
 
+def go_straight_camera(left_power, right_power, duration):
+    # calibrate(main_power, main_power)
+    # right_power = int((2*main_power)/(ratio+1))
+    # left_power = int(ratio*right_power)
+    calibrate(left_power, right_power)
+    set_motors(left_power, right_power)
+    BrickPiUpdateValues()
+    start_time = time.time()
+    while time.time() - start_time < duration:
+        set_motors(left_power, right_power)
+        BrickPiUpdateValues()
+
+
 def go_straight_distance(power, distance):
     global offset_A, offset_B
 
@@ -263,7 +276,7 @@ def get_functions():
                  'make_circle_right': make_circle_right, 'rotate_left_angle': rotate_left_angle,
                  'rotate_right_angle': rotate_right_angle, 'rotate_left_duration': rotate_left_duration,
                  'rotate_right_duration': rotate_right_duration, 'sleep': sleep,
-                 'set_powers': set_motors}
+                 'set_powers': go_straight_camera()}
     return functions
 
 

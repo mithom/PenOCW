@@ -9,12 +9,15 @@ from socketIO_client import SocketIO, BaseNamespace
 url = '192.168.137.136'
 port = 4848
 current_route_description = []
+beeldverwerking = None
 
 
 class BeeldverwekingNameSpace(BaseNamespace):
     def __init__(self):
+        global beeldverwerking
         super(BeeldverwekingNameSpace, self).__init__()
         self.awaiting_events = {}
+        beeldverwerking = self
 
     def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,
@@ -34,6 +37,9 @@ class BeeldverwekingNameSpace(BaseNamespace):
     def finish_command(self, command_id):
         self.awaiting_events[command_id] = True
         self.emit('command_finished', {'id': command_id})
+
+    def set_powers(self, left, right):
+        self.emit("set_power",{"left": left, "right": right})
 
 
 socketIO = SocketIO(url, port)
@@ -289,3 +295,8 @@ while True:
 
         if cv.waitKey(1) == 27:
             exit(0)
+
+    ##########################
+    ## hier bebingt de stuur logica
+    ##########################
+

@@ -262,7 +262,8 @@ def get_functions():
                  'go_straight_manual': go_straight_manual, 'make_circle_left': make_circle_left,
                  'make_circle_right': make_circle_right, 'rotate_left_angle': rotate_left_angle,
                  'rotate_right_angle': rotate_right_angle, 'rotate_left_duration': rotate_left_duration,
-                 'rotate_right_duration': rotate_right_duration, 'sleep': sleep}
+                 'rotate_right_duration': rotate_right_duration, 'sleep': sleep,
+                 'set_powers': set_motors}
     return functions
 
 

@@ -232,6 +232,10 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         else:
             self.emit("event_confirmation", {'succes': True, 'id': command_id})
 
+    def on_set_power(self,params):
+        #TODO: controleren
+        FC.functionDivider.getFunctionDivider().currentFunction.set_params(params)
+
 
 @app.route("/socket.io/<path:rest>")
 def run_socketio(rest):

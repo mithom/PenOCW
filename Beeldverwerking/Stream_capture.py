@@ -298,4 +298,4 @@ while True:
     ##########################
     ## hier bebingt de stuur logica
     ##########################
-    beeldverwerking_namespace.set_powers(100, 150)
+    beeldverwerking_namespace.set_powers(0, 200)

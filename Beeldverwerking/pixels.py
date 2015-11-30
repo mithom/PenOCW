@@ -6,9 +6,10 @@ import time
 from platform import system
 import urllib
 import block
+import copy
 
 # Image loading
-frame = cv.imread('/home/r0302418/repos/penocw/Beeldverwerking/pi_photos/cam2.jpg', 1)
+frame = cv.imread('/home/r0302418/repos/penocw/Beeldverwerking/pi_photos/cam4.jpg', 1)
 
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
@@ -44,20 +45,20 @@ cut1 = bw[bw.shape[0]/3:bw.shape[0]]
 cut2 = cut1[:,cut1.shape[1]*1/4:cut1.shape[1]*3/4]
 
 # Variable declaration
-img_width = bw.shape[1]
-img_height = bw.shape[0]
+img_width = cut2.shape[1]
+img_height = cut2.shape[0]
 img_division = 50
 
 # Pixelation
-px = cv.resize(bw, (img_width/img_division,img_height/img_division), interpolation = cv.INTER_NEAREST)
+px = cv.resize(cut2, (img_width/img_division,img_height/img_division), interpolation = cv.INTER_NEAREST)
 print px.shape
-pxres = cv.resize(px, (img_width, img_height), interpolation = cv.INTER_NEAREST)
+
 # 
 #opgepast met breedte (blok ernaast)
-min_width = 3
-max_width = 15
-min_length = 3
-max_length = 15
+min_width = 2
+max_width = 5
+min_length = 2
+max_length = 5
 start_c = None
 start_r = None
 stop_c = None
@@ -91,34 +92,69 @@ print list_of_blocks
 def remove_whites(px, left, right, bottom, top):
     for i in xrange(left, right+1):
         for j in xrange(bottom, top, -1):
-            px[j][i]=0 
+            print i,j
+            px[j][i]=0           
     return px
 
+def check_right(index):
+    if index > (px.shape[1]-1):
+        index = (px.shape[1]-1)
+    return index
+
+
+def check_top(index):
+    if index < 0:
+        index = 0
+    return index
+
+pxbackup = copy.deepcopy(px)
 for r in xrange(px.shape[0]-1, 0, -1):
     found_white_row = False
     for c in xrange(0,px.shape[1]-1,1):
         if px[r][c] == 255:
-            if px[r-1][c]==0 or px[r][c+1]==0:
-                px[r][c]=0
-            else:
-                wide_enough=False
-                for i in xrange(min_width,max_width):
-                    if px[r][c+i]==255:
-                        wide_enough=True
-                    if wide_enough==True:
-                        break
-                long_enough=False
-                for i in xrange(min_length,max_length):
-                    if px[r-i][c]==255:
-                        long_enough=True
-                    if long_enough==True:
-                        break
-                if long_enough==True and wide_enough==True:
-                    new_block = block.Block([c, c+max_width, r, r-max_length])
-                    list_of_blocks.append(new_block)
-                    px = remove_whites(px, c, c+max_width, r, r-max_length)
+            if r != 0 and c != (px.shape[1]-1):   
+                if px[r-1][c]==0 or px[r][c+1]==0:
+                    px[r][c]=0
+                else:
+                    wide_enough=False
+                    for i in xrange(min_width,max_width):
+                        a = c + i
+                        a = check_right(a)
+                        if px[r][a]==255:
+                            wide_enough=True
+                        if wide_enough==True:
+                            break
+                    long_enough=False
+                    for i in xrange(min_length,max_length):
+                        a = r - i
+                        a = check_top(a)                     
+                        if px[a][c]==255:
+                            long_enough=True
+                        if long_enough==True:
+                            break
+                    if long_enough==True and wide_enough==True:
+                        y = r - 1                        
+                        x = c + 1  
+                        while check_middle_x(y,x) == False or check_middle_y(y,x) == False:
+                            
+
+                        '''
+                        a = c+4
+                        b = r-4
+                        a = check_right(a)
+                        b = check_top(b)
+                        new_block = block.Block(c, a, r, b)
+                        list_of_blocks.append(new_block)
+                        px = remove_whites(px, c, a, r, b)
+                        '''
 print list_of_blocks
 print list_of_blocks[0].getLocation()
+
+for t in list_of_blocks:
+    location = t.getLocation()
+    pxbackup[location[1]][location[0]]=150
+
+pxres = cv.resize(pxbackup, (img_width, img_height), interpolation = cv.INTER_NEAREST)
 
 '''        
 white_rows = []

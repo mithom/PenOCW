@@ -55,10 +55,10 @@ print px.shape
 
 # 
 #opgepast met breedte (blok ernaast)
-min_width = 2
-max_width = 5
-min_length = 2
-max_length = 5
+min_width = 1
+max_width = 10
+min_length = 1
+max_length = 10
 start_c = None
 start_r = None
 stop_c = None
@@ -107,6 +107,65 @@ def check_top(index):
         index = 0
     return index
 
+
+def find_whites(y,x,direction):
+    count = 0
+    if direction == 'left':
+        while x > 0:
+            x -= 1
+            if px[y][x]==255:
+                count += 1
+            else:
+                break
+    elif direction == 'right':
+        while x < (px.shape[1]-1):
+            x += 1
+            if px[y][x]==255:
+                count += 1
+            else:
+                break
+    elif direction == 'up':
+        while y > 0:
+            y -= 1
+            if px[y][x]==255:
+                count += 1
+            else:
+                break
+    else:
+        while y < (px.shape[0]-1):
+            y += 1
+            if px[y][x]==255:
+                count += 1
+            else:
+                break
+    if direction == 'up' or direction == 'down':
+        if count > max_length/2:
+            count = max_length/2
+    else:
+        if count > max_width/2:
+            count = max_width/2
+    return count
+
+
+
+
+def check_middle_x(y,x):
+    left = find_whites(y,x,'left')
+    right = find_whites(y,x,'right')
+    if abs(left-right)>1:
+        return False
+    else:
+        return True
+
+def check_middle_y(y,x):
+    up = find_whites(y,x,'up')
+    down = find_whites(y,x,'down')
+    if abs(up-down)>1:
+        return False
+    else:
+        return True
+
+
 pxbackup = copy.deepcopy(px)
 for r in xrange(px.shape[0]-1, 0, -1):
     found_white_row = False
@@ -136,8 +195,17 @@ for r in xrange(px.shape[0]-1, 0, -1):
                         y = r - 1                        
                         x = c + 1  
                         while check_middle_x(y,x) == False or check_middle_y(y,x) == False:
-                            
-
+                            if check_middle_x(y,x) == False:
+                                x += 1
+                            if check_middle_y(y,x) == False:
+                                y -= 1
+                        t = x - find_whites(y,x,'left')
+                        u = x + find_whites(y,x,'right')
+                        v = y + find_whites(y,x,'down')
+                        w = y - find_whites(y,x,'up')
+                        new_block = block.Block(t, u, v, w)
+                        list_of_blocks.append(new_block)
+                        px = remove_whites(px, t, u, v, w)
                         '''
                         a = c+4
                         b = r-4

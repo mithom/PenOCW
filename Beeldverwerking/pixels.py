@@ -7,7 +7,7 @@ from platform import system
 import urllib
 
 # Image loading
-frame = cv.imread('/home/r0302418/repos/penocw/Beeldverwerking/pi_photos/cam4.jpg', 1)
+frame = cv.imread('/home/r0302418/repos/penocw/Beeldverwerking/pi_photos/cam0.jpg', 1)
 
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
@@ -43,29 +43,62 @@ cut1 = bw[bw.shape[0]/3:bw.shape[0]]
 cut2 = cut1[:,cut1.shape[1]*1/4:cut1.shape[1]*3/4]
 
 # Variable declaration
-img_width = cut2.shape[1]
-img_height = cut2.shape[0]
+img_width = bw.shape[1]
+img_height = bw.shape[0]
 img_division = 50
 
 # Pixelation
-px = cv.resize(cut2, (img_width/img_division,img_height/img_division), interpolation = cv.INTER_NEAREST)
+px = cv.resize(bw, (img_width/img_division,img_height/img_division), interpolation = cv.INTER_NEAREST)
 print px.shape
 pxres = cv.resize(px, (img_width, img_height), interpolation = cv.INTER_NEAREST)
-
+print px
 # 
+#opgepast met breedte (blok ernaast)
+max_width = 15
+min_length = 3
+max_length = 15
+start_x = None
+start_y = None
+stop_x = None
+stop_y = None
+
+
 for j in xrange(px.shape[0]-1, 0, -1):
+    found_white = False
     for i in xrange(px.shape[1]):
         if px[j][i] == 255:
-            print j, i
+            found_white = True
+            if start_y == None:
+                start_y = j
+            if (start_x == None) or (i < start_x):
+                start_x = i
+            if (stop_x == None) or (i > stop_x):
+                stop_x = i
+    if (start_y != None) and (found_white == False):
+        stop_y = j - 1
+        if (start_y - stop_y) < min_length:
+            start_x = None
+            start_y = None
+            stop_x = None
+            stop_y = None
+        else:
+            break
+        
+print 'y'
+print start_y, stop_y
+print 'x'
+print start_x, stop_x
+            
 '''
 [number_of_lines, number_of_colums] = px.shape
-j = number_of_lines
+j = number_of_lines-1
 while j > 0:
     k = 0
-    while k < number_of_colums-1:
-        if px[number_of_lines] == 255:
-            k += 1
-    j += 1
+    while k < number_of_colums:
+        if px[j][k] == 255:
+            
+        k += 1
+    j -= 1
 '''
 
 # Image showing

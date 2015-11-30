@@ -179,7 +179,8 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         #print 'disconnected beschrijving'
 
     def updateRouteDesciption(self):
-        beeldverwerking.update_route_description()
+        if beeldverwerking is not None:
+            beeldverwerking.update_route_description()
         self.broadcast_event('updateRouteDescription', FC.getIOStream().getAllCommandOutputsInQueue())
 
     def on_start(self, params):

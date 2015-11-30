@@ -32,7 +32,7 @@ blur = cv.GaussianBlur(gray, (5, 5), 0)
 hist = cv.calcHist([blur], [0], None, [32], [0, 256])
 for x in range(31, -1, -1):
     if sum(hist[x] > 0):
-        threshold = (x-5)*8 + 4
+        threshold = (x-8)*8 + 4
         break
 
 # Thresholding

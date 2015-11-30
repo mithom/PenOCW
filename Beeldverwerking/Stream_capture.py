@@ -4,20 +4,54 @@ import urllib
 import math
 import time
 from platform import system
+from socketIO_client import SocketIO, BaseNamespace
+
+url = '192.168.137.136'
+port = 4848
+current_route_description = []
+
+
+class BeeldverwekingNameSpace(BaseNamespace):
+    def __init__(self):
+        super(BeeldverwekingNameSpace, self).__init__()
+        self.awaiting_events = {}
+
+    def emit(self, event, args):
+        self.socket.send_packet(dict(type="event", name=event,
+                                     args=args, endpoint=self.ns_name))
+
+    def on_update_route_description(self, params):
+        global current_route_description
+        current_route_description = params
+
+    def on_event_confirmation(self, params):
+        if params['succes']:
+            del self.awaiting_events[params['id']]
+        else:
+            if params.get('id', False):
+                self.finish_command(params['id'])
+
+    def finish_command(self, command_id):
+        self.awaiting_events[command_id] = True
+        self.emit('command_finished', {'id': command_id})
+
+
+socketIO = SocketIO(url, port)
+beeldverwerking_namespace = socketIO.define(BeeldverwekingNameSpace, '/beeldverwerking')
 
 tape_width = 40
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
 
-stream = urllib.urlopen('http://192.168.137.136:4848//video_feed.mjpg')
+stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
 byte = ''
 while True:
     byte += stream.read(1024)
     a = byte.find('\xff\xd8')
     b = byte.find('\xff\xd9')
     if a != -1 and b != -1:
-        jpg = byte[a:b+2]
-        byte = byte[b+2:]
+        jpg = byte[a:b + 2]
+        byte = byte[b + 2:]
         frame = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 0)
 
         # Gaussian blur
@@ -33,11 +67,11 @@ while True:
 
         # Hough line transform
 
-        lines = cv.HoughLinesP(edges, 1, np.pi/180, 15, None, tape_width, 15)
-        #lines = cv.HoughLinesP(edges, 1, np.pi/180, tape_width, None, 1, 15)
-        #lines = cv.HoughLinesP(edges, 1, np.pi/180, 15, None, 1, 15)
-        #lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 50, 150 ) #(edge image, rho, theta, threshold,
-                                                                        # lines, minLineLength, maxLineGap)
+        lines = cv.HoughLinesP(edges, 1, np.pi / 180, 15, None, tape_width, 15)
+        # lines = cv.HoughLinesP(edges, 1, np.pi/180, tape_width, None, 1, 15)
+        # lines = cv.HoughLinesP(edges, 1, np.pi/180, 15, None, 1, 15)
+        # lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 50, 150 ) #(edge image, rho, theta, threshold,
+        # lines, minLineLength, maxLineGap)
 
         # lines transformation
         if system() == 'Linux':
@@ -46,7 +80,7 @@ while True:
             for i in xrange(len(lines)):
                 new_lines.append([lines[i]])
             lines = np.array(new_lines)
-            
+
         # Print number of found lines
         # print 'Lines found: ', len(lines)
 
@@ -56,9 +90,9 @@ while True:
 
         # TODO: enkel beginpunt en rico opnieuw berekenen als index veranderd is
 
-    ################################################
-    ####### LIJN FILTERING 2
-    #################################################
+        ################################################
+        # LIJN FILTERING 2
+        #################################################
         if filtering2 is True and lines is not None:
             line1 = 0
             while line1 < len(lines):
@@ -70,9 +104,11 @@ while True:
                     line2_1 = [lines[line2][0][0], lines[line2][0][1]]
                     line2_2 = [lines[line2][0][2], lines[line2][0][3]]
 
-                    mid_line_1 = [int((lines[line1][0][0] + lines[line1][0][2])/2), int((lines[line1][0][1] + lines[line1][0][3])/2)]
-                    mid_line_2 = [int((lines[line2][0][0] + lines[line2][0][2])/2), int((lines[line2][0][1] + lines[line2][0][3])/2)]
-                    distance = math.sqrt((mid_line_1[0]-mid_line_2[0])**2 + (mid_line_1[1]-mid_line_2[1])**2)
+                    mid_line_1 = [int((lines[line1][0][0] + lines[line1][0][2]) / 2),
+                                  int((lines[line1][0][1] + lines[line1][0][3]) / 2)]
+                    mid_line_2 = [int((lines[line2][0][0] + lines[line2][0][2]) / 2),
+                                  int((lines[line2][0][1] + lines[line2][0][3]) / 2)]
+                    distance = math.sqrt((mid_line_1[0] - mid_line_2[0]) ** 2 + (mid_line_1[1] - mid_line_2[1]) ** 2)
 
                     # Calculating line slopes
                     if max(line1_2[0], line1_1[0]) == line1_2[0]:
@@ -103,22 +139,25 @@ while True:
 
                     delete = False
 
-                    if distance < tape_width*2 and flag == 1:
-                        #print lines[line1], lines[line2]
-                        new_line = [[int((lines[line1][0][0] + lines[line2][0][0])/2), int((lines[line1][0][1] + lines[line2][0][1])/2), int((lines[line1][0][2] + lines[line2][0][2])/2), int((lines[line1][0][3] + lines[line2][0][3])/2)]]
+                    if distance < tape_width * 2 and flag == 1:
+                        # print lines[line1], lines[line2]
+                        new_line = [[int((lines[line1][0][0] + lines[line2][0][0]) / 2),
+                                     int((lines[line1][0][1] + lines[line2][0][1]) / 2),
+                                     int((lines[line1][0][2] + lines[line2][0][2]) / 2),
+                                     int((lines[line1][0][3] + lines[line2][0][3]) / 2)]]
                         lines[line1] = new_line
-                        lines = np.delete(lines, line2, axis = 0)
+                        lines = np.delete(lines, line2, axis=0)
                         delete = True
                     if not delete:
                         line2 += 1
                 line1 += 1
-            #print 'Lines after filtering2: ', len(lines)
-    ################################################
-    ####### LIJN FILTERING 2
-    #################################################
-    ################################################
-    ####### LIJN FILTERING GILLES
-    #################################################
+                # print 'Lines after filtering2: ', len(lines)
+                ################################################
+                ####### LIJN FILTERING 2
+                #################################################
+                ################################################
+                ####### LIJN FILTERING GILLES
+                #################################################
         if filtering is True and lines is not None:
             line1 = 0
             while line1 < len(lines):
@@ -129,10 +168,10 @@ while True:
                     line1_2 = [lines[line1][0][2], lines[line1][0][3]]
                     line2_1 = [lines[line2][0][0], lines[line2][0][1]]
                     line2_2 = [lines[line2][0][2], lines[line2][0][3]]
-                    distance1 = math.sqrt((line1_1[0]-line2_1[0])**2 + (line1_1[1]-line2_1[1])**2)
-                    distance2 = math.sqrt((line1_2[0]-line2_2[0])**2 + (line1_2[1]-line2_2[1])**2)
-                    distance3 = math.sqrt((line1_1[0]-line2_2[0])**2 + (line1_1[1]-line2_2[1])**2)
-                    distance4 = math.sqrt((line1_2[0]-line2_1[0])**2 + (line1_2[1]-line2_1[1])**2)
+                    distance1 = math.sqrt((line1_1[0] - line2_1[0]) ** 2 + (line1_1[1] - line2_1[1]) ** 2)
+                    distance2 = math.sqrt((line1_2[0] - line2_2[0]) ** 2 + (line1_2[1] - line2_2[1]) ** 2)
+                    distance3 = math.sqrt((line1_1[0] - line2_2[0]) ** 2 + (line1_1[1] - line2_2[1]) ** 2)
+                    distance4 = math.sqrt((line1_2[0] - line2_1[0]) ** 2 + (line1_2[1] - line2_1[1]) ** 2)
                     distance = min(distance1, distance2, distance3, distance4)
                     maxdist = max(distance1, distance2, distance3, distance4)
 
@@ -170,8 +209,8 @@ while True:
                             flag = 1
 
                     # Determining the length of both lines
-                    length1 = math.sqrt((line1_1[0]-line1_2[0])**2 + (line1_1[1]-line1_2[1])**2)
-                    length2 = math.sqrt((line2_1[0]-line2_2[0])**2 + (line2_1[1]-line2_2[1])**2)
+                    length1 = math.sqrt((line1_1[0] - line1_2[0]) ** 2 + (line1_1[1] - line1_2[1]) ** 2)
+                    length2 = math.sqrt((line2_1[0] - line2_2[0]) ** 2 + (line2_1[1] - line2_2[1]) ** 2)
 
                     # Filtering lines based on similar starting point and slope
                     delete = False
@@ -191,10 +230,9 @@ while True:
                 line1 += 1
             print 'Lines after filtering1: ', len(lines)
 
-    ################################################
-    ####### LIJN FILTERING GILLES
-    #################################################
-
+            ################################################
+            ####### LIJN FILTERING GILLES
+            #################################################
 
         # Grayscale to RGB for color line drawing
         line_image = cv.cvtColor(frame, cv.COLOR_GRAY2RGB)
@@ -220,10 +258,10 @@ while True:
                     line1_2 = (lines[line1][0][2], lines[line1][0][3])
                     line2_1 = (lines[line2][0][0], lines[line2][0][1])
                     line2_2 = (lines[line2][0][2], lines[line2][0][3])
-                    distance1 = math.sqrt((line1_1[0]-line2_1[0])**2 + (line1_1[1]-line2_1[1])**2)
-                    distance2 = math.sqrt((line1_2[0]-line2_2[0])**2 + (line1_2[1]-line2_2[1])**2)
-                    distance3 = math.sqrt((line1_1[0]-line2_2[0])**2 + (line1_1[1]-line2_2[1])**2)
-                    distance4 = math.sqrt((line1_2[0]-line2_1[0])**2 + (line1_2[1]-line2_1[1])**2)
+                    distance1 = math.sqrt((line1_1[0] - line2_1[0]) ** 2 + (line1_1[1] - line2_1[1]) ** 2)
+                    distance2 = math.sqrt((line1_2[0] - line2_2[0]) ** 2 + (line1_2[1] - line2_2[1]) ** 2)
+                    distance3 = math.sqrt((line1_1[0] - line2_2[0]) ** 2 + (line1_1[1] - line2_2[1]) ** 2)
+                    distance4 = math.sqrt((line1_2[0] - line2_1[0]) ** 2 + (line1_2[1] - line2_1[1]) ** 2)
                     distance = min(distance1, distance2, distance3, distance4)
                     if distance == distance1:
                         if distance < shortest_distance:

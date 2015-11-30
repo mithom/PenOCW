@@ -25,7 +25,7 @@ beeldverwerking = None
 def sendPower(*args):
     global manueel
     if manueel is not None:
-        print "sending power"
+        #print "sending power"
         manueel.broadcast_event('power', *args)
     else:
         print "nameSpace was None"
@@ -181,6 +181,8 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     def updateRouteDesciption(self):
         if beeldverwerking is not None:
             beeldverwerking.update_route_description()
+        else:
+            print "beeldverwerking was None"
         self.broadcast_event('updateRouteDescription', FC.getIOStream().getAllCommandOutputsInQueue())
 
     def on_start(self, params):
@@ -233,9 +235,14 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         else:
             self.emit("event_confirmation", {'succes': True, 'id': command_id})
 
-    def on_set_power(self,params):
+    def on_set_power(self, params):
         #TODO: controleren
-        FC.functionDivider.getFunctionDivider().currentFunction.set_params(params)
+        func = FC.functionDivider.getFunctionDivider().currentCommand
+        if func is not None and len(func) > 0:
+            print params
+            func[0].set_params(**params)
+        else:
+            print "could not set powers"
 
 
 @app.route("/socket.io/<path:rest>")

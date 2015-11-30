@@ -4,8 +4,8 @@ import urllib
 import math
 import time
 from platform import system
-from socketIO_client import SocketIO, BaseNamespace
-
+#from socketio.namespace import BaseNamespace
+from socketIO_client import SocketIO, BaseNamespace # dit meot de oude versie 0.5.4 zijn, niet de nieuwste. Deze zijn niet backward compatible.
 url = '192.168.137.136'
 port = 4848
 current_route_description = []
@@ -13,15 +13,15 @@ beeldverwerking = None
 
 
 class BeeldverwekingNameSpace(BaseNamespace):
-    def __init__(self):
+    def __init__(self,*args,**kwargs):
         global beeldverwerking
-        super(BeeldverwekingNameSpace, self).__init__()
+        super(BeeldverwekingNameSpace, self).__init__(*args,**kwargs)
         self.awaiting_events = {}
         beeldverwerking = self
 
-    def emit(self, event, args):
+    """def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,
-                                     args=args, endpoint=self.ns_name))
+                                     args=args, endpoint=self.ns_name))"""
 
     def on_update_route_description(self, params):
         global current_route_description
@@ -39,12 +39,12 @@ class BeeldverwekingNameSpace(BaseNamespace):
         self.emit('command_finished', {'id': command_id})
 
     def set_powers(self, left, right):
-        self.emit("set_power",{"left": left, "right": right})
+        self.emit("set_power", {"left": left, "right": right})
+        print "powers set!"
 
 
 socketIO = SocketIO(url, port)
 beeldverwerking_namespace = socketIO.define(BeeldverwekingNameSpace, '/beeldverwerking')
-
 tape_width = 40
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
@@ -299,4 +299,4 @@ while True:
     ##########################
     ## hier bebingt de stuur logica
     ##########################
-
+    beeldverwerking_namespace.set_powers(0, 200)

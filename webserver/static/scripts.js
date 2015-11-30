@@ -27,6 +27,7 @@ $(document).ready(function () {
             break;
     }
 
+
     timer = setInterval(updateTime, 100);
 
     //here comes all the submit overrides

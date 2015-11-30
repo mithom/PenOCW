@@ -104,9 +104,9 @@ class FunctionDivider:
                                           Function(functions.get('rotate_left_angle'), angle=90, power=100)],
                            "makeCircle": [
                                Function(functions.get('make_circle_left'), radius=50, power=150, degree=310)],
-                           "stop": [Function(functions.get("set_powers"), left=150, right=150)],
-                           "left": [Function(functions.get("set_powers"), left=150, right=150)],
-                           "right": [Function(functions.get("set_powers"), left=150, right=150)]}
+                           "stop": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1)],
+                           "left": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1)],
+                           "right": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1)]}
 
         self.currentCommandObject = None
         self.currentThread = None
@@ -160,7 +160,6 @@ class FunctionDivider:
                 if done or dt > 0:
                     self.currentFunction = None
             elif len(self.currentCommand) > 0:
-                print "command,", self.currentCommand
                 self.currentFunction = self.currentCommand.pop(0)
                 if self.currentFunction.getFunction() == self.functions.get("set_powers"):
                     self.currentCommand.insert(0, self.currentFunction.copy())

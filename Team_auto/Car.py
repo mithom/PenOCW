@@ -58,16 +58,16 @@ def go_straight_manual(power, duration):
         BrickPiUpdateValues()
 
 
-def go_straight_camera(left_power, right_power, duration):
+def go_straight_camera(left, right, duration):
     # calibrate(main_power, main_power)
     # right_power = int((2*main_power)/(ratio+1))
     # left_power = int(ratio*right_power)
-    calibrate(left_power, right_power)
-    set_motors(left_power, right_power)
+    calibrate(left, right)
+    set_motors(left, right)
     BrickPiUpdateValues()
     start_time = time.time()
     while time.time() - start_time < duration:
-        set_motors(left_power, right_power)
+        set_motors(left, right)
         BrickPiUpdateValues()
 
 

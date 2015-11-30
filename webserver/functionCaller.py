@@ -40,12 +40,12 @@ class Command:
     def getCommandName(self):
         return self.commandName
 
-    def getParam(self, param):
+    def getParam(self, param, default_value):
         if param == "id":
             return self.getId()
         if param == "commandName":
             return self.getCommandName()
-        return self.__params__.get(param, None)
+        return self.__params__.get(param, default_value)
 
     def output(self):
         return {"id": self.getId(), "commandName": self.getCommandName()}

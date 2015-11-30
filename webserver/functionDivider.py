@@ -43,6 +43,10 @@ class Function:
     def getParams(self):
         return self.params
 
+    def set_params(self, **kwargs):
+        for key, value in kwargs:
+            self.params[key] = value
+
     def copy(self):
         return Function(self.function, duration=self.time, **self.params)
 
@@ -68,6 +72,7 @@ class FunctionDivider:
         self.currentCommand = None
         self.currentFunction = None
         functions = car.get_functions()
+        self.functions = functions
         self.commandLib = {"goForward": [Function(functions.get('go_straight_manual'), duration=0.1, power=250)],
                            "goBackward": [Function(functions.get('go_straight_manual'), duration=0.1, power=-250)],
                            "goLeft": [Function(functions.get('rotate_left_duration'), duration=0.1, power=100)],
@@ -98,7 +103,10 @@ class FunctionDivider:
                                           Function(functions.get('sleep'), duration=1),
                                           Function(functions.get('rotate_left_angle'), angle=90, power=100)],
                            "makeCircle": [
-                               Function(functions.get('make_circle_left'), radius=50, power=150, degree=310)]}
+                               Function(functions.get('make_circle_left'), radius=50, power=150, degree=310)],
+                           "stop": [Function(functions.get("set_powers"), left=0, right=0)],
+                           "left": [Function(functions.get("set_powers"), left=0, right=150)],
+                           "right": [Function(functions.get("set_powers"), left=150, right=0)]}
 
         self.currentCommandObject = None
         self.currentThread = None
@@ -153,6 +161,10 @@ class FunctionDivider:
                     self.currentFunction = None
             elif len(self.currentCommand) > 0:
                 self.currentFunction = self.currentCommand.pop(0)
+                if self.currentFunction.getFunction() == self.functions.get("set_powers"):
+                    self.currentCommand.insert(0,self.currentFunction)
+                for key, value in self.currentFunction.getParams():
+                    self.currentFunction.set_params(key=self.currentCommandObject.getParam(key, value))
             else:
                 car.last_left_power = 0
                 car.last_right_power = 0

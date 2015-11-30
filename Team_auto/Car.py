@@ -270,13 +270,14 @@ def set_motors(power_A, power_B):
 def sleep(duration):
     time.sleep(duration)
 
+
 def get_functions():
     functions = {'go_straight_distance': go_straight_distance, 'go_straight_duration1': go_straight_duration,
                  'go_straight_manual': go_straight_manual, 'make_circle_left': make_circle_left,
                  'make_circle_right': make_circle_right, 'rotate_left_angle': rotate_left_angle,
                  'rotate_right_angle': rotate_right_angle, 'rotate_left_duration': rotate_left_duration,
                  'rotate_right_duration': rotate_right_duration, 'sleep': sleep,
-                 'set_powers': go_straight_camera()}
+                 'set_powers': go_straight_camera}
     return functions
 
 

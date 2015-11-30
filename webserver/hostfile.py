@@ -235,7 +235,10 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
     def on_set_power(self,params):
         #TODO: controleren
-        FC.functionDivider.getFunctionDivider().currentFunction.set_params(params)
+        #TODO: zorg dat dit blijft tot nieuwe waarden binnenkomen
+        func = FC.functionDivider.getFunctionDivider().currentFunction
+        if func is not None:
+            func.set_params(params)
 
 
 @app.route("/socket.io/<path:rest>")

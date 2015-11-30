@@ -7,7 +7,7 @@ from platform import system
 import urllib
 
 # Image loading
-frame = cv.imread('/home/r0302418/repos/penocw/Beeldverwerking/pi_photos/cam2.jpg', 1)
+frame = cv.imread('/home/r0302418/repos/penocw/Beeldverwerking/pi_photos/cam4.jpg', 1)
 
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
@@ -51,6 +51,22 @@ img_division = 50
 px = cv.resize(cut2, (img_width/img_division,img_height/img_division), interpolation = cv.INTER_NEAREST)
 print px.shape
 pxres = cv.resize(px, (img_width, img_height), interpolation = cv.INTER_NEAREST)
+
+# 
+for j in xrange(px.shape[0]-1, 0, -1):
+    for i in xrange(px.shape[1]):
+        if px[j][i] == 255:
+            print j, i
+'''
+[number_of_lines, number_of_colums] = px.shape
+j = number_of_lines
+while j > 0:
+    k = 0
+    while k < number_of_colums-1:
+        if px[number_of_lines] == 255:
+            k += 1
+    j += 1
+'''
 
 # Image showing
 show_original = 1

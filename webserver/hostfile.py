@@ -235,12 +235,14 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         else:
             self.emit("event_confirmation", {'succes': True, 'id': command_id})
 
-    def on_set_power(self,params):
+    def on_set_power(self, params):
         #TODO: controleren
         func = FC.functionDivider.getFunctionDivider().currentCommand
         if func is not None and len(func) > 0:
-            print
-            func[0].set_params(params)
+            print params
+            func[0].set_params(**params)
+        else:
+            print "could not set powers"
 
 
 @app.route("/socket.io/<path:rest>")

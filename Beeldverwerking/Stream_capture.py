@@ -40,6 +40,7 @@ class BeeldverwekingNameSpace(BaseNamespace):
 
     def set_powers(self, left, right):
         self.emit("set_power", {"left": left, "right": right})
+        print "powers set!"
 
 
 socketIO = SocketIO(url, port)

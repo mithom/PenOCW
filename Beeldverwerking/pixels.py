@@ -5,9 +5,10 @@ import math
 import time
 from platform import system
 import urllib
+import block
 
 # Image loading
-frame = cv.imread('/home/r0302418/repos/penocw/Beeldverwerking/pi_photos/cam0.jpg', 1)
+frame = cv.imread('/home/r0302418/repos/penocw/Beeldverwerking/pi_photos/cam2.jpg', 1)
 
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
@@ -51,54 +52,91 @@ img_division = 50
 px = cv.resize(bw, (img_width/img_division,img_height/img_division), interpolation = cv.INTER_NEAREST)
 print px.shape
 pxres = cv.resize(px, (img_width, img_height), interpolation = cv.INTER_NEAREST)
-print px
 # 
 #opgepast met breedte (blok ernaast)
+min_width = 3
 max_width = 15
 min_length = 3
 max_length = 15
-start_x = None
-start_y = None
-stop_x = None
-stop_y = None
-
-
-for j in xrange(px.shape[0]-1, 0, -1):
-    found_white = False
-    for i in xrange(px.shape[1]):
-        if px[j][i] == 255:
-            found_white = True
-            if start_y == None:
-                start_y = j
-            if (start_x == None) or (i < start_x):
-                start_x = i
-            if (stop_x == None) or (i > stop_x):
-                stop_x = i
-    if (start_y != None) and (found_white == False):
-        stop_y = j - 1
-        if (start_y - stop_y) < min_length:
-            start_x = None
-            start_y = None
-            stop_x = None
-            stop_y = None
-        else:
-            break
-        
-print 'y'
-print start_y, stop_y
-print 'x'
-print start_x, stop_x
-            
+start_c = None
+start_r = None
+stop_c = None
+stop_r = None
+list_of_blocks = []
 '''
-[number_of_lines, number_of_colums] = px.shape
-j = number_of_lines-1
-while j > 0:
-    k = 0
-    while k < number_of_colums:
-        if px[j][k] == 255:
-            
-        k += 1
-    j -= 1
+for r in xrange(px.shape[0]-1, 0, -1):
+    found_white_row = False
+    for c in xrange(px.shape[1]-1,0,1):
+        if px[r][c] == 255:
+            found_white_row = True
+            if start_r == None:
+                start_r = r
+            if (start_c == None) or (c < start_c):
+                start_c = c
+            if (stop_c == None) or (c > stop_c):
+                stop_c = c
+    if (start_r != None) and (found_white_row == False):
+        stop_r = r - 1
+        if not (((start_r - stop_r) < min_length) or ((stop_c - start_c) < min_width)):
+            new_block = block.Block([start_c, start_r, stop_c, stop_r])
+            list_of_blocks.append(new_block)
+        start_c = None
+        start_r = None
+        stop_c = None
+        stop_r = None
+        
+print list_of_blocks
+  '''  
+
+def remove_whites(px, left, right, bottom, top):
+    for i in xrange(left, right+1):
+        for j in xrange(bottom, top, -1):
+            px[j][i]=0 
+    return px
+
+for r in xrange(px.shape[0]-1, 0, -1):
+    found_white_row = False
+    for c in xrange(0,px.shape[1]-1,1):
+        if px[r][c] == 255:
+            if px[r-1][c]==0 or px[r][c+1]==0:
+                px[r][c]=0
+            else:
+                wide_enough=False
+                for i in xrange(min_width,max_width):
+                    if px[r][c+i]==255:
+                        wide_enough=True
+                    if wide_enough==True:
+                        break
+                long_enough=False
+                for i in xrange(min_length,max_length):
+                    if px[r-i][c]==255:
+                        long_enough=True
+                    if long_enough==True:
+                        break
+                if long_enough==True and wide_enough==True:
+                    new_block = block.Block([c, c+max_width, r, r-max_length])
+                    list_of_blocks.append(new_block)
+                    px = remove_whites(px, c, c+max_width, r, r-max_length)
+print list_of_blocks
+print list_of_blocks[0].getLocation()
+
+'''        
+white_rows = []
+for r in xrange(0, px.shape[0]-1,1):
+    for c in xrange(0, px.shape[1]-1,1):
+        if ((px[r][c] == 255) and (r not in white_rows)):
+            white_rows.append(r)
+
+dic = {}
+for c in xrange(0, px.shape[1]-1,1):
+    found_white = False
+    for r in white_rows:
+        if px[r][c] == 255:
+            found_white = True
+            if start_c == None:
+                start_c = c
+    if (start_c != None) and (found_white == False):
+        stop_c = c - 1
 '''
 
 # Image showing

@@ -6,7 +6,7 @@ import time
 from platform import system
 #from socketio.namespace import BaseNamespace
 from socketIO_client import SocketIO, BaseNamespace # dit meot de oude versie 0.5.4 zijn, niet de nieuwste. Deze zijn niet backward compatible.
-url = 'localhost'
+url = '192.168.137.136'
 port = 4848
 current_route_description = []
 beeldverwerking = None

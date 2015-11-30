@@ -160,7 +160,6 @@ class FunctionDivider:
                 if done or dt > 0:
                     self.currentFunction = None
             elif len(self.currentCommand) > 0:
-                print "command,", self.currentCommand
                 self.currentFunction = self.currentCommand.pop(0)
                 if self.currentFunction.getFunction() == self.functions.get("set_powers"):
                     self.currentCommand.insert(0, self.currentFunction.copy())

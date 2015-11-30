@@ -9,15 +9,12 @@ from socketIO_client import SocketIO, BaseNamespace
 url = '192.168.137.136'
 port = 4848
 current_route_description = []
-beeldverwerking = None
 
 
 class BeeldverwekingNameSpace(BaseNamespace):
-    def __init__(self):
-        global beeldverwerking
-        super(BeeldverwekingNameSpace, self).__init__()
+    def __init__(self, *args,**kwargs):
+        super(BeeldverwekingNameSpace, self).__init__(*args,**kwargs)
         self.awaiting_events = {}
-        beeldverwerking = self
 
     def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,
@@ -292,6 +289,8 @@ while True:
 
         # Image showing
         cv.imshow('Lines', line_image)
+
+        beeldverwerking_namespace.set_powers(100,200)
 
         if cv.waitKey(1) == 27:
             exit(0)

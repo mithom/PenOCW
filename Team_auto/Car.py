@@ -3,6 +3,7 @@ from BrickPi import BrickPiUpdateValues as update
 import time
 import math
 import PID
+import block
 
 BrickPiSetup()  # setup the serial port for communication from BrickPi import *
 
@@ -22,12 +23,24 @@ O = math.pi * d  # circumference of the wheels
 
 isUpdated = False
 
-
 def     BrickPiUpdateValues():
     global isUpdated
     update()
     isUpdated = True
 
+def go_first_block(power, block, duration):
+    location = block.getLocation()
+    calibrate(power,power)
+    #TODO factor bepalen
+    left_power = power #*factor
+    right_power = power #*factor
+    set_motors(left_power, right_power)
+    BrickPiUpdateValues()
+    start_time = time.time()
+    while time.time() - start_time < duration:
+        set_motors(left_power, right_power)
+        BrickPiUpdateValues()
+    
 
 def calibrate(power_left = 1, power_right = 1):
     global offset_A, offset_B
@@ -173,8 +186,8 @@ def go_straight_duration(power, duration):
 def make_circle_left(power, radius, degree):  # radius in cm
     global O, car_width
     calibrate()
-    outer_distance = ((radius+car_width/2.0)*2)*math.pi
-    inned_distance = ((radius - car_width/2.0)*2)*math.pi
+    outer_distance = (2*radius + car_width)*math.pi
+    inned_distance = (2*radius - car_width)*math.pi
     outer_rotations = outer_distance/O
     inner_rotations = inned_distance/O
     inner_degrees = inner_rotations*degree

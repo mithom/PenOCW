@@ -1,6 +1,7 @@
 # Importing needed modules
 import cv2 as cv
 import block
+import Image
 import copy
 from beeldverwerkingNameSpace import BeeldverwekingNameSpace
 from socketIO_client import SocketIO
@@ -54,19 +55,18 @@ while True:
         img_width = bw.shape[1]
         img_height = bw.shape[0]
         img_division = 50
+        min_width = 1
+        max_width = 9
+        min_length = 1
+        max_length = 9
+        image = Image.Image(img_width, img_height, [], px)
 
         # Pixelation
         px = cv.resize(bw, (img_width / img_division, img_height / img_division), interpolation=cv.INTER_NEAREST)
         print px.shape
 
 
-        #opgepast met breedte (blok ernaast)
-        min_width = 1
-        max_width = 9
-        min_length = 1
-        max_length = 9
-
-
+        #Searching blocks
         def remove_whites(px, left, right, bottom, top):
             for i in xrange(left, right + 1):
                 for j in xrange(bottom, top, -1):
@@ -76,8 +76,8 @@ while True:
 
 
         def check_right(index):
-            if index > (px.shape[1] - 1):
-                index = (px.shape[1] - 1)
+            if index > (img_width - 1):
+                index = (img_width - 1)
             return index
 
 
@@ -98,7 +98,7 @@ while True:
                     else:
                         break
             elif direction == 'right':
-                while x < (px.shape[1]-1):
+                while x < (img_width-1):
                     x += 1
                     if px[y][x]==255:
                         count += 1
@@ -112,7 +112,7 @@ while True:
                     else:
                         break
             else:
-                while y < (px.shape[0]-1):
+                while y < (img_height-1):
                     y += 1
                     if px[y][x]==255:
                         count += 1
@@ -125,9 +125,7 @@ while True:
                 if count > max_width/2:
                     count = max_width/2
             return count
-
-
-
+        
 
         def check_middle_x(y,x):
             left = find_whites(y,x,'left')
@@ -145,34 +143,33 @@ while True:
             else:
                 return True
 
-        list_of_blocks = []
+        def wide_enough(row, column):
+            for i in xrange(min_width, max_width):
+                a = column + i
+                a = check_right(a)
+                if px[row][a] == 255:
+                    return True
+            return False
+
+        def long_enough(row, column):
+            for i in xrange(min_length, max_length):
+                a = row - i
+                a = check_top(a)
+                if px[a][column] == 255:
+                    return True
+            return False
+
+        
         pxbackup = copy.deepcopy(px)
-        for r in xrange(px.shape[0] - 1, 0, -1):
+        for r in xrange(img_height - 1, 0, -1):
             found_white_row = False
-            for c in xrange(0, px.shape[1] - 1, 1):
+            for c in xrange(0, img_width - 1, 1):
                 if px[r][c] == 255:
-                    if r != 0 and c != (px.shape[1] - 1):
+                    if r != 0 and c != (img_width - 1):
                         if px[r - 1][c] == 0 or px[r][c + 1] == 0:
                             px[r][c] = 0
-                        else:
-                            wide_enough = False
-                            for i in xrange(min_width, max_width):
-                                a = c + i
-                                a = check_right(a)
-                                if px[r][a] == 255:
-                                    wide_enough = True
-                                if wide_enough == True:
-                                    break
-                            long_enough = False
-                            for i in xrange(min_length, max_length):
-                                a = r - i
-                                a = check_top(a)
-                                if px[a][c] == 255:
-                                    long_enough = True
-                                if long_enough == True:
-                                    break
-
-                            if long_enough==True and wide_enough==True:
+                        else:                        
+                            if (long_enough(r,c) == True) and (wide_enough(r,c) == True):
                                 y = r - 1
                                 x = c + 1
                                 while check_middle_x(y,x) == False or check_middle_y(y,x) == False:
@@ -184,11 +181,11 @@ while True:
                                 u = x + find_whites(y,x,'right')
                                 v = y + find_whites(y,x,'down')
                                 w = y - find_whites(y,x,'up')
-                                new_block = block.Block(t, u, v, w)
-                                list_of_blocks.append(new_block)
+                                new_block = block.Block(t, u, v, w, image)
+                                image.add_block(new_block)
                                 px = remove_whites(px, t, u, v, w)
 
-        for t in list_of_blocks:
+        for t in image.get_blocks():
             location = t.getLocation()
             pxbackup[location[1]][location[0]] = 150
 

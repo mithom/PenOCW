@@ -29,7 +29,7 @@ def     BrickPiUpdateValues():
     isUpdated = True
 
 def go_first_block(power, block, duration):
-    location = block.getLocation()
+    location = block.get_middle()
     calibrate(power,power)
     #TODO factor bepalen
     left_power = power #*factor

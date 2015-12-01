@@ -272,7 +272,7 @@ Deployment
 
 The simplest deployment strategy is to start the web server by calling ``socketio.run(app)`` as shown above, but with debug mode turned off in the configuration. This will run the application on the gevent-socketio web server, which is based on gevent.
 
-An alternative is to use `gunicorn <http://gunicorn.org/>`_ as web server, using the worker class provided by gevent-socketio. The command line that starts the server in this way is shown below::
+An alternative is to use `gunicorn <http://gunicorn.org/>`_ as web server, using the worker class provided by gevent-socketio. The command Line that starts the server in this way is shown below::
 
     gunicorn --worker-class socketio.sgunicorn.GeventSocketIOWorker module:app
 

@@ -62,7 +62,7 @@ div.footer a {
 }
  
 div.related {
-    line-height: 32px;
+    Line-height: 32px;
     color: #888;
 }
 
@@ -128,7 +128,7 @@ a.headerlink:hover {
 }
  
 div.body p, div.body dd, div.body li {
-    line-height: 1.4em;
+    Line-height: 1.4em;
 }
 
 div.admonition {
@@ -145,7 +145,7 @@ div.admonition p.admonition-title {
     font-size: 24px;
     margin: 0 0 10px 0;
     padding: 0;
-    line-height: 1;
+    Line-height: 1;
 }
 
 div.admonition p.last {
@@ -259,7 +259,7 @@ pre {
     padding: 0;
     margin: 15px -30px;
     padding: 8px;
-    line-height: 1.3em;
+    Line-height: 1.3em;
     padding: 7px 30px;
     background: #eee;
     border-radius: 2px;

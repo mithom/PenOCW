@@ -10,7 +10,8 @@ from platform import system
 
 car = None  # this is going to be the module Team_auto.car or a mockup for it.
 
-functionDivider = None
+
+# functionDivider = None
 
 
 class Function:
@@ -42,6 +43,10 @@ class Function:
     def getParams(self):
         return self.params
 
+    def set_params(self, **kwargs):
+        for key, value in kwargs.iteritems():
+            self.params[key] = value
+
     def copy(self):
         return Function(self.function, duration=self.time, **self.params)
 
@@ -57,10 +62,6 @@ class Function:
         return str(self)
 
 
-def haha(power=1):
-    print "power: ", power
-
-
 class FunctionDivider:
     """
     transforms commands into functions that the Car can execute. Also allows interuption of these commands.
@@ -71,48 +72,66 @@ class FunctionDivider:
         self.currentCommand = None
         self.currentFunction = None
         functions = car.get_functions()
+        self.functions = functions
         self.commandLib = {"goForward": [Function(functions.get('go_straight_manual'), duration=0.1, power=250)],
                            "goBackward": [Function(functions.get('go_straight_manual'), duration=0.1, power=-250)],
-                           "goLeft": [Function(functions.get('turn_straight_left'), duration=0.1, power=150)],
-                           "goRight": [Function(functions.get('turn_straight_right'), duration=0.1, power=150)],
-                           #			"goForwardLeft"
-                           #			"goForwardRigth"
-                           #			"goBackwardLeft"
-                           #			"goBackwardRight"
+                           "goLeft": [Function(functions.get('rotate_left_duration'), duration=0.1, power=100)],
+                           "goRight": [Function(functions.get('rotate_right_duration'), duration=0.1, power=100)],
+                           "goForwardLeft": [
+                               Function(functions.get('make_circle_left'), radius=50, power=150, degree=5)],
+                           "goForwardRigth": [
+                               Function(functions.get('make_circle_right'), radius=50, power=150, degree=5)],
+                           "goBackwardLeft": [
+                               Function(functions.get('make_circle_left'), radius=50, power=150, degree=-5)],
+                           "goBackwardRight": [
+                               Function(functions.get('make_circle_right'), radius=50, power=150, degree=-5)],
+                           "pass": [Function(functions.get('sleep'), duration=0.1)],
                            "makeLine": [Function(functions.get('go_straight_distance'), distance=200, power=100)],
                            "makeSquare": [Function(functions.get('go_straight_distance'), distance=100, power=100),
-                                          Function(functions.get('sleep'),duration=1),
-                                          Function(functions.get('rotate_angle_left'), angle=90, power=100),
-                                          Function(functions.get('sleep'),duration=1),
+                                          Function(functions.get('sleep'), duration=1),
+                                          Function(functions.get('rotate_left_angle'), angle=90, power=100),
+                                          Function(functions.get('sleep'), duration=1),
                                           Function(functions.get('go_straight_distance'), distance=100, power=100),
-                                          Function(functions.get('sleep'),duration=1),
-                                          Function(functions.get('rotate_angle_left'), angle=90, power=100),
-                                          Function(functions.get('sleep'),duration=1),
+                                          Function(functions.get('sleep'), duration=1),
+                                          Function(functions.get('rotate_left_angle'), angle=90, power=100),
+                                          Function(functions.get('sleep'), duration=1),
                                           Function(functions.get('go_straight_distance'), distance=100, power=100),
-                                          Function(functions.get('sleep'),duration=1),
-                                          Function(functions.get('rotate_angle_left'), angle=90, power=100),
-                                          Function(functions.get('sleep'),duration=1),
+                                          Function(functions.get('sleep'), duration=1),
+                                          Function(functions.get('rotate_left_angle'), angle=90, power=100),
+                                          Function(functions.get('sleep'), duration=1),
                                           Function(functions.get('go_straight_distance'), distance=100, power=100),
-                                          Function(functions.get('sleep'),duration=1),
-                                          Function(functions.get('rotate_angle_left'), angle=90, power=100)],
-                           "makeCircle": [Function(functions.get('make_circle_left'), radius=50, power=150)]}
+                                          Function(functions.get('sleep'), duration=1),
+                                          Function(functions.get('rotate_left_angle'), angle=90, power=100)],
+                           "makeCircle": [
+                               Function(functions.get('make_circle_left'), radius=50, power=150, degree=310)],
+                           "stop": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1)],
+                           "left": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1)],
+                           "right": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1)]}
+
         self.currentCommandObject = None
+        self.currentThread = None
         if firstCommand is not None:
             self.executeCommand(firstCommand)
 
-    def executeCommand(self, command):  # TODO: take params into account
+    def executeCommand(self, command):
         if command is not None and command.getCommandName() in self.commandLib.keys():
-            self.currentCommand = [x.copy() for x in self.commandLib[command.getCommandName()]]
             self.currentCommandObject = command
+            if not command.is_paused():
+                self.currentCommand = [x.copy() for x in self.commandLib[command.getCommandName()]]
+            else:
+                self.currentCommand = command.get_functions()
         else:
             self.currentCommand = None
 
     def interuptCurrentCommand(self):
         """
         stops executing current command
-        :return: the command with extra params to see how far it is already executed
+        :return: the command with extra params to see how far it is already executed, it does finish the small functions
         """
-        pass
+        paused_command = self.currentCommandObject.pause_with_updated_params(self.currentCommand)
+        self.currentCommand = []
+        self.currentCommandObject = None
+        return paused_command
 
     def processTime(self, dt):
         """
@@ -128,7 +147,7 @@ class FunctionDivider:
             else:
                 self.executeCommand(functionCaller.getIOStream().pushCommand())
                 #  print self.currentCommand, "current command"
-                if self.currentCommand == None:  # geen commands in queue
+                if self.currentCommand is None:  # geen commands in queue
                     time.sleep(0.1)
                     dt -= 0.1
 
@@ -142,6 +161,12 @@ class FunctionDivider:
                     self.currentFunction = None
             elif len(self.currentCommand) > 0:
                 self.currentFunction = self.currentCommand.pop(0)
+                if self.currentFunction.getFunction() == self.functions.get("set_powers"):
+                    self.currentCommand.insert(0, self.currentFunction.copy())
+                params = {}
+                for key, value in self.currentFunction.getParams().iteritems():
+                    params[key]=self.currentCommandObject.getParam(key, value)
+                self.currentFunction.set_params(**params)
             else:
                 car.last_left_power = 0
                 car.last_right_power = 0

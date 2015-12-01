@@ -5,36 +5,38 @@ from platform import system
 from flask_jsglue import JSGlue
 # from gevent.pool import Pool
 import gevent
-import time
-# from flask_socketio import SocketIO, emit
-# http = WSGIServer(('127.0.0.1', 5000), app)
-# socket = SocketIO(app)
+from socketio.server import SocketIOServer
+from werkzeug.wsgi import SharedDataMiddleware
 from socketio import socketio_manage
 from socketio.namespace import BaseNamespace
 from socketio.mixins import BroadcastMixin, RoomsMixin
-import threading
 app = Flask(__name__)
 jsglue = JSGlue(app)  # this allows us to use url_for in the javascript frontend
 app.config['SECRET_KEY'] = 'secret!'
 
-nameSpace = None
+manueel = None
+complex = None
+beschrijving = None
+beeldverwerking = None
+
+# TODO:sockets omzetten naar get requests en 2 sockets overhouden, 1 voor laptop, 1 voor info zoals power en routeDescription
 
 
 def sendPower(*args):
-    global nameSpace
-    if nameSpace is not None:
-        print "sending power"
-        nameSpace.broadcast_event('power', *args)
+    global manueel
+    if manueel is not None:
+        #print "sending power"
+        manueel.broadcast_event('power', *args)
     else:
         print "nameSpace was None"
 
 
 class ManueelNamespace(BaseNamespace, RoomsMixin,
-                       BroadcastMixin):  # breaks omwille van chrome die event.onpress hertrggered elke 0.05 seconden
+                       BroadcastMixin):
     def __init__(self, *args, **kwargs):
-        global nameSpace
+        global manueel
         super(ManueelNamespace, self).__init__(*args, **kwargs)
-        nameSpace = self
+        manueel = self
 
     def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,
@@ -43,14 +45,21 @@ class ManueelNamespace(BaseNamespace, RoomsMixin,
     def recv_connect(self):
         print "manueel connect"
         self.emit('alert', "welkom  bij manuele aansturing")
+        if complex is not None:
+            complex.askDisconnect('manueel')
+        if beschrijving is not None:
+            beschrijving.askDisconnect('manueel')
         # self.broadcast_event('alert', 'nieuwe gebruiker!')
         # process = threading.Thread(target=sendPower,args=(self,), name='processing')
         # process.setDaemon(True)
         # process.start()
         # gevent.joinall([gevent.spawn(sendPower, self)])
 
-    def recv_disconnect(self):
-        print 'disconnected manueel'
+    def askDisconnect(self, new):
+        self.broadcast_event('askDisconnect', {"new": new})
+
+    #def recv_disconnect(self):
+        #print 'disconnected manueel'
 
     def on_up(self, params):
         if params.get("status") == "active":
@@ -103,7 +112,12 @@ class ManueelNamespace(BaseNamespace, RoomsMixin,
 
 class ComplexNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     def __init__(self, *args, **kwargs):
+        global complex
         super(ComplexNamespace, self).__init__(*args, **kwargs)
+        complex = self
+
+    def askDisconnect(self, new):
+        self.broadcast_event('askDisconnect', {"new": new})
 
     def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,
@@ -112,9 +126,13 @@ class ComplexNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     def recv_connect(self):
         print "complex connect"
         self.emit('alert', "welkom  bij complexe aansturing")
+        if manueel is not None:
+            manueel.askDisconnect('complex')
+        if beschrijving is not None:
+            beschrijving.askDisconnect('complex')
 
-    def recv_message(self, message):
-        print "PING!!!", message
+    #def recv_disconnect(self):
+        # print 'disconnected complex'
 
     def on_circle(self, data):
         func_id = FC.getIOStream().addCommandToQueue('makeCircle')
@@ -138,20 +156,33 @@ class ComplexNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
 
 class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     def __init__(self, *args, **kwargs):
+        global beschrijving
         super(BeschrijvingNamespace, self).__init__(*args, **kwargs)
+        beschrijving = self
 
     def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,
                                      args=args, endpoint=self.ns_name))
 
+    def askDisconnect(self, new):
+        self.broadcast_event('askDisconnect', {"new": new})
+
     def recv_connect(self):
         print "beschrijving connect"
         self.emit('alert', "welkom  bij wegbeschrijving")
+        if manueel is not None:
+            manueel.askDisconnect("beschrijving")
+        if complex is not None:
+            complex.askDisconnect("beschrijving")
 
-    def recv_message(self, message):
-        print "PING!!!", message
+    #def recv_disconnect(self):
+        #print 'disconnected beschrijving'
 
     def updateRouteDesciption(self):
+        if beeldverwerking is not None:
+            beeldverwerking.update_route_description()
+        else:
+            print "beeldverwerking was None"
         self.broadcast_event('updateRouteDescription', FC.getIOStream().getAllCommandOutputsInQueue())
 
     def on_start(self, params):
@@ -179,10 +210,46 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.updateRouteDesciption()
 
 
+class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
+    def __init__(self, *args, **kwargs):
+        global beeldverwerking
+        super(BeeldverwerkingNamespace, self).__init__(*args, **kwargs)
+        beeldverwerking = self
+
+    def emit(self, event, args):
+        self.socket.send_packet(dict(type="event", name=event,
+                                     args=args, endpoint=self.ns_name))
+
+    def update_route_description(self):
+        self.broadcast_event('update_route_description', FC.getIOStream().getAllCommandOutputsInQueue())
+        pass
+
+    def on_command_finished(self, params):
+        succes = False
+        command_id = params.get('id', None)
+        if command_id is not None:
+            succes = FC.getIOStream().removeCommandFromQueue(command_id)
+            self.update_route_description()
+        if not succes:
+            self.emit("event_confirmation", {'succes': False, 'id': command_id})
+        else:
+            self.emit("event_confirmation", {'succes': True, 'id': command_id})
+
+    def on_set_power(self, params):
+        #TODO: controleren
+        func = FC.functionDivider.getFunctionDivider().currentCommand
+        if func is not None and len(func) > 0:
+            print params
+            func[0].set_params(**params)
+        else:
+            print "could not set powers"
+
+
 @app.route("/socket.io/<path:rest>")
 def run_socketio(rest):
     socketio_manage(request.environ, {'/manueel': ManueelNamespace, '/complex': ComplexNamespace,
-                                      '/beschrijving': BeschrijvingNamespace})
+                                      '/beschrijving': BeschrijvingNamespace,
+                                      '/beeldverwerking': BeeldverwerkingNamespace})
     return ''
 
 
@@ -195,23 +262,6 @@ def index():
         #    params = request.json
         #    func = params.get('function')
         #    return procesFunctionCall(func)
-
-
-'''
-@socket.on("disconnect", namespace="/manueel")
-def disconnect():
-    print "nice to have met you."
-
-
-@socket.on("disconnect", namespace="/complex")
-def disconnectComplex():
-    print "nice to have met you."
-
-
-@socket.on("disconnect", namespace="/beschrijving")
-def disconnectBeschrijving():
-    print "nice to have met you."
-'''
 
 
 def gen(cam):
@@ -249,6 +299,12 @@ else:
 
 if __name__ == '__main__':
     lol = FC.getIOStream()
+    server = SocketIOServer(
+        ('0.0.0.0', 4848),
+        SharedDataMiddleware(app, {}),
+        namespace="socket.io",
+        policy_server=False)
+    server.serve_forever()
     # socket.run(app, host='127.0.0.1',port=5000)
 
 """

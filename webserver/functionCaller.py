@@ -14,9 +14,10 @@ class Command:
 
     def __init__(self, commandName, **params):
         if Command.__idGen__ is None:
-            Command.__idGen__ = getNextId()
+            Command.__idGen__ = Command.getNextId()
         self.id = Command.__idGen__.next()
         self.commandName = commandName
+        self.functions = None  # only used when command is interupted
         if params is not None:
             if params.get('id') is not None:
                 self.id = params['id']
@@ -24,18 +25,27 @@ class Command:
         else:
             self.__params__ = {}
 
+    @staticmethod
+    def getNextId():
+        i = 0
+        while True:
+            if i == sys.maxint:
+                i = 0
+            i += 1
+            yield i
+
     def getId(self):
         return self.id
 
     def getCommandName(self):
         return self.commandName
 
-    def getParam(self, param):
+    def getParam(self, param, default_value):
         if param == "id":
             return self.getId()
         if param == "commandName":
             return self.getCommandName()
-        return self.__params__.get(param, None)
+        return self.__params__.get(param, default_value)
 
     def output(self):
         return {"id": self.getId(), "commandName": self.getCommandName()}
@@ -46,34 +56,45 @@ class Command:
     def __repr__(self):
         return str(self)
 
+    def is_paused(self):
+        return self.functions is not None
+
+    def get_functions(self):
+        return self.functions
+
+    def pause_with_updated_params(self, functions):
+        self.functions = functions
+
 
 class __IOStream__:
     """
     a class designed to communicate from the website to the BrickPi
     """
     manueelCommands = ["goForward", "goBackward", "goLeft", "goRight"]
+    manueelValues={"goForward":1, "goBackward":-1, "goLeft":10, "goRight":-10, "pass":0}
+    combinedValues={0: "pass", 11: "goForwardLeft", -9: "goForwardRight", 9: "goBackwardLeft", -11: "goBackwardRight", 1: "goForward", -1: "goBackward", 10: "goLeft", -10: "goRight"}
 
     def __init__(self):
         self.queue = []
 
     def pushCommand(self):
         if len(self.queue) > 0:
-            toExecute = self.queue[0]
-            if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 1:
+            toExecute = self.queue.pop(0)
+            if toExecute.getCommandName() in __IOStream__.manueelCommands and len(self.queue) == 0:
+                self.queue.insert(0, toExecute)
                 # self.addCommandFrontQueue(toExecute.getCommandName(), **toExecute.__params__)
-                pass
-            elif len(self.queue) > 1 and self.queue[1].getCommandName() in __IOStream__.manueelCommands:
-                return self._getCombinedCommand(toExecute, self.queue[1])
-            else:
-                del self.queue[0]
+            elif len(self.queue) > 0 and self.queue[0].getCommandName() in __IOStream__.manueelCommands:
+                self.queue.insert(0,toExecute)
+                toExecute = self._getCombinedCommand(toExecute, self.queue[1])
             return toExecute
         return None
 
     @classmethod
-    def _getCombinedCommand(cls, command1, command2):
-        return command1
-
-    # TODO: implementeren!!!
+    def _getCombinedCommand(cls, command1, *args):
+        naam = command1.getCommandName()
+        for command in args:
+            naam = cls.combinedValues[cls.manueelValues[naam] + cls.manueelValues[command.getCommandName()]]
+        return Command(naam)
 
     def addCommandToQueue(self, commandName, **kwargs):
         if len(self.queue) == sys.maxint:
@@ -105,6 +126,7 @@ class __IOStream__:
         current = functionDivider.getFunctionDivider().currentCommandObject
         if current.getId() == commandId:
             functionDivider.getFunctionDivider().interuptCurrentCommand()
+            return True
         return False
 
     def cancelCurrentCommand(self):
@@ -157,15 +179,6 @@ def getIOStream():
 
 def getWebCaller():
     return __webCaller__
-
-
-def getNextId():
-    i = 0
-    while True:
-        if i == sys.maxint:
-            i = 0
-        i += 1
-        yield i
 
 
 __ioStream__ = __IOStream__()

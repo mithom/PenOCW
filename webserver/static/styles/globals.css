@@ -4,78 +4,95 @@ div {
 
 .info {
     float: left;
+    padding-left: 50px;
 }
 
-.direct-control {
+#direct-control {
     float: left;
     padding: 10px;
 }
 
-.direct-control button{
+#direct-control button{
     background-color: lightgray;
     display: block;
     min-width: 60px;
     min-height: 60px;
 }
 
-#up.passive {
+#up{
     background-image: url(arrow-up.png);
     background-size: 100%;
 }
 
-#up.active {
-    background-image: url(arrow-up-active.png);
-    background-size: 100%;
+#up.passive {
+    background-color: white;
+    
 }
 
-#down.passive {
+#up.active {
+    background-color: #00AAC3;
+}
+
+#down{
     background-image: url(arrow-down.png);
     background-size: 100%;
 }
 
-#down.active {
-    background-image: url(arrow-down-active.png);
-    background-size: 100%;
+#down.passive {
+    background-color: white;
 }
 
-#left.passive {
+#down.active {
+    background-color: #00AAC3;
+}
+
+#left {
     background-image: url(arrow-left.png);
     background-size: 100%;
 }
 
-#left.active {
-    background-image: url(arrow-left-active.png);
-    background-size: 100%;
+#left.passive {
+    background-color: white;
 }
 
-#right.passive {
+#left.active {
+    background-color: #00AAC3;
+}
+
+#right {
     background-image: url(arrow-right.png);
     background-size: 100%;
 }
 
+#right.passive{
+    background-color: white;
+}
+
 #right.active {
-    background-image: url(arrow-right-active.png);
-    background-size: 100%;
+    background-color: #00AAC3;
 }
 
-.commands {
-    clear: left;
+#commands {
+    float: left;
     padding: 5px 0px;
 }
 
-.route-input {
+#route-input {
+    float: left;
     padding: 5px 0px;
 }
 
-.route-input select {
+#route-input select {
     width: 65px;
     margin: 2px;
 }
 
-.route-input input {
+#route-input input {
     box-sizing: border-box;
     width: 65px;
     margin: 2px;
 }
 
-
+.hidden{
+    display: none;
+}

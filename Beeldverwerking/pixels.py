@@ -19,6 +19,102 @@ beeldverwerking_namespace = socketIO.define(BeeldverwekingNameSpace, '/beeldverw
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
 
+
+# Searching blocks
+def remove_whites(px, left, right, bottom, top):
+    for i in xrange(left, right + 1):
+        for j in xrange(bottom, top, -1):
+            print i, j
+            px[j][i] = 0
+    return px
+
+
+def check_right(index):
+    if index > (img_width - 1):
+        index = (img_width - 1)
+    return index
+
+
+def check_top(index):
+    if index < 0:
+        index = 0
+    return index
+
+
+def find_whites(y,x,direction):
+    count = 0
+    if direction == 'left':
+        while x > 0:
+            x -= 1
+            if px[y][x]==255:
+                count += 1
+            else:
+                break
+    elif direction == 'right':
+        while x < (img_width-1):
+            x += 1
+            if px[y][x]==255:
+                count += 1
+            else:
+                break
+    elif direction == 'up':
+        while y > 0:
+            y -= 1
+            if px[y][x]==255:
+                count += 1
+            else:
+                break
+    else:
+        while y < (img_height-1):
+            y += 1
+            if px[y][x]==255:
+                count += 1
+            else:
+                break
+    if direction == 'up' or direction == 'down':
+        if count > max_length/2:
+            count = max_length/2
+    else:
+        if count > max_width/2:
+            count = max_width/2
+    return count
+
+
+def check_middle_x(y,x):
+    left = find_whites(y,x,'left')
+    right = find_whites(y,x,'right')
+    if abs(left-right)>1:
+        return False
+    else:
+        return True
+
+def check_middle_y(y,x):
+    up = find_whites(y,x,'up')
+    down = find_whites(y,x,'down')
+    if abs(up-down)>1:
+        return False
+    else:
+        return True
+
+
+def wide_enough(row, column):
+    for i in xrange(min_width, max_width):
+        a = column + i
+        a = check_right(a)
+        if px[row][a] == 255:
+            return True
+    return False
+
+
+def long_enough(row, column):
+    for i in xrange(min_length, max_length):
+        a = row - i
+        a = check_top(a)
+        if px[a][column] == 255:
+            return True
+    return False
+
+
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
 byte = ''
 while True:
@@ -65,101 +161,6 @@ while True:
         px = cv.resize(bw, (img_width / img_division, img_height / img_division), interpolation=cv.INTER_NEAREST)
         print px.shape
 
-
-        #Searching blocks
-        def remove_whites(px, left, right, bottom, top):
-            for i in xrange(left, right + 1):
-                for j in xrange(bottom, top, -1):
-                    print i, j
-                    px[j][i] = 0
-            return px
-
-
-        def check_right(index):
-            if index > (img_width - 1):
-                index = (img_width - 1)
-            return index
-
-
-        def check_top(index):
-            if index < 0:
-                index = 0
-            return index
-
-
-
-        def find_whites(y,x,direction):
-            count = 0
-            if direction == 'left':
-                while x > 0:
-                    x -= 1
-                    if px[y][x]==255:
-                        count += 1
-                    else:
-                        break
-            elif direction == 'right':
-                while x < (img_width-1):
-                    x += 1
-                    if px[y][x]==255:
-                        count += 1
-                    else:
-                        break
-            elif direction == 'up':
-                while y > 0:
-                    y -= 1
-                    if px[y][x]==255:
-                        count += 1
-                    else:
-                        break
-            else:
-                while y < (img_height-1):
-                    y += 1
-                    if px[y][x]==255:
-                        count += 1
-                    else:
-                        break
-            if direction == 'up' or direction == 'down':
-                if count > max_length/2:
-                    count = max_length/2
-            else:
-                if count > max_width/2:
-                    count = max_width/2
-            return count
-        
-
-        def check_middle_x(y,x):
-            left = find_whites(y,x,'left')
-            right = find_whites(y,x,'right')
-            if abs(left-right)>1:
-                return False
-            else:
-                return True
-
-        def check_middle_y(y,x):
-            up = find_whites(y,x,'up')
-            down = find_whites(y,x,'down')
-            if abs(up-down)>1:
-                return False
-            else:
-                return True
-
-        def wide_enough(row, column):
-            for i in xrange(min_width, max_width):
-                a = column + i
-                a = check_right(a)
-                if px[row][a] == 255:
-                    return True
-            return False
-
-        def long_enough(row, column):
-            for i in xrange(min_length, max_length):
-                a = row - i
-                a = check_top(a)
-                if px[a][column] == 255:
-                    return True
-            return False
-
-        
         pxbackup = copy.deepcopy(px)
         for r in xrange(img_height - 1, 0, -1):
             found_white_row = False
@@ -195,8 +196,6 @@ while True:
 
         if cv.waitKey(1) == 27:
             exit(0)
-
-
 
     """
         # Image showing

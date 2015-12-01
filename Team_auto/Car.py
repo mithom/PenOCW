@@ -3,7 +3,7 @@ from BrickPi import BrickPiUpdateValues as update
 import time
 import math
 import PID
-import block
+
 
 BrickPiSetup()  # setup the serial port for communication from BrickPi import *
 

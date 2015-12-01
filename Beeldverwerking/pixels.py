@@ -1,6 +1,7 @@
 # Importing needed modules
 import cv2 as cv
 import block
+import Image
 import copy
 from beeldverwerkingNameSpace import BeeldverwekingNameSpace
 from socketIO_client import SocketIO
@@ -53,6 +54,11 @@ while True:
         img_width = bw.shape[1]
         img_height = bw.shape[0]
         img_division = 50
+        min_width = 1
+        max_width = 9
+        min_length = 1
+        max_length = 9
+        image = Image.Image(img_width, img_height, [])
 
         # Pixelation
         px = cv.resize(bw, (img_width / img_division, img_height / img_division), interpolation=cv.INTER_NEAREST)
@@ -60,13 +66,6 @@ while True:
 
 
         #Searching blocks
-        min_width = 1
-        max_width = 9
-        min_length = 1
-        max_length = 9
-        (img_height, img_width) = px.shape 
-
-
         def remove_whites(px, left, right, bottom, top):
             for i in xrange(left, right + 1):
                 for j in xrange(bottom, top, -1):
@@ -164,7 +163,7 @@ while True:
                     if long_enough == True:
                         break
 
-        list_of_blocks = []
+        
         pxbackup = copy.deepcopy(px)
         for r in xrange(img_height - 1, 0, -1):
             found_white_row = False
@@ -186,11 +185,11 @@ while True:
                                 u = x + find_whites(y,x,'right')
                                 v = y + find_whites(y,x,'down')
                                 w = y - find_whites(y,x,'up')
-                                new_block = block.Block(t, u, v, w)
-                                list_of_blocks.append(new_block)
+                                new_block = block.Block(t, u, v, w, image)
+                                image.add_block(new_block)
                                 px = remove_whites(px, t, u, v, w)
 
-        for t in list_of_blocks:
+        for t in image.get_blocks():
             location = t.getLocation()
             pxbackup[location[1]][location[0]] = 150
 

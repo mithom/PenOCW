@@ -14,3 +14,9 @@ class Block(object):
 
     def get_image(self):
         return self.image
+
+    def get_width(self):
+        return self.right-self.left
+
+    def get_height(self):
+        return self.bottom - self.top

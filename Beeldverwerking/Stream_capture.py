@@ -34,8 +34,20 @@ while True:
 
         # TODO: threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
 
+
+        threshold = 142
+        #Determining threshold
+        hist = None
+        hist = cv.calcHist([blur], [0], None, [32], [0, 256])
+        for x in xrange(31, -1, -1):
+            if sum(hist[x] > 0):
+                threshold = (x - 8) * 8 + 4
+
+                break
+
+
         # Thresholding
-        ret, bw = cv.threshold(blur, 150, 255, cv.THRESH_BINARY)
+        ret, bw = cv.threshold(blur, threshold, 255, cv.THRESH_BINARY)
 
         # Canny edge detection
         edges = cv.Canny(bw, 5, 5)

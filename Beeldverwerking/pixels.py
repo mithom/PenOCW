@@ -24,7 +24,6 @@ beeldverwerking_namespace = socketIO.define(BeeldverwekingNameSpace, '/beeldverw
 def remove_whites(px, left, right, bottom, top):
     for i in xrange(left, right + 1):
         for j in xrange(bottom, top, -1):
-            print i, j
             px[j][i] = 0
     return px
 
@@ -117,6 +116,7 @@ def long_enough(row, column):
 
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
 byte = ''
+last_update = time.time()
 while True:
     byte += stream.read(1024)
     a = byte.find('\xff\xd8')
@@ -125,59 +125,88 @@ while True:
         jpg = byte[a:b + 2]
         byte = byte[b + 2:]
         frame = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 0)
+        #frame = cv.resize(frame, (2592, 1944), interpolation=cv.INTER_AREA)
 
         # Image loading
-        #frame = cv.imread('/home/r0302418/repos/penocw/Beeldverwerking/pi_photos/cam4.jpg', 1)
+        # frame = cv.imread('C:\\Users\\Gilles\\Dropbox\\Gilles\\Documenten\\School\\PenO_CW\\repo\\Beeldverwerking\\pi_photos\\cam4.jpg', 0)
 
         # Gaussian blur
         blur = cv.GaussianBlur(frame, (5, 5), 0)
 
-        threshold = 150
+        frame = None
+
+        threshold = 140
+
         # Threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
+        hist = None
         hist = cv.calcHist([blur], [0], None, [32], [0, 256])
-        for x in range(31, -1, -1):
+        for x in xrange(31, -1, -1):
             if sum(hist[x] > 0):
                 threshold = (x - 8) * 8 + 4
+                hist = None
                 break
+        hist = None
+        x = None
+
+        blur = cv.resize(blur, (2592, 1944), interpolation=cv.INTER_NEAREST)
 
         # Thresholding
         ret, bw = cv.threshold(blur, threshold, 255, cv.THRESH_BINARY)
 
+        blur = None
+
         # Cutting
-        cut1 = bw[bw.shape[0] / 3:bw.shape[0]]
-        cut2 = cut1[:, cut1.shape[1] * 1 / 4:cut1.shape[1] * 3 / 4]
+        #cut1 = bw[bw.shape[0] / 3:bw.shape[0]]
+        #cut2 = cut1[:, cut1.shape[1] * 1 / 4:cut1.shape[1] * 3 / 4]
 
         # Variable declaration
-        img_width = bw.shape[1]
-        img_height = bw.shape[0]
+        bw_width = bw.shape[1]
+        bw_height = bw.shape[0]
         img_division = 50
         min_width = 1
         max_width = 9
         min_length = 1
         max_length = 9
-        image = Image.Image(img_width, img_height, [], (min_width, max_width, min_length, max_length))
+        image = Image.Image(bw_width, bw_height, [], (min_width, max_width, min_length, max_length))
+
 
         # Pixelation
-        px = cv.resize(bw, (img_width / img_division, img_height / img_division), interpolation=cv.INTER_NEAREST)
-        print px.shape
+        px = cv.resize(bw, (bw_width / img_division, bw_height / img_division), interpolation=cv.INTER_NEAREST)
+        img_width = px.shape[1]
+        img_height = px.shape[0]
+
+        bw = None
 
         pxbackup = copy.deepcopy(px)
+
         for r in xrange(img_height - 1, 0, -1):
-            found_white_row = False
             for c in xrange(0, img_width - 1, 1):
                 if px[r][c] == 255:
                     if r != 0 and c != (img_width - 1):
                         if px[r - 1][c] == 0 or px[r][c + 1] == 0:
                             px[r][c] = 0
-                        else:                        
+                        else:
                             if (long_enough(r,c) == True) and (wide_enough(r,c) == True):
                                 y = r - 1
                                 x = c + 1
-                                while check_middle_x(y,x) == False or check_middle_y(y,x) == False:
-                                    if check_middle_x(y,x) == False:
+                                y = check_top(y)
+                                x = check_right(x)
+                                flag1 = False
+                                flag2 = False
+                                while (check_middle_x(y,x) == False and flag1 == False) or \
+                                        (check_middle_y(y,x) == False and flag2 == False):
+                                    if check_middle_x(y,x) == False and flag1 == False:
+                                        last_x = x
                                         x += 1
-                                    if check_middle_y(y,x) == False:
+                                        x = check_right(x)
+                                        if x == last_x:
+                                            flag1 = True
+                                    if check_middle_y(y,x) == False and flag2 == False:
+                                        last_y = y
                                         y -= 1
+                                        check_top(y)
+                                        if y == last_y:
+                                            flag2 = True
                                 t = x - find_whites(y,x,'left')
                                 u = x + find_whites(y,x,'right')
                                 v = y + find_whites(y,x,'down')
@@ -186,16 +215,31 @@ while True:
                                 image.add_block(new_block)
                                 px = remove_whites(px, t, u, v, w)
 
+
+        px = None
+
         for t in image.get_blocks():
             location = t.getLocation()
             pxbackup[location[1]][location[0]] = 150
 
-        pxres = cv.resize(pxbackup, (img_width, img_height), interpolation=cv.INTER_NEAREST)
 
-        cv.imshow('Result', cv.resize(pxres, (pxres.shape[1] / 2, pxres.shape[0] / 2),interpolation=cv.INTER_NEAREST))
+        # pxres = cv.resize(pxbackup, (img_width, img_height), interpolation=cv.INTER_NEAREST)
+
+        foto = cv.resize(pxbackup, (bw_width/4, bw_height/4), interpolation=cv.INTER_NEAREST)
+
+        pxbackup = None
+
+        cv.imshow('Result', foto)
+
+        #cv.imshow('Result', pxbackup)
+
+        # cv.resize(pxres, (pxres.shape[1] / 2, pxres.shape[0] / 2),interpolation=cv.INTER_NEAREST)
 
         if cv.waitKey(1) == 27:
             exit(0)
+
+
+
 
     """
         # Image showing

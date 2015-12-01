@@ -40,7 +40,7 @@ while True:
         # Canny edge detection
         edges = cv.Canny(bw, 5, 5)
 
-        # Hough line transform
+        # Hough Line transform
 
         lines = cv.HoughLinesP(edges, 1, np.pi / 180, 15, None, tape_width, 15)
         # lines = cv.HoughLinesP(edges, 1, np.pi/180, tape_width, None, 1, 15)
@@ -73,7 +73,7 @@ while True:
             while line1 < len(lines):
                 line2 = line1 + 1
                 while line2 < len(lines):
-                    # Calculating the distance between the line starting points
+                    # Calculating the distance between the Line starting points
                     line1_1 = [lines[line1][0][0], lines[line1][0][1]]
                     line1_2 = [lines[line1][0][2], lines[line1][0][3]]
                     line2_1 = [lines[line2][0][0], lines[line2][0][1]]
@@ -85,7 +85,7 @@ while True:
                                   int((lines[line2][0][1] + lines[line2][0][3]) / 2)]
                     distance = math.sqrt((mid_line_1[0] - mid_line_2[0]) ** 2 + (mid_line_1[1] - mid_line_2[1]) ** 2)
 
-                    # Calculating line slopes
+                    # Calculating Line slopes
                     if max(line1_2[0], line1_1[0]) == line1_2[0]:
                         dy = line1_2[1] - line1_1[1]
                         dx = line1_2[0] - line1_1[0]
@@ -138,7 +138,7 @@ while True:
             while line1 < len(lines):
                 line2 = line1 + 1
                 while line2 < len(lines):
-                    # Calculating the distance between the line starting points
+                    # Calculating the distance between the Line starting points
                     line1_1 = [lines[line1][0][0], lines[line1][0][1]]
                     line1_2 = [lines[line1][0][2], lines[line1][0][3]]
                     line2_1 = [lines[line2][0][0], lines[line2][0][1]]
@@ -150,7 +150,7 @@ while True:
                     distance = min(distance1, distance2, distance3, distance4)
                     maxdist = max(distance1, distance2, distance3, distance4)
 
-                    # Calculating line slopes
+                    # Calculating Line slopes
                     if max(line1_2[0], line1_1[0]) == line1_2[0]:
                         dy = line1_2[1] - line1_1[1]
                         dx = line1_2[0] - line1_1[0]
@@ -191,7 +191,7 @@ while True:
                     delete = False
                     switch = False
                     if distance < 200 and flag == 1 and maxdist < 30:
-                        # We delete the shortest line
+                        # We delete the shortest Line
                         if length2 <= length1:
                             lines = np.delete(lines, line2, axis=0)
                             delete = True
@@ -209,14 +209,14 @@ while True:
             ####### LIJN FILTERING GILLES
             #################################################
 
-        # Grayscale to RGB for color line drawing
+        # Grayscale to RGB for color Line drawing
         line_image = cv.cvtColor(frame, cv.COLOR_GRAY2RGB)
 
         # Drawing the lines
         if lines is not None:
             for k in xrange(0, len(lines)):
                 for x1, y1, x2, y2 in lines[k]:
-                    # cv.line(line_image, (x1,y1),(x2,y2),(0,255,0),2)
+                    # cv.Line(line_image, (x1,y1),(x2,y2),(0,255,0),2)
                     cv.line(line_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
         connecting = True

@@ -245,7 +245,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'Flask-SocketIO', u'Flask-SocketIO Documentation',
-   u'Miguel Grinberg', 'Flask-SocketIO', 'One line description of project.',
+   u'Miguel Grinberg', 'Flask-SocketIO', 'One Line description of project.',
    'Miscellaneous'),
 ]
 

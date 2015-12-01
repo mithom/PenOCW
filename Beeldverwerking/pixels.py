@@ -58,7 +58,7 @@ while True:
         max_width = 9
         min_length = 1
         max_length = 9
-        image = Image.Image(img_width, img_height, [])
+        image = Image.Image(img_width, img_height, [], px)
 
         # Pixelation
         px = cv.resize(bw, (img_width / img_division, img_height / img_division), interpolation=cv.INTER_NEAREST)

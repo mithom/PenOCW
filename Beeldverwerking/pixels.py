@@ -219,8 +219,9 @@ while True:
         ###################
 
         px = None
-
+        print "lijndetectie"
         main_line = image.get_main_line()
+        print "done lijndetectie"
         print main_line
 
         ##############

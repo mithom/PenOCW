@@ -41,15 +41,14 @@ class Image:
                                             (block.distance_from(prev_block) < next_block.distance_from(prev_block))):
                     next_block = block
             blocks.append(next_block)
-            prev_block = next_block
             while True:
+                prev_block = blocks[-1]
                 blocks_in_range = []
                 for block in self.blocks:
-                    if block.distance_from(prev_block) < Image.dist_threshold and blocks != prev_block:
+                    if block.distance_from(prev_block) < Image.dist_threshold and block not in blocks:  # TODO: lijn die terugkeert ondersteunen
                         blocks_in_range.append(block)
                 if len(blocks_in_range) == 0:
                     break
-
                 if len(blocks)>1:
                     rico = get_rico(blocks[-2],blocks[-1])
                 else:
@@ -67,6 +66,7 @@ class Image:
                     break
                 else:
                     blocks.append(next_block)
+            return Line(*blocks)
 
     def blocks_left_of_line(self):
         for b in self.get_blocks():
@@ -123,5 +123,5 @@ class Image:
     def is_corner(self):
         return False
 
-    def is_turn():
+    def is_turn(self):
         return False

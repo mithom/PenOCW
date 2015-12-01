@@ -35,6 +35,7 @@ while True:
         # Gaussian blur
         blur = cv.GaussianBlur(frame, (5, 5), 0)
 
+        threshold = 150
         # Threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
         hist = cv.calcHist([blur], [0], None, [32], [0, 256])
         for x in range(31, -1, -1):

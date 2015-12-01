@@ -6,18 +6,19 @@ from platform import system
 from socketIO_client import SocketIO # dit meot de oude versie 0.5.4 zijn, niet de nieuwste. Deze zijn niet backward compatible.
 from beeldverwerkingNameSpace import BeeldverwekingNameSpace
 
-url = '192.168.137.136'
+url = '192.168.137.202'
 port = 4848
 current_route_description = []
 
 
-socketIO = SocketIO(url, port)
-beeldverwerking_namespace = socketIO.define(BeeldverwekingNameSpace, '/beeldverwerking')
+#socketIO = SocketIO(url, port)
+#beeldverwerking_namespace = socketIO.define(BeeldverwekingNameSpace, '/beeldverwerking')
 tape_width = 40
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
 
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
+#stream = urllib.urlopen('http://192.168.137.202:4848//video_feed.mjpg')
 byte = ''
 while True:
     byte += stream.read(1024)
@@ -261,7 +262,7 @@ while True:
         # Image showing
         cv.imshow('Lines', line_image)
 
-        beeldverwerking_namespace.set_powers(100,200)
+        #beeldverwerking_namespace.set_powers(100,200)
 
         if cv.waitKey(1) == 27:
             exit(0)
@@ -269,4 +270,4 @@ while True:
     ##########################
     ## hier bebingt de stuur logica
     ##########################
-    beeldverwerking_namespace.set_powers(0, 200)
+    #beeldverwerking_namespace.set_powers(0, 200)

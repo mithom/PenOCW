@@ -1,4 +1,4 @@
-import Image
+#import Image
 
 class Block(object):
     def __init__(self, left, right, top, bottom, image):

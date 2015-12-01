@@ -143,25 +143,20 @@ while True:
                 return True
 
         def wide_enough(row, column):
-            wide_enough = False
-                for i in xrange(min_width, max_width):
-                    a = column + i
-                    a = check_right(a)
-                    if px[row][a] == 255:
-                        wide_enough = True
-                    if wide_enough == True:
-                        break
-            return wide_enough
+            for i in xrange(min_width, max_width):
+                a = column + i
+                a = check_right(a)
+                if px[row][a] == 255:
+                    return True
+            return False
 
         def long_enough(row, column):
-            long_enough = False
-                for i in xrange(min_length, max_length):
-                    a = row - i
-                    a = check_top(a)
-                    if px[a][column] == 255:
-                        long_enough = True
-                    if long_enough == True:
-                        break
+            for i in xrange(min_length, max_length):
+                a = row - i
+                a = check_top(a)
+                if px[a][column] == 255:
+                    return True
+            return False
 
         
         pxbackup = copy.deepcopy(px)

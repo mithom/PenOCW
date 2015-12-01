@@ -214,12 +214,20 @@ while True:
                                 new_block = block.Block(t, u, v, w, image)
                                 image.add_block(new_block)
                                 px = remove_whites(px, t, u, v, w)
-
+        ###################
+        ## image is ready
+        ###################
 
         px = None
 
+        main_line = image.get_main_line()
+        print main_line
+
+        ##############
+        ## visual
+        #############
         for t in image.get_blocks():
-            location = t.getLocation()
+            location = t.get_middle()
             pxbackup[location[1]][location[0]] = 150
 
 

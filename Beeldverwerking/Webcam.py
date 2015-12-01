@@ -24,7 +24,7 @@ while True:
     # Canny edge detection
     edges = cv.Canny(bw,5,5)
 
-    # Hough line transform
+    # Hough Line transform
     lines = cv.HoughLinesP(edges, 2, np.pi/180, 61, None, 100, 200)
 
     #### LINE FILTERING ####
@@ -39,7 +39,7 @@ while True:
         while line1 < len(lines):
             line2 = line1 + 1
             while line2 < len(lines):
-                # Calculating the distance between the line starting points
+                # Calculating the distance between the Line starting points
                 line1_1 = [lines[line1][0][0],lines[line1][0][1]]
                 line1_2 = [lines[line1][0][2],lines[line1][0][3]]
                 line2_1 = [lines[line2][0][0],lines[line2][0][1]]
@@ -50,7 +50,7 @@ while True:
                 distance4 = math.sqrt((line1_2[0]-line2_1[0])**2 + (line1_2[1]-line2_1[1])**2)
                 distance = min(distance1,distance2,distance3,distance4)
 
-                # Calculating line slopes
+                # Calculating Line slopes
                 if max(line1_2[0],line1_1[0])==line1_2[0]:
                     dy = line1_2[1] - line1_1[1]
                     dx = line1_2[0] - line1_1[0]
@@ -91,7 +91,7 @@ while True:
                 delete = False
                 switch = False
                 if distance < 200 and flag == 1:
-                    # We delete the shortest line
+                    # We delete the shortest Line
                     if length2 <= length1:
                         lines = np.delete(lines,line2,axis=0)
                         delete = True
@@ -110,7 +110,7 @@ while True:
 
     #### LINE FILTERING ####
 
-    # Grayscale to RGB for color line drawing
+    # Grayscale to RGB for color Line drawing
     frame = cv.cvtColor(frame, cv.COLOR_GRAY2RGB)
 
     # Drawing the lines

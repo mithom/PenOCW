@@ -2,18 +2,18 @@ import block
 
 
 class Image:
-    def __init__(self, img_width, img_height, blocks, px):
+    def __init__(self, img_width, img_height, blocks, block_restrictions):
         self.img_width = img_width
         self.img_height = img_height
         self.blocks = blocks
-        self.px = px
+        self.block_restrictions = block_restrictions
 
 
-def get_width(self):
+def get_img_width(self):
     return self.img_width
 
 
-def get_height(self):
+def get_img_height(self):
     return self.img_height
 
 
@@ -24,35 +24,80 @@ def get_blocks(self):
 def add_block(self, block):
     self.blocks.append(block)
 
-    def get_main_line(self):
-        blocks = self.get_blocks()
-        if len(blocks) == 0:
-            return int(self.get_width() / 2)
-        if len(blocks) == 1:
-            return blocks[0].getLocation()[0]
-        else:
-            return None
 
-    def get_structure(self):
-        if self.is_intersection():
-            return 'intersection'
-        elif self.is_t_split():
-            return 't_split'
-        elif self.is_corner():
-            return 'corner'
-        elif self.is_turn():
-            return 'turn'
-        else:
-            return 'line'
+def get_main_line(self):
+    blocks = self.get_blocks()
+    if len(blocks) == 0:
+        return None
+    if len(blocks) == 1:
+        return (blocks[0].getLocation()[0] - int(blocks[0].get_width() / 2),
+                blocks[0].getLocation()[0] + int(blocks[0].get_width() / 2))
+    else:
+        return None
 
-    def is_intersection(self):
-        return False
 
-    def is_t_split(self):
-        return False
+def blocks_left_of_line(self):
+    for b in self.get_blocks():
+        if b.getLocation()[0] < self.get_main_line()[0]:
+            return True
+    return False
 
-    def is_corner(self):
-        return False
 
-    def is_turn():
-        return False
+def blocks_right_of_line(self):
+    for b in self.get_blocks():
+        if b.getLocation()[0] >= self.get_main_line()[0]:
+            return True
+    return False
+
+
+def block_on_line(self, block):
+    if not ((block.getLocation()[0] < self.get_main_line()[0]) or (block.getLocation()[0] >= self.get_main_line()[0])):
+        return True
+    return False
+
+
+def get_blocks_on_line(self):
+    blocks_on_line = []
+    for b in self.get_blocks():
+        if self.block_on_line(b):
+            blocks_on_line.append(b)
+    return blocks_on_line
+
+
+def get_first_block_on_line(self):
+    lowest = 0
+    first_block = None
+    for b in self.get_blocks_on_main_line():
+        if b.getLocation()[1] > lowest:
+            first_block = b
+            lowest = b.getLocation()[1]
+    return first_block
+
+
+def get_structure(self):
+    if self.is_intersection():
+        return 'intersection'
+    elif self.is_t_split():
+        return 't_split'
+    elif self.is_corner():
+        return 'corner'
+    elif self.is_turn():
+        return 'turn'
+    else:
+        return 'line'
+
+
+def is_intersection(self):
+    return False
+
+
+def is_t_split(self):
+    return False
+
+
+def is_corner(self):
+    return False
+
+
+def is_turn():
+    return False

@@ -10,7 +10,7 @@ import numpy as np
 import time
 
 
-url = '192.168.137.136'
+url = '192.168.137.202'
 port = 4848
 current_route_description = []
 socketIO = SocketIO(url, port)
@@ -155,7 +155,7 @@ while True:
         max_width = 9
         min_length = 1
         max_length = 9
-        image = Image.Image(img_width, img_height, [], px)
+        image = Image.Image(img_width, img_height, [], (min_width, max_width, min_length, max_length))
 
         # Pixelation
         px = cv.resize(bw, (img_width / img_division, img_height / img_division), interpolation=cv.INTER_NEAREST)

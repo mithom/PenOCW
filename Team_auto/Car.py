@@ -158,8 +158,8 @@ def go_straight_duration(power, duration):
 def make_circle_left(power, radius):  # radius in cm
     global O, car_width
     calibrate()
-    outer_distance = ((radius+car_width/2.0)*2)*math.pi
-    inned_distance = ((radius - car_width/2.0)*2)*math.pi
+    outer_distance = (2*radius + car_width)*math.pi
+    inned_distance = (2*radius - car_width)*math.pi
     outer_rotations = outer_distance/O
     inner_rotations = inned_distance/O
     inner_degrees = inner_rotations*310

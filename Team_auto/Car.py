@@ -29,20 +29,20 @@ def     BrickPiUpdateValues():
     isUpdated = True
 
 def go_first_block(power, block, duration):
-	calibrate(power,power)	
-	location = block.get_middle()
-	img_width = block.get_image().get_img_width()
-	img_height = block.get_image().get_img_height()
-	mid_line = [(location[0] - img_width)/2, (img_height - location[1])/2]
-	rico = (img_height - location[1])/(location[0] - img_width)
-	x = (-mid_line[1])*rico + mid_line[0]
-	radius = abs(x)
-	if x >= 0:
-		left_power = int(power * (radius + car_width)/(2 * (radius - car_width))) 
-		right_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
-	else:
-		left_power = int(power * (radius - car_width)/(2 * (radius + car_width))) 
-	right_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
+    calibrate(power, power)
+    location = block.get_middle()
+    img_width = block.get_image().get_img_width()
+    img_height = block.get_image().get_img_height()
+    mid_line = [(location[0] - img_width)/2, (img_height - location[1])/2]
+    rico = (img_height - location[1])/(location[0] - img_width)
+    x = (-mid_line[1])*rico + mid_line[0]
+    radius = abs(x)
+    if x >= 0:
+        left_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
+        right_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
+    else:
+        left_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
+        right_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
     set_motors(left_power, right_power)
     BrickPiUpdateValues()
     start_time = time.time()

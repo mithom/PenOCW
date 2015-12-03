@@ -115,21 +115,6 @@ class Image:
             return True
         return False
 
-    def get_blocks_on_line(self):
-        blocks_on_line = []
-        for b in self.get_blocks():
-            if self.block_on_line(b):
-                blocks_on_line.append(b)
-        return blocks_on_line
-
-    def get_first_block_on_line(self):
-        lowest = 0
-        first_block = None
-        for b in self.get_blocks_on_main_line():
-            if b.get_middle()[1] > lowest:
-                first_block = b
-                lowest = b.get_middle()[1]
-        return first_block
 
     def get_structure(self):
         if self.is_intersection():

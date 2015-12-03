@@ -295,10 +295,10 @@ def go_first_block(power, block, duration):
     else:
         left_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
         right_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
-    set_motors(left_power, right_power)
+    beeldverwerking_namespace.set_powers(left_power, right_power)
     BrickPiUpdateValues()
     start_time = time.time()
     while time.time() - start_time < duration:
-        set_motors(left_power, right_power)
+        beeldverwerking_namespace.set_powers(left_power, right_power)
         BrickPiUpdateValues()
     #beeldverwerking_namespace.set_powers(0, 200)

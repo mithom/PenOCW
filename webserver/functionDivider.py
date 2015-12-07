@@ -67,7 +67,6 @@ class FunctionDivider:
     transforms commands into functions that the Car can execute. Also allows interuption of these commands.
     """
     #    commandLib = {"goForward": [Function(haha, 100)], "goBackward": [Function(haha, 100)]} #the list contains the functions that should be executed in order to drive the car
-    is_started = False
 
     def __init__(self, firstCommand=None):
         self.currentCommand = None
@@ -121,15 +120,7 @@ class FunctionDivider:
         if command is not None and command.getCommandName() in self.commandLib.keys():
             self.currentCommandObject = command
             if not command.is_paused():
-                if command.commandName not in ("left", "right", "stop") or FunctionDivider.is_started:
-                    self.currentCommand = [x.copy() for x in self.commandLib[command.getCommandName()]]
-                else:
-                    print "not yet started"
-                    for command in functionCaller.getIOStream().getAllCommandOutputsInQueue():
-                        if command["commandName"] == "start":
-                            FunctionDivider.is_started = True
-                            self.currentCommand = [x.copy() for x in self.commandLib[command.getCommandName()]]
-                            break
+                self.currentCommand = [x.copy() for x in self.commandLib[command.getCommandName()]]
             else:
                 self.currentCommand = command.get_functions()
         else:

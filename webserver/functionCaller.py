@@ -70,6 +70,7 @@ class __IOStream__:
     """
     a class designed to communicate from the website to the BrickPi
     """
+    is_started = False
     manueelCommands = ["goForward", "goBackward", "goLeft", "goRight"]
     manueelValues={"goForward":1, "goBackward":-1, "goLeft":10, "goRight":-10, "pass":0}
     combinedValues={0: "pass", 11: "goForwardLeft", -9: "goForwardRight", 9: "goBackwardLeft", -11: "goBackwardRight", 1: "goForward", -1: "goBackward", 10: "goLeft", -10: "goRight"}
@@ -86,6 +87,14 @@ class __IOStream__:
             elif len(self.queue) > 0 and self.queue[0].getCommandName() in __IOStream__.manueelCommands:
                 self.queue.insert(0,toExecute)
                 toExecute = self._getCombinedCommand(toExecute, self.queue[1])
+            elif  self.queue[0]["commandName"] in ('start', 'stop', "left", 'right'):
+                if __IOStream__.is_started is True:
+                    return self.queue.pop(0)
+                else:
+                    for command in self.queue:
+                        if command.commandName == "start":
+                            __IOStream__.is_started = True
+                            return self.queue.pop(0)
             return toExecute
         return None
 

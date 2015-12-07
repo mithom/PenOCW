@@ -131,10 +131,10 @@ def go_first_block(power, line):
     rico = (img_height - location[1])/(location[0] - img_width)
     x = (-mid_line[1])*rico + mid_line[0]
     radius = abs(x)
-    if (rico < 1.5) and (rico >= 0):
+    if (rico < 0.5) and (rico >= 0):
         left_power = int(power/4)
         right_power = -int(power/4)
-    elif (abs(rico) < 1.5) and (rico <= 0):
+    elif (abs(rico) < 0.5) and (rico <= 0):
         left_power = -int(power/4)
         right_power = int(power/4)
     elif x >= 0:

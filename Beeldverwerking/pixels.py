@@ -138,11 +138,11 @@ def go_first_block(power, line):
         left_power = -int(power/4)
         right_power = int(power/4)
     elif x >= 0:
-        left_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
-        right_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
+        left_power = int(power * (radius + car_width)/( (radius - car_width)))
+        right_power = int(power * (radius - car_width)/( (radius + car_width)))
     else:
-        left_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
-        right_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
+        left_power = int(power * (radius - car_width)/( (radius + car_width)))
+        right_power = int(power * (radius + car_width)/((radius - car_width)))
     beeldverwerking_namespace.set_powers(left_power, right_power)
     #BrickPiUpdateValues()
     #while time.time() - start_time < duration:
@@ -272,7 +272,7 @@ while True:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block(200, main_line)
+                    go_first_block(100, main_line)
 
             elif name == "left":
                 if len(image.blocks_left_of_line(image.line)) >= 2:  # TODO: liggen deze wel op een lijn
@@ -286,7 +286,7 @@ while True:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block(200, main_line)
+                    go_first_block(100, main_line)
 
             elif name == "stop":
                 if len(image.blocks_left_of_line(image.line)) >= 2 or len(image.blocks_right_of_line(image.line) >= 2):
@@ -300,7 +300,7 @@ while True:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block(200, main_line)
+                    go_first_block(100, main_line)
             elif name == "start":
                 beeldverwerkingNameSpace.finish_command(command["id"])
             else:

@@ -228,7 +228,9 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         succes = False
         command_id = params.get('id', None)
         if command_id is not None:
-            succes = FC.getIOStream().removeCommandFromQueue(command_id)
+            #succes = FC.getIOStream().removeCommandFromQueue(command_id)
+            FC.functionDivider.getFunctionDivider().interuptCurrentFunction()
+            succes = True
             self.update_route_description()
         if not succes:
             self.emit("event_confirmation", {'succes': False, 'id': command_id})
@@ -257,11 +259,6 @@ def run_socketio(rest):
 def index():
     if request.method == 'GET':
         return render_template('index.html')
-        # if request.method == 'POST':
-        #   print request.json
-        #    params = request.json
-        #    func = params.get('function')
-        #    return procesFunctionCall(func)
 
 
 def gen(cam):

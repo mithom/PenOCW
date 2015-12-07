@@ -104,9 +104,12 @@ class FunctionDivider:
                                           Function(functions.get('rotate_left_angle'), angle=90, power=100)],
                            "makeCircle": [
                                Function(functions.get('make_circle_left'), radius=50, power=150, degree=310)],
-                           "stop": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1)],
-                           "left": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1)],
-                           "right": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1)]}
+                           "stop": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1),
+                                    Function(functions.get("sleep"), duration=100000)],
+                           "left": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1),
+                                    Function(functions.get("rotate_left_angle"), angle=90, power=100)],
+                           "right": [Function(functions.get("set_powers"), left=150, right=150, duration=0.1),
+                                     Function(functions.get("rotate_right_angle"), angle=90, power=100)]}
 
         self.currentCommandObject = None
         self.currentThread = None
@@ -132,6 +135,9 @@ class FunctionDivider:
         self.currentCommand = []
         self.currentCommandObject = None
         return paused_command
+
+    def interuptCurrentFunction(self):
+        del self.currentCommand[0]
 
     def processTime(self, dt):
         """

@@ -215,6 +215,7 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         global beeldverwerking
         super(BeeldverwerkingNamespace, self).__init__(*args, **kwargs)
         beeldverwerking = self
+        print "hallo =)"
 
     def emit(self, event, args):
         self.socket.send_packet(dict(type="event", name=event,

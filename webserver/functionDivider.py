@@ -124,6 +124,7 @@ class FunctionDivider:
                 if command.commandName not in ("left", "right", "stop") or FunctionDivider.is_started:
                     self.currentCommand = [x.copy() for x in self.commandLib[command.getCommandName()]]
                 else:
+                    print "not yet started"
                     for command in functionCaller.getIOStream().getAllCommandOutputsInQueue():
                         if command["commandName"] == "start":
                             FunctionDivider.is_started = True

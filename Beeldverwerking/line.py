@@ -20,6 +20,14 @@ class Line:
         else:
             return get_rico(self.blocks[0], self.blocks[-1])
 
+    def get_type(self):
+        if (True):
+            return 'straight_line'
+        elif (False):
+            return 'right_turn'
+        else:
+            return 'left_turn'
+
     def __repr__(self):
         return str(self)
 
@@ -34,3 +42,5 @@ def get_rico(block1, block2):
         return (float(y2)-y1)/(x2-x1)
     except ZeroDivisionError:
         return -10000
+
+

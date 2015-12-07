@@ -28,20 +28,6 @@ def     BrickPiUpdateValues():
     update()
     isUpdated = True
 
-def go_first_block(power, block, duration):
-    location = block.get_middle()
-    calibrate(power,power)
-    #TODO factor bepalen
-    left_power = power #*factor
-    right_power = power #*factor
-    set_motors(left_power, right_power)
-    BrickPiUpdateValues()
-    start_time = time.time()
-    while time.time() - start_time < duration:
-        set_motors(left_power, right_power)
-        BrickPiUpdateValues()
-    
-
 def calibrate(power_left = 1, power_right = 1):
     global offset_A, offset_B
     BrickPi.MotorEnable[PORT_A] = 1

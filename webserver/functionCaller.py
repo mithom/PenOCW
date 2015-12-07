@@ -48,7 +48,7 @@ class Command:
         return self.__params__.get(param, default_value)
 
     def output(self):
-        return {"id": self.getId(), "commandName": self.getCommandName()}
+        return {"id": self.getId(), "commandName": self.getCommandName(), "params": self.__params__}
 
     def __str__(self):
         return str(self.output())
@@ -136,15 +136,6 @@ class __IOStream__:
     def cancelWholeQueue(self):
         self.queue = []
         self.cancelCurrentCommand()
-
-    def start(self):
-        pass
-
-    def pause(self):
-        pass
-
-    def stop(self):
-        pass
 
     def setWebsite(self, mainUrl):
         print mainUrl

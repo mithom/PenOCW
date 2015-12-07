@@ -12,6 +12,7 @@ class Image:
         self.img_height = img_height
         self.blocks = blocks
         self.block_restrictions = block_restrictions
+        self.line = self._get_main_line()
 
     def get_img_width(self):
         return self.img_width
@@ -26,6 +27,9 @@ class Image:
         self.blocks.append(block)
 
     def get_main_line(self):
+        return self.line
+
+    def _get_main_line(self):
         blocks = self.get_blocks()
         if len(blocks) == 0:
             return Line(Block(self.img_width/2,self.img_width/2,min(1,self.img_height),min(1,self.img_height),self),
@@ -41,16 +45,15 @@ class Image:
                                             (block.distance_from(prev_block) < next_block.distance_from(prev_block))):
                     next_block = block
             blocks.append(next_block)
-            prev_block = next_block
             while True:
+                prev_block = blocks[-1]
                 blocks_in_range = []
                 for block in self.blocks:
-                    if block.distance_from(prev_block) < Image.dist_threshold and blocks != prev_block:
+                    if block.distance_from(prev_block) < Image.dist_threshold and block not in blocks:  # TODO: lijn die terugkeert ondersteunen
                         blocks_in_range.append(block)
                 if len(blocks_in_range) == 0:
                     break
-
-                if len(blocks)>1:
+                elif len(blocks)>1:
                     rico = get_rico(blocks[-2],blocks[-1])
                 else:
                     rico = -10000
@@ -67,40 +70,54 @@ class Image:
                     break
                 else:
                     blocks.append(next_block)
+            return Line(*blocks)
 
-    def blocks_left_of_line(self):
-        for b in self.get_blocks():
-            if b.get_middle()[0] < self.get_main_line()[0]:
+    def blocks_left_of_line(self, line):
+        found_left = False
+        for b1 in self.get_blocks():
+            if not self.block_on_line(b1, line):
+                found_left = True
+                if line.get_type() == 'straight_line':
+                    for b2 in line.get_blocks():
+                        if not ((b1.get_middle[0] < b2.get_middle[0]) or (b1.get_middle[1] < b2.get_middle[1])):
+                            found_right = False
+                elif line.get_type() == 'right_turn':
+                    for b2 in line.get_blocks():
+                        if not ((b1.get_middle[0] < b2.get_middle[0]) or (b1.get_middle[1] > b2.get_middle[1])):
+                            found_right = False
+                elif line.get_type() == 'left_turn':
+                    for b2 in line.get_blocks():
+                        if not ((b1.get_middle[0] < b2.get_middle[0]) or (b1.get_middle[1] < b2.get_middle[1])):
+                            found_right = False
+            if found_left is True:
                 return True
         return False
 
-    def blocks_right_of_line(self):
-        for b in self.get_blocks():
-            if b.get_middle()[0] >= self.get_main_line()[0]:
+    def blocks_right_of_line(self, line):
+        found_right = False
+        for b1 in self.get_blocks():
+            if not self.block_on_line(b1, line):
+                found_right = True
+                if line.get_type() == 'straight_line':
+                    for b2 in line.get_blocks():
+                        if not ((b1.get_middle[0] > b2.get_middle[0]) or (b1.get_middle[1] < b2.get_middle[1])):
+                            found_right = False
+                elif line.get_type() == 'right_turn':
+                    for b2 in line.get_blocks():
+                        if not ((b1.get_middle[0] > b2.get_middle[0]) or (b1.get_middle[1] < b2.get_middle[1])):
+                            found_right = False
+                elif line.get_type() == 'left_turn':
+                    for b2 in line.get_blocks():
+                        if not ((b1.get_middle[0] > b2.get_middle[0]) or (b1.get_middle[1] > b2.get_middle[1])):
+                            found_right = False
+            if found_right is True:
                 return True
         return False
 
-    def block_on_line(self, block):
-        if not (
-            (block.get_middle()[0] < self.get_main_line()[0]) or (block.get_middle()[0] >= self.get_main_line()[0])):
+    def block_on_line(self, block, line):
+        if block in line.get_blocks():
             return True
         return False
-
-    def get_blocks_on_line(self):
-        blocks_on_line = []
-        for b in self.get_blocks():
-            if self.block_on_line(b):
-                blocks_on_line.append(b)
-        return blocks_on_line
-
-    def get_first_block_on_line(self):
-        lowest = 0
-        first_block = None
-        for b in self.get_blocks_on_main_line():
-            if b.get_middle()[1] > lowest:
-                first_block = b
-                lowest = b.get_middle()[1]
-        return first_block
 
     def get_structure(self):
         if self.is_intersection():
@@ -109,8 +126,6 @@ class Image:
             return 't_split'
         elif self.is_corner():
             return 'corner'
-        elif self.is_turn():
-            return 'turn'
         else:
             return 'Line'
 
@@ -123,5 +138,3 @@ class Image:
     def is_corner(self):
         return False
 
-    def is_turn():
-        return False

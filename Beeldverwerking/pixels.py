@@ -3,18 +3,22 @@ import cv2 as cv
 import block
 import Image
 import copy
-from beeldverwerkingNameSpace import BeeldverwekingNameSpace
+import beeldverwerkingNameSpace
 from socketIO_client import SocketIO
 import urllib
 import numpy as np
-import time
 
 
 url = '192.168.137.202'
 port = 4848
 current_route_description = []
 socketIO = SocketIO(url, port)
-beeldverwerking_namespace = socketIO.define(BeeldverwekingNameSpace, '/beeldverwerking')
+beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
+
+## intitializing variebles needed for steering
+street_counter = 0
+prev_foto_had_street = False
+
 
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
@@ -114,9 +118,33 @@ def long_enough(row, column):
     return False
 
 
+def go_first_block(power, line):
+    #calibrate(power, power) ##nee, je zit niet in car.py!!!
+    block = line.get_first_block()
+    location = block.get_middle()
+    img_width = block.get_image().get_img_width()
+    img_height = block.get_image().get_img_height()
+    car_width = 11.5
+    mid_line = [(location[0] - img_width)/2, (img_height - location[1])/2]
+    rico = (img_height - location[1])/(location[0] - img_width)
+    x = (-mid_line[1])*rico + mid_line[0]
+    radius = abs(x)
+    if x >= 0:
+        left_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
+        right_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
+    else:
+        left_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
+        right_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
+    beeldverwerking_namespace.set_powers(left_power, right_power)
+    #BrickPiUpdateValues()
+    #while time.time() - start_time < duration:
+    beeldverwerking_namespace.set_powers(left_power, right_power)
+        #BrickPiUpdateValues()
+    #beeldverwerking_namespace.set_powers(0, 200)
+
+
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
 byte = ''
-last_update = time.time()
 while True:
     byte += stream.read(1024)
     a = byte.find('\xff\xd8')
@@ -219,9 +247,58 @@ while True:
         ###################
 
         px = None
-
+        print "lijndetectie"
         main_line = image.get_main_line()
+        print "done lijndetectie"
         print main_line
+        if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started:
+            command = beeldverwerkingNameSpace.current_route_description[0]
+            name = command["commandName"]
+            if name == "right":
+                if len(image.blocks_right_of_line(image.line)) >= 2:  # TODO: liggen deze wel op een lijn
+                    if prev_foto_had_street is False:
+                        street_counter += 1
+                    prev_foto_had_street = True
+                else:
+                    prev_foto_had_street = False
+
+                if street_counter == command["nr"]:
+                    street_counter = 0
+                    beeldverwerking_namespace.finish_command(command["id"])
+                else:
+                    go_first_block(200, main_line)
+
+            elif name == "left":
+                if len(image.blocks_left_of_line(image.line)) >= 2:  # TODO: liggen deze wel op een lijn
+                    if prev_foto_had_street is False:
+                        street_counter += 1
+                    prev_foto_had_street = True
+                else:
+                    prev_foto_had_street = False
+
+                if street_counter == command["nr"]:
+                    street_counter = 0
+                    beeldverwerking_namespace.finish_command(command["id"])
+                else:
+                    go_first_block(200, main_line)
+
+            elif name == "stop":
+                if len(image.blocks_left_of_line(image.line)) >= 2 or len(image.blocks_right_of_line(image.line) >= 2):
+                    if prev_foto_had_street is False:
+                        street_counter += 1
+                    prev_foto_had_street = True
+                else:
+                    prev_foto_had_street = False
+
+                if street_counter == command["nr"]:
+                    street_counter = 0
+                    beeldverwerking_namespace.finish_command(command["id"])
+                else:
+                    go_first_block(200, main_line)
+            elif name == "start":
+                beeldverwerkingNameSpace.finish_command(command["id"])
+            else:
+                print "unsupported action!!!!!!!!!!!"
 
         ##############
         ## visual
@@ -277,4 +354,3 @@ while True:
         ##########################
         ## hier bebingt de stuur logica
         ##########################
-    #beeldverwerking_namespace.set_powers(0, 200)

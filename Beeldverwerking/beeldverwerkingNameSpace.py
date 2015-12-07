@@ -1,13 +1,22 @@
 from socketIO_client import BaseNamespace
 
+current_route_description = []
+is_started = False
+
+
 class BeeldverwekingNameSpace(BaseNamespace):
     def __init__(self,*args,**kwargs):
         super(BeeldverwekingNameSpace, self).__init__(*args,**kwargs)
         self.awaiting_events = {}
 
     def on_update_route_description(self, params):
-        global current_route_description
+        global current_route_description,is_started
         current_route_description = params
+        if is_started is False:
+            for command in current_route_description:
+                if command["commandName"] == "start":
+                    is_started = True
+                    break
 
     def on_event_confirmation(self, params):
         if params['succes']:

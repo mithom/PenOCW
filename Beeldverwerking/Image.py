@@ -73,46 +73,45 @@ class Image:
             return Line(*blocks)
 
     def blocks_left_of_line(self, line):
-        found_left = False
-        for b1 in self.get_blocks():
-            if not self.block_on_line(b1, line):
-                found_left = True
-                if line.get_type() == 'straight_line':
-                    for b2 in line.get_blocks():
-                        if not ((b1.get_middle[0] < b2.get_middle[0]) or (b1.get_middle[1] < b2.get_middle[1])):
-                            found_right = False
-                elif line.get_type() == 'right_turn':
-                    for b2 in line.get_blocks():
-                        if not ((b1.get_middle[0] < b2.get_middle[0]) or (b1.get_middle[1] > b2.get_middle[1])):
-                            found_right = False
-                elif line.get_type() == 'left_turn':
-                    for b2 in line.get_blocks():
-                        if not ((b1.get_middle[0] < b2.get_middle[0]) or (b1.get_middle[1] < b2.get_middle[1])):
-                            found_right = False
-            if found_left is True:
-                return True
-        return False
+        blocks_left = []
+        rico = line.get_rico()
+        if rico == None:
+            return None
+        elif rico < 0:
+            rico_sign = -1
+        else:
+            rico_sign = 1
+        for block1 in self.get_blocks():
+            block_is_left = True
+            if not self.block_on_line(block1, line):
+                for block2 in line.get_blocks():
+                    if not ((block1.get_middle[0] < block2.get_middle[0]) or (block1.get_middle[1]*rico_sign > block2.get_middle[1]*rico_sign)): #hoger als rico > 0, lager als rico < 0
+                        block_is_left = False
+                        break
+                if block_is_left:
+                    blocks_left.append(block1)
+        return blocks_left
+
 
     def blocks_right_of_line(self, line):
-        found_right = False
-        for b1 in self.get_blocks():
-            if not self.block_on_line(b1, line):
-                found_right = True
-                if line.get_type() == 'straight_line':
-                    for b2 in line.get_blocks():
-                        if not ((b1.get_middle[0] > b2.get_middle[0]) or (b1.get_middle[1] < b2.get_middle[1])):
-                            found_right = False
-                elif line.get_type() == 'right_turn':
-                    for b2 in line.get_blocks():
-                        if not ((b1.get_middle[0] > b2.get_middle[0]) or (b1.get_middle[1] < b2.get_middle[1])):
-                            found_right = False
-                elif line.get_type() == 'left_turn':
-                    for b2 in line.get_blocks():
-                        if not ((b1.get_middle[0] > b2.get_middle[0]) or (b1.get_middle[1] > b2.get_middle[1])):
-                            found_right = False
-            if found_right is True:
-                return True
-        return False
+        blocks_right = []
+        rico = line.get_rico()
+        if rico == None:
+            return None
+        elif rico < 0:
+            rico_sign = -1
+        else:
+            rico_sign = 1
+        for block1 in self.get_blocks():
+            block_is_right = True
+            if not self.block_on_line(block1, line):
+                for block2 in line.get_blocks():
+                    if not ((block1.get_middle[0] > block2.get_middle[0]) or (-(block1.get_middle[1]*rico_sign) > -(block2.get_middle[1]*rico_sign))): #hoger als rico < 0, lager als rico > 0
+                        block_is_right = False
+                        break
+                if block_is_right:
+                    blocks_right.append(block1)
+        return blocks_right
 
     def block_on_line(self, block, line):
         if block in line.get_blocks():

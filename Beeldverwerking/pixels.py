@@ -128,8 +128,12 @@ def go_first_block(power, line):
     img_height = block.get_image().get_img_height()
     car_width = 11.5
     mid_line = [(location[0] - img_width)/2, (img_height - location[1])/2]
-    rico = (img_height - location[1])/(location[0] - img_width)
-    x = (-mid_line[1])*rico + mid_line[0]
+    try:
+        rico = (img_height - location[1])/(location[0] - img_width)
+        x = (-mid_line[1])*rico + mid_line[0]
+    except ZeroDivisionError:
+        rico = 10000
+        x = 0
     radius = abs(x)
     if (rico < 0.5) and (rico >= 0):
         left_power = int(power/4)
@@ -144,11 +148,14 @@ def go_first_block(power, line):
         left_power = int(power * (radius - car_width)/( (radius + car_width)))
         right_power = int(power * (radius + car_width)/((radius - car_width)))
     beeldverwerking_namespace.set_powers(left_power, right_power)
-    #BrickPiUpdateValues()
-    #while time.time() - start_time < duration:
+
+def go_first_block_2(power, line):
+    block = line.get_first_block()
+    location = block.get_middle()
+    img_width = block.get_image().get_img_width()
+    left_power = int(power * (location[0]/(img_width - location[0])))
+    right_power = int(power * ((img_width - location[0])/location[0]))
     beeldverwerking_namespace.set_powers(left_power, right_power)
-        #BrickPiUpdateValues()
-    #beeldverwerking_namespace.set_powers(0, 200)
 
 
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})

@@ -9,8 +9,13 @@ class BeeldverwekingNameSpace(BaseNamespace):
         super(BeeldverwekingNameSpace, self).__init__(*args,**kwargs)
         self.awaiting_events = {}
 
+    def on_connect(self):
+        super(BeeldverwekingNameSpace, self).on_connect()
+        print "yeay connected"
+
     def on_update_route_description(self, params):
         global current_route_description,is_started
+        print "updating route description"
         current_route_description = params
         if is_started is False:
             for command in current_route_description:
@@ -31,4 +36,4 @@ class BeeldverwekingNameSpace(BaseNamespace):
 
     def set_powers(self, left, right):
         self.emit("set_power", {"left": left, "right": right})
-        print "powers set!"
+        print "powers set to:",left,",",right

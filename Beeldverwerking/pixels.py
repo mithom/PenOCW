@@ -253,9 +253,7 @@ while True:
         ###################
 
         px = None
-        print "lijndetectie"
         main_line = image.get_main_line()
-        print "done lijndetectie"
         print main_line
         if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started:
             command = beeldverwerkingNameSpace.current_route_description[0]
@@ -305,7 +303,8 @@ while True:
                 beeldverwerkingNameSpace.finish_command(command["id"])
             else:
                 print "unsupported action!!!!!!!!!!!"
-
+        else:
+            print beeldverwerkingNameSpace.current_route_description
         ##############
         ## visual
         #############

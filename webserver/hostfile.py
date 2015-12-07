@@ -220,12 +220,8 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.socket.send_packet(dict(type="event", name=event,
                                      args=args, endpoint=self.ns_name))
 
-    def recv_connect(self):
-        print "pixels.py is geconnect"
-
     def update_route_description(self):
         self.broadcast_event('update_route_description', FC.getIOStream().getAllCommandOutputsInQueue())
-        pass
 
     def on_command_finished(self, params):
         succes = False

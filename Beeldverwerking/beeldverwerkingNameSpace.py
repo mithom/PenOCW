@@ -15,7 +15,6 @@ class BeeldverwekingNameSpace(BaseNamespace):
 
     def on_update_route_description(self, params):
         global current_route_description,is_started
-        print "updating route description"
         current_route_description = params
         if is_started is False:
             for command in current_route_description:

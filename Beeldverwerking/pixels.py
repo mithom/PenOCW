@@ -7,6 +7,7 @@ import beeldverwerkingNameSpace
 from socketIO_client import SocketIO
 import urllib
 import numpy as np
+from threading import Thread
 
 
 url = '192.168.137.206'
@@ -14,6 +15,7 @@ port = 4848
 current_route_description = []
 socketIO = SocketIO(url, port)
 beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
+#waiting = Thread(target=socketIO.wait, name="waiting")
 
 ## intitializing variebles needed for steering
 street_counter = 0
@@ -251,10 +253,10 @@ while True:
         ###################
         ## image is ready
         ###################
-
         px = None
         main_line = image.get_main_line()
         print main_line
+        socketIO.wait(0.001)
         if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started:
             command = beeldverwerkingNameSpace.current_route_description[0]
             name = command["commandName"]

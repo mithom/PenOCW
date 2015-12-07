@@ -85,7 +85,7 @@ class Image:
                     for b2 in line.get_blocks():
                         if not ((b1.get_middle[0] < b2.get_middle[0]) or (b1.get_middle[1] < b2.get_middle[1])):
                             found_right = False
-            if found_right == True:
+            if found_left == True:
                 return True
         return False
 

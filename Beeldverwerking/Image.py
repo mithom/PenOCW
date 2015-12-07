@@ -85,7 +85,7 @@ class Image:
             block_is_left = True
             if not self.block_on_line(block1, line):
                 for block2 in line.get_blocks():
-                    if not ((block1.get_middle[0] < block2.get_middle[0]) or (block1.get_middle[1]*rico_sign > block2.get_middle[1]*rico_sign)): #hoger als rico > 0, lager als rico < 0
+                    if not ((block1.get_middle()[0] < block2.get_middle()[0]) or (block1.get_middle()[1]*rico_sign > block2.get_middle()[1]*rico_sign)): #hoger als rico > 0, lager als rico < 0
                         block_is_left = False
                         break
                 if block_is_left:
@@ -106,7 +106,7 @@ class Image:
             block_is_right = True
             if not self.block_on_line(block1, line):
                 for block2 in line.get_blocks():
-                    if not ((block1.get_middle[0] > block2.get_middle[0]) or (-(block1.get_middle[1]*rico_sign) > -(block2.get_middle[1]*rico_sign))): #hoger als rico < 0, lager als rico > 0
+                    if not ((block1.get_middle()[0] > block2.get_middle()[0]) or (-(block1.get_middle()[1]*rico_sign) > -(block2.get_middle()[1]*rico_sign))): #hoger als rico < 0, lager als rico > 0
                         block_is_right = False
                         break
                 if block_is_right:

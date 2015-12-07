@@ -268,7 +268,7 @@ while True:
                 else:
                     prev_foto_had_street = False
 
-                if street_counter == command["nr"]:
+                if street_counter == command["params"]["nr"]:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
@@ -282,7 +282,7 @@ while True:
                 else:
                     prev_foto_had_street = False
 
-                if street_counter == command["nr"]:
+                if street_counter == command["params"]["nr"]:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
@@ -296,7 +296,7 @@ while True:
                 else:
                     prev_foto_had_street = False
 
-                if street_counter == command["nr"]:
+                if street_counter == command["params"]["nr"]:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:

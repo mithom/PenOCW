@@ -98,6 +98,8 @@ class __IOStream__:
                     if toExecute.getCommandName() == "start":
                         __IOStream__.is_started = True
                         return toExecute
+                    self.queue.insert(0,toExecute)
+                    return None
             return toExecute
         return None
 

@@ -44,6 +44,7 @@ class Function:
         return self.params
 
     def set_params(self, **kwargs):
+        print 'params worden gezet op: '+ str(kwargs)
         for key, value in kwargs.iteritems():
             self.params[key] = value
 

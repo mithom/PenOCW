@@ -87,14 +87,17 @@ class __IOStream__:
             elif len(self.queue) > 0 and self.queue[0].getCommandName() in __IOStream__.manueelCommands:
                 self.queue.insert(0,toExecute)
                 toExecute = self._getCombinedCommand(toExecute, self.queue[1])
-            elif  self.queue[0]["commandName"] in ('start', 'stop', "left", 'right'):
+            elif toExecute.getCommandName() in ('start', 'stop', "left", 'right'):
                 if __IOStream__.is_started is True:
-                    return self.queue.pop(0)
+                    return toExecute
                 else:
                     for command in self.queue:
                         if command.commandName == "start":
                             __IOStream__.is_started = True
-                            return self.queue.pop(0)
+                            return toExecute
+                    if toExecute.getCommandName() == "start":
+                        __IOStream__.is_started = True
+                        return toExecute
             return toExecute
         return None
 

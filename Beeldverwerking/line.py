@@ -15,7 +15,9 @@ class Line:
         return self.blocks[0]
 
     def get_rico(self):
-        if len(self.blocks)== 1:
+        if len(self.blocks) == 0:
+            return None
+        elif len(self.blocks)== 1:
             return -10000
         else:
             return get_rico(self.blocks[0], self.blocks[-1])

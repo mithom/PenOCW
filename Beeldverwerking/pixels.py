@@ -263,17 +263,42 @@ while True:
                     prev_foto_had_street = False
 
                 if street_counter == command["nr"]:
-                    pass  # TODO: turn right
+                    street_counter = 0
+                    beeldverwerking_namespace.finish_command(command["id"])
+                else:
+                    go_first_block(200, main_line)
 
             elif name == "left":
-                pass
+                if len(image.blocks_left_of_line(image.line)) >= 2:  # TODO: liggen deze wel op een lijn
+                    if prev_foto_had_street is False:
+                        street_counter += 1
+                    prev_foto_had_street = True
+                else:
+                    prev_foto_had_street = False
+
+                if street_counter == command["nr"]:
+                    street_counter = 0
+                    beeldverwerking_namespace.finish_command(command["id"])
+                else:
+                    go_first_block(200, main_line)
+
             elif name == "stop":
-                pass
+                if len(image.blocks_left_of_line(image.line)) >= 2 or len(image.blocks_right_of_line(image.line) >= 2):
+                    if prev_foto_had_street is False:
+                        street_counter += 1
+                    prev_foto_had_street = True
+                else:
+                    prev_foto_had_street = False
+
+                if street_counter == command["nr"]:
+                    street_counter = 0
+                    beeldverwerking_namespace.finish_command(command["id"])
+                else:
+                    go_first_block(200, main_line)
             elif name == "start":
-                beeldverwerkingNameSpace.finish_command(beeldverwerkingNameSpace.current_route_description[0]["id"])
+                beeldverwerkingNameSpace.finish_command(command["id"])
             else:
                 print "unsupported action!!!!!!!!!!!"
-            go_first_block(200, main_line)
 
         ##############
         ## visual

@@ -137,15 +137,6 @@ class __IOStream__:
         self.queue = []
         self.cancelCurrentCommand()
 
-    def start(self):
-        pass
-
-    def pause(self):
-        pass
-
-    def stop(self):
-        pass
-
     def setWebsite(self, mainUrl):
         print mainUrl
         pass

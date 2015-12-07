@@ -12,6 +12,7 @@ class Image:
         self.img_height = img_height
         self.blocks = blocks
         self.block_restrictions = block_restrictions
+        self.line = self._get_main_line()
 
     def get_img_width(self):
         return self.img_width
@@ -26,6 +27,9 @@ class Image:
         self.blocks.append(block)
 
     def get_main_line(self):
+        return self.line
+
+    def _get_main_line(self):
         blocks = self.get_blocks()
         if len(blocks) == 0:
             return Line(Block(self.img_width/2,self.img_width/2,min(1,self.img_height),min(1,self.img_height),self),
@@ -85,7 +89,7 @@ class Image:
                     for b2 in line.get_blocks():
                         if not ((b1.get_middle[0] < b2.get_middle[0]) or (b1.get_middle[1] < b2.get_middle[1])):
                             found_right = False
-            if found_right == True:
+            if found_right is True:
                 return True
         return False
 
@@ -106,7 +110,7 @@ class Image:
                     for b2 in line.get_blocks():
                         if not ((b1.get_middle[0] > b2.get_middle[0]) or (b1.get_middle[1] > b2.get_middle[1])):
                             found_right = False
-            if found_right == True:
+            if found_right is True:
                 return True
         return False
 
@@ -114,7 +118,6 @@ class Image:
         if block in line.get_blocks():
             return True
         return False
-
 
     def get_structure(self):
         if self.is_intersection():

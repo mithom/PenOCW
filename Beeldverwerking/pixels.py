@@ -15,6 +15,11 @@ current_route_description = []
 socketIO = SocketIO(url, port)
 beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
 
+## intitializing variebles needed for steering
+street_counter = 0
+prev_foto_had_street = False
+
+
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
 
@@ -247,15 +252,25 @@ while True:
         print "done lijndetectie"
         print main_line
         if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started:
-            name = beeldverwerkingNameSpace.current_route_description[0]["commandName"]
+            command = beeldverwerkingNameSpace.current_route_description[0]
+            name = command["commandName"]
             if name == "right":
-                pass
+                if len(image.blocks_right_of_line(image.line)) >= 2:  # TODO: liggen deze wel op een lijn
+                    if prev_foto_had_street is False:
+                        street_counter += 1
+                    prev_foto_had_street = True
+                else:
+                    prev_foto_had_street = False
+
+                if street_counter == command["nr"]:
+                    pass  # TODO: turn right
+
             elif name == "left":
                 pass
             elif name == "stop":
                 pass
             elif name == "start":
-                pass
+                beeldverwerkingNameSpace.finish_command(beeldverwerkingNameSpace.current_route_description[0]["id"])
             else:
                 print "unsupported action!!!!!!!!!!!"
             go_first_block(200, main_line)

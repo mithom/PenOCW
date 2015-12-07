@@ -184,6 +184,11 @@ while True:
         hist = None
         x = None
 
+        #TODO: threshold minimum deftig implementeren
+
+        if threshold < 100:
+            threshold = 100
+
         blur = cv.resize(blur, (2592, 1944), interpolation=cv.INTER_NEAREST)
 
         # Thresholding
@@ -310,14 +315,21 @@ while True:
         ##############
         ## visual
         #############
+
         for t in image.get_blocks():
             location = t.get_middle()
             pxbackup[location[1]][location[0]] = 150
 
 
+
         # pxres = cv.resize(pxbackup, (img_width, img_height), interpolation=cv.INTER_NEAREST)
 
         foto = cv.resize(pxbackup, (bw_width/4, bw_height/4), interpolation=cv.INTER_NEAREST)
+
+        for t in image.get_blocks():
+            if t in image.get_main_line().get_blocks():
+                index = image.get_main_line().index(t) + 1
+                cv.line(foto,t.get_middle(),image.get_main_line()[index], [0,0,255])
 
         pxbackup = None
 

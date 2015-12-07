@@ -3,18 +3,17 @@ import cv2 as cv
 import block
 import Image
 import copy
-from beeldverwerkingNameSpace import BeeldverwekingNameSpace
+import beeldverwerkingNameSpace
 from socketIO_client import SocketIO
 import urllib
 import numpy as np
-import time
 
 
 url = '192.168.137.202'
 port = 4848
 current_route_description = []
 socketIO = SocketIO(url, port)
-beeldverwerking_namespace = socketIO.define(BeeldverwekingNameSpace, '/beeldverwerking')
+beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
 
 # Stream capturing code copied from
 # http://stackoverflow.com/questions/24833149/track-objects-in-opencv-from-incoming-mjpeg-stream
@@ -114,9 +113,33 @@ def long_enough(row, column):
     return False
 
 
+def go_first_block(power, line):
+    #calibrate(power, power) ##nee, je zit niet in car.py!!!
+    block = line.get_first_block()
+    location = block.get_middle()
+    img_width = block.get_image().get_img_width()
+    img_height = block.get_image().get_img_height()
+    car_width = 11.5
+    mid_line = [(location[0] - img_width)/2, (img_height - location[1])/2]
+    rico = (img_height - location[1])/(location[0] - img_width)
+    x = (-mid_line[1])*rico + mid_line[0]
+    radius = abs(x)
+    if x >= 0:
+        left_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
+        right_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
+    else:
+        left_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
+        right_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
+    beeldverwerking_namespace.set_powers(left_power, right_power)
+    #BrickPiUpdateValues()
+    #while time.time() - start_time < duration:
+    beeldverwerking_namespace.set_powers(left_power, right_power)
+        #BrickPiUpdateValues()
+    #beeldverwerking_namespace.set_powers(0, 200)
+
+
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
 byte = ''
-last_update = time.time()
 while True:
     byte += stream.read(1024)
     a = byte.find('\xff\xd8')
@@ -223,6 +246,19 @@ while True:
         main_line = image.get_main_line()
         print "done lijndetectie"
         print main_line
+        if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started:
+            name = beeldverwerkingNameSpace.current_route_description[0]["commandName"]
+            if name == "right":
+                pass
+            elif name == "left":
+                pass
+            elif name == "stop":
+                pass
+            elif name == "start":
+                pass
+            else:
+                print "unsupported action!!!!!!!!!!!"
+            go_first_block(200, main_line)
 
         ##############
         ## visual
@@ -278,27 +314,3 @@ while True:
         ##########################
         ## hier bebingt de stuur logica
         ##########################
-
-def go_first_block(power, block, duration):
-    calibrate(power, power)
-    location = block.get_middle()
-    img_width = block.get_image().get_img_width()
-    img_height = block.get_image().get_img_height()
-    car_width = 11.5
-    mid_line = [(location[0] - img_width)/2, (img_height - location[1])/2]
-    rico = (img_height - location[1])/(location[0] - img_width)
-    x = (-mid_line[1])*rico + mid_line[0]
-    radius = abs(x)
-    if x >= 0:
-        left_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
-        right_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
-    else:
-        left_power = int(power * (radius - car_width)/(2 * (radius + car_width)))
-        right_power = int(power * (radius + car_width)/(2 * (radius - car_width)))
-    beeldverwerking_namespace.set_powers(left_power, right_power)
-    BrickPiUpdateValues()
-    start_time = time.time()
-    while time.time() - start_time < duration:
-        beeldverwerking_namespace.set_powers(left_power, right_power)
-        BrickPiUpdateValues()
-    #beeldverwerking_namespace.set_powers(0, 200)

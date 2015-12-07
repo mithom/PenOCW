@@ -48,7 +48,7 @@ class Command:
         return self.__params__.get(param, default_value)
 
     def output(self):
-        return {"id": self.getId(), "commandName": self.getCommandName()}
+        return {"id": self.getId(), "commandName": self.getCommandName(), "params": self.__params__}
 
     def __str__(self):
         return str(self.output())

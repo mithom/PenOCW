@@ -177,23 +177,18 @@ while True:
 
         frame = None
 
-        threshold = 140
+        threshold = 256
 
         # Threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
         hist = None
         hist = cv.calcHist([blur], [0], None, [32], [0, 256])
-        for x in xrange(31, -1, -1):
+        for x in xrange(31, 10, -1):
             if sum(hist[x] > 0):
                 threshold = (x - 8) * 8 + 4
                 hist = None
                 break
         hist = None
         x = None
-
-        # TODO: threshold minimum deftig implementeren
-
-        if threshold < 100:
-            threshold = 100
 
         blur = cv.resize(blur, (2592, 1944), interpolation=cv.INTER_NEAREST)  # TODO: check waarvoor deze resize is, want is vreemd
 

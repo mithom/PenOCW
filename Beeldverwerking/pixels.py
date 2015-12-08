@@ -110,8 +110,9 @@ def wide_enough(row, column):
         a = column + i
         a = check_right(a)
         if px[row][a] == 255:
-            return True
-    return False
+            width = a - column
+            return width, True
+    return 0, False
 
 
 def long_enough(row, column):
@@ -119,8 +120,9 @@ def long_enough(row, column):
         a = row - i
         a = check_top(a)
         if px[a][column] == 255:
-            return True
-    return False
+            length = row - a
+            return length, True
+    return 0, False
 
 
 def go_first_block(power, line):
@@ -247,31 +249,37 @@ while True:
                         if px[r - 1][c] == 0 or px[r][c + 1] == 0:
                             px[r][c] = 0
                         else:
-                            if (long_enough(r,c) == True) and (wide_enough(r,c) == True):
-                                y = r - 1
-                                x = c + 1
-                                y = check_top(y)
-                                x = check_right(x)
-                                flag1 = False
-                                flag2 = False
-                                while (check_middle_x(y,x) == False and flag1 == False) or \
-                                        (check_middle_y(y,x) == False and flag2 == False):
-                                    if check_middle_x(y,x) == False and flag1 == False:
-                                        last_x = x
-                                        x += 1
-                                        x = check_right(x)
-                                        if x == last_x:
-                                            flag1 = True
-                                    if check_middle_y(y,x) == False and flag2 == False:
-                                        last_y = y
-                                        y -= 1
-                                        check_top(y)
-                                        if y == last_y:
-                                            flag2 = True
-                                t = x - find_whites(y,x,'left')
-                                u = x + find_whites(y,x,'right')
-                                v = y + find_whites(y,x,'down')
-                                w = y - find_whites(y,x,'up')
+                            width, wide = wide_enough(r, c)
+                            length, long = long_enough(r, c)
+                            if wide and long:
+                                t = c
+                                u = c + width
+                                v = r
+                                w = r - length
+                                # y = r - 1
+                                # x = c + 1
+                                # y = check_top(y)
+                                # x = check_right(x)
+                                # flag1 = False
+                                # flag2 = False
+                                # while (check_middle_x(y,x) == False and flag1 == False) or \
+                                #         (check_middle_y(y,x) == False and flag2 == False):
+                                #     if check_middle_x(y,x) == False and flag1 == False:
+                                #         last_x = x
+                                #         x += 1
+                                #         x = check_right(x)
+                                #         if x == last_x:
+                                #             flag1 = True
+                                #     if check_middle_y(y,x) == False and flag2 == False:
+                                #         last_y = y
+                                #         y -= 1
+                                #         check_top(y)
+                                #         if y == last_y:
+                                #             flag2 = True
+                                # t = x - find_whites(y,x,'left')
+                                # u = x + find_whites(y,x,'right')
+                                # v = y + find_whites(y,x,'down')
+                                # w = y - find_whites(y,x,'up')
                                 new_block = Block(t, u, v, w, image)
                                 image.add_block(new_block)
                                 px = remove_whites(px, t, u, v, w)

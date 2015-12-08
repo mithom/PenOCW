@@ -11,3 +11,4 @@ blocks =[[24,33], [3,30], [11,30], [18,30], [32,30], [40,30], [47,30], [24,26], 
 for block in blocks:
     image.add_block(Block(block[0], block[0], block[1], block[1], image))
 line = image.get_main_line().get_blocks()
+print line

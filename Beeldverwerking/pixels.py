@@ -10,7 +10,7 @@ import numpy as np
 from threading import Thread
 
 
-url = '192.168.137.206'
+url = '192.168.137.173'
 port = 4848
 current_route_description = []
 socketIO = SocketIO(url, port)
@@ -157,7 +157,6 @@ def go_first_block_2(power, line):
     right_power = int(power * ((img_width - location[0])/location[0]))
     beeldverwerking_namespace.set_powers(left_power, right_power)
 
-
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
 byte = ''
 while True:
@@ -215,7 +214,6 @@ while True:
         max_width = 9
         min_length = 1
         max_length = 9
-        image = Image.Image(bw_width, bw_height, [], (min_width, max_width, min_length, max_length))
         # TODO: juiste width en height megeven, dus buitenste blokken van pixelated figuur,
         #  niet van oorspronkelijke image
 
@@ -224,6 +222,7 @@ while True:
         px = cv.resize(bw, (bw_width / img_division, bw_height / img_division), interpolation=cv.INTER_NEAREST)
         img_width = px.shape[1]
         img_height = px.shape[0]
+        image = Image.Image(img_width, img_height, [], (min_width, max_width, min_length, max_length))
 
         bw = None
 

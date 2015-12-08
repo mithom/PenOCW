@@ -45,7 +45,8 @@ class Image:
                 prev_block = blocks[-1]
                 blocks_in_range = []
                 for block in self.get_blocks():
-                    if block.distance_from(prev_block) < Image.dist_threshold and block not in blocks:  # TODO: lijn die terugkeert ondersteunen
+                    if block.distance_from(prev_block) < Image.dist_threshold \
+                            and block not in blocks and block.get_middle()[1] <= prev_block.get_middle()[1]:  # TODO: lijn die terugkeert ondersteunen
                         blocks_in_range.append(block)
                 if len(blocks_in_range) == 0:
                     break

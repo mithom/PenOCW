@@ -333,16 +333,17 @@ while True:
         height_ratio = (bw_height/4)/img_height1
 
         foto = cv.resize(pxbackup, (bw_width/4, bw_height/4), interpolation=cv.INTER_NEAREST)
-
-        for t in image.get_main_line().get_blocks():
-            index = image.get_main_line().get_blocks().index(t)-1
-            print index
-            if index != -1:
-                cv.line(foto,(t.get_middle()[0]*width_ratio, t.get_middle()[1]* height_ratio),
-                        (image.get_main_line().get_blocks()[index].get_middle()[0]* width_ratio,
-                         image.get_main_line().get_blocks()[index].get_middle()[1] * height_ratio),
-                        [0,0,255])
-
+        try:
+            for t in image.get_main_line().get_blocks():
+                index = image.get_main_line().get_blocks().index(t)-1
+                print index
+                if index != -1:
+                    cv.line(foto,(t.get_middle()[0]*width_ratio, t.get_middle()[1]* height_ratio),
+                            (image.get_main_line().get_blocks()[index].get_middle()[0]* width_ratio,
+                             image.get_main_line().get_blocks()[index].get_middle()[1] * height_ratio),
+                            [0,0,255])
+        except ValueError:
+            pass
         pxbackup = None
 
         cv.imshow('Result', foto)

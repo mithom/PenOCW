@@ -17,8 +17,14 @@ import time
 url = '192.168.137.173'
 port = 4848
 current_route_description = []
+print "1"
+time.sleep(1)
 socketIO = SocketIO(url, port, verify = False)
+print "2"
+time.sleep(1)
 beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
+print "3"
+time.sleep(1)
 #waiting = Thread(target=socketIO.wait, name="waiting")
 
 ## intitializing variebles needed for steering
@@ -196,9 +202,12 @@ def go_first_block_2(power, line):
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
 byte = ''
 while True:
-    byte += stream.read(1024)
-    a = byte.find('\xff\xd8')
-    b = byte.find('\xff\xd9')
+    a = -1
+    b = -1
+    while a == -1 or b == -1:
+        byte += stream.read(1024)
+        a = byte.find('\xff\xd8')
+        b = byte.find('\xff\xd9')
     if a != -1 and b != -1:
         jpg = byte[a:b + 2]
         byte = byte[b + 2:]
@@ -314,7 +323,12 @@ while True:
         main_line = image.get_main_line()
         print image.get_blocks(), image.img_width,image.img_height
         print main_line
+        print "mother"
+        time.sleep(1)
         socketIO.wait(0.001)
+        time.sleep(1)
+        print "fucker"
+        time.sleep(1)
         if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started:
             command = beeldverwerkingNameSpace.current_route_description[0]
             name = command["commandName"]

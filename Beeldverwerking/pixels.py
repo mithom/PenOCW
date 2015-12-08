@@ -191,11 +191,6 @@ while True:
         hist = None
         x = None
 
-        # TODO: threshold minimum deftig implementeren
-
-        if threshold < 100:
-            threshold = 100
-
         blur = cv.resize(blur, (2592, 1944), interpolation=cv.INTER_NEAREST)  # TODO: check waarvoor deze resize is, want is vreemd
 
         # Thresholding

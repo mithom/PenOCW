@@ -178,12 +178,12 @@ while True:
 
         frame = None
 
-        threshold = 140
+        threshold = 256
 
         # Threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
         hist = None
         hist = cv.calcHist([blur], [0], None, [32], [0, 256])
-        for x in xrange(31, -1, -1):
+        for x in xrange(31, 10, -1):
             if sum(hist[x] > 0):
                 threshold = (x - 8) * 8 + 4
                 hist = None

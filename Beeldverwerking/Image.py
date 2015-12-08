@@ -5,7 +5,6 @@ import math
 
 class Image:
     dist_threshold = 15
-    radians_threshold = 15
 
     def __init__(self, img_width, img_height, blocks, block_restrictions):
         self.img_width = img_width

@@ -183,14 +183,14 @@ def go_first_block_2(power, line):
     mid_block = Block(width/2, width/2, height, height, block.get_image())
     rico = lines.get_rico(block,mid_block)
     radians = math.atan(rico)
-    if abs(radians)>math.pi/4:
-        if math.sin(radians) >= 1: #positief = naar links draaien
+    if abs(radians)<math.pi/4:
+        if radians >0: #positief = naar links draaien
             beeldverwerking_namespace.set_powers(0, 100)
         else:
             beeldverwerking_namespace.set_powers(100, 0)
     else:
-        degrees = int(math.degrees(radians))
-        beeldverwerking_namespace.set_powers(100- degrees, 100 + degrees)
+        degrees = int(math.copysign(90,radians) -math.degrees(radians))
+        beeldverwerking_namespace.set_powers(100- degrees, 100+degrees)
 
 
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
@@ -220,9 +220,9 @@ while counter == 0:
         # Threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
         hist = None
         hist = cv.calcHist([blur], [0], None, [32], [0, 256])
-        for x in xrange(31, 10, -1):
+        for x in xrange(31, 15, -1):
             if sum(hist[x] > 0):
-                threshold = (x - 8) * 8 + 4
+                threshold = (x - 7) * 8 + 4
                 hist = None
                 break
         hist = None
@@ -314,6 +314,7 @@ while counter == 0:
         ###################
         px = None
         main_line = image.get_main_line()
+        print image.get_blocks(), image.img_width,image.img_height
         print main_line
         socketIO.wait(0.001)
         if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started:

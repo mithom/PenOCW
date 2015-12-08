@@ -195,13 +195,11 @@ def go_first_block_2(power, line):
 
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
 byte = ''
-counter = 0
-while counter == 0:
+while True:
     byte += stream.read(1024)
     a = byte.find('\xff\xd8')
     b = byte.find('\xff\xd9')
     if a != -1 and b != -1:
-        counter += 1
         jpg = byte[a:b + 2]
         byte = byte[b + 2:]
         frame = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 0)

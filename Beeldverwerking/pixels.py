@@ -11,12 +11,13 @@ from socketIO_client import SocketIO
 import urllib
 import numpy as np
 from threading import Thread
+import time
 
 
 url = '192.168.137.173'
 port = 4848
 current_route_description = []
-socketIO = SocketIO(url, port)
+socketIO = SocketIO(url, port, verify = False)
 beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
 #waiting = Thread(target=socketIO.wait, name="waiting")
 
@@ -91,6 +92,8 @@ def find_whites(y,x,direction):
 def check_middle_x(y,x):
     left = find_whites(y,x,'left')
     right = find_whites(y,x,'right')
+    if left > right:
+        return True
     if abs(left-right)>1:
         return False
     else:
@@ -99,6 +102,8 @@ def check_middle_x(y,x):
 def check_middle_y(y,x):
     up = find_whites(y,x,'up')
     down = find_whites(y,x,'down')
+    if down > up:
+        return True
     if abs(up-down)>1:
         return False
     else:
@@ -113,6 +118,18 @@ def wide_enough(row, column):
             width = a - column
             return width, True
     return 0, False
+
+
+def diagonal_check(row, column):
+    for i in xrange(min_width, max_width):
+        a = column + i
+        a = check_right(a)
+        for i in xrange(min_length, max_length):
+            b = row - i
+            b = check_top(b)
+            if px[b][a] == 255:
+                return True
+    return False
 
 
 def long_enough(row, column):
@@ -224,7 +241,7 @@ while True:
         bw_width = bw.shape[1]
         bw_height = bw.shape[0]
         img_division = 50
-        min_width = 1
+        min_width = 2
         max_width = 9
         min_length = 1
         max_length = 9
@@ -242,6 +259,8 @@ while True:
 
         pxbackup = copy.deepcopy(px)
 
+        #TODO: middelpunt naar links laten verschuiven indien nodig
+
         for r in xrange(img_height - 1, 0, -1):
             for c in xrange(0, img_width - 1, 1):
                 if px[r][c] == 255:
@@ -251,38 +270,43 @@ while True:
                         else:
                             width, wide = wide_enough(r, c)
                             length, long = long_enough(r, c)
-                            if wide and long:
-                                t = c
-                                u = c + width
-                                v = r
-                                w = r - length
-                                # y = r - 1
-                                # x = c + 1
-                                # y = check_top(y)
-                                # x = check_right(x)
-                                # flag1 = False
-                                # flag2 = False
-                                # while (check_middle_x(y,x) == False and flag1 == False) or \
-                                #         (check_middle_y(y,x) == False and flag2 == False):
-                                #     if check_middle_x(y,x) == False and flag1 == False:
-                                #         last_x = x
-                                #         x += 1
-                                #         x = check_right(x)
-                                #         if x == last_x:
-                                #             flag1 = True
-                                #     if check_middle_y(y,x) == False and flag2 == False:
-                                #         last_y = y
-                                #         y -= 1
-                                #         check_top(y)
-                                #         if y == last_y:
-                                #             flag2 = True
-                                # t = x - find_whites(y,x,'left')
-                                # u = x + find_whites(y,x,'right')
-                                # v = y + find_whites(y,x,'down')
-                                # w = y - find_whites(y,x,'up')
+                            diagonal = diagonal_check(r, c)
+                            if wide and long and diagonal:
+                                # t = c
+                                # u = c + width
+                                # v = r
+                                # w = r - length
+                                y = r - 1
+                                x = c + 1
+                                y = check_top(y)
+                                x = check_right(x)
+                                flag1 = False
+                                flag2 = False
+                                while (check_middle_x(y,x) == False and flag1 == False) or \
+                                        (check_middle_y(y,x) == False and flag2 == False):
+                                    if check_middle_x(y,x) == False and flag1 == False:
+                                        last_x = x
+                                        x += 1
+                                        x = check_right(x)
+                                        if x == last_x:
+                                            flag1 = True
+                                    if check_middle_y(y,x) == False and flag2 == False:
+                                        last_y = y
+                                        y -= 1
+                                        check_top(y)
+                                        if y == last_y:
+                                            flag2 = True
+                                t = x - find_whites(y,x,'left')
+                                u = x + find_whites(y,x,'right')
+                                v = y + find_whites(y,x,'down')
+                                w = y - find_whites(y,x,'up')
                                 new_block = Block(t, u, v, w, image)
                                 image.add_block(new_block)
                                 px = remove_whites(px, t, u, v, w)
+                                # foto = cv.resize(px, (bw_width/4, bw_height/4), interpolation=cv.INTER_NEAREST)
+                                # cv.imshow('f', foto)
+                                # cv.waitKey(0)
+                                px[r, c] = 0
         ###################
         ## image is ready
         ###################

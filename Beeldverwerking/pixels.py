@@ -191,12 +191,12 @@ while True:
         hist = None
         x = None
 
-        #TODO: threshold minimum deftig implementeren
+        # TODO: threshold minimum deftig implementeren
 
         if threshold < 100:
             threshold = 100
 
-        blur = cv.resize(blur, (2592, 1944), interpolation=cv.INTER_NEAREST)
+        blur = cv.resize(blur, (2592, 1944), interpolation=cv.INTER_NEAREST)  # TODO: check waarvoor deze resize is, want is vreemd
 
         # Thresholding
         ret, bw = cv.threshold(blur, threshold, 255, cv.THRESH_BINARY)
@@ -216,6 +216,8 @@ while True:
         min_length = 1
         max_length = 9
         image = Image.Image(bw_width, bw_height, [], (min_width, max_width, min_length, max_length))
+        # TODO: juiste width en height megeven, dus buitenste blokken van pixelated figuur,
+        #  niet van oorspronkelijke image
 
 
         # Pixelation
@@ -273,7 +275,7 @@ while True:
             command = beeldverwerkingNameSpace.current_route_description[0]
             name = command["commandName"]
             if name == "right":
-                if len(image.blocks_right_of_line(image.line)) >= 2:  # TODO: liggen deze wel op een lijn
+                if len(image.blocks_right_of_line(main_line)) >= 2:  # TODO: liggen deze wel op een lijn
                     if prev_foto_had_street is False:
                         street_counter += 1
                     prev_foto_had_street = True
@@ -287,7 +289,7 @@ while True:
                     go_first_block(100, main_line)
 
             elif name == "left":
-                if len(image.blocks_left_of_line(image.line)) >= 2:  # TODO: liggen deze wel op een lijn
+                if len(image.blocks_left_of_line(main_line)) >= 2:  # TODO: liggen deze wel op een lijn
                     if prev_foto_had_street is False:
                         street_counter += 1
                     prev_foto_had_street = True
@@ -301,7 +303,7 @@ while True:
                     go_first_block(100, main_line)
 
             elif name == "stop":
-                if len(image.blocks_left_of_line(image.line)) >= 2 or len(image.blocks_right_of_line(image.line) >= 2):
+                if len(image.blocks_left_of_line(main_line)) >= 2 or len(image.blocks_right_of_line(main_line)) >= 2:
                     if prev_foto_had_street is False:
                         street_counter += 1
                     prev_foto_had_street = True
@@ -314,7 +316,7 @@ while True:
                 else:
                     go_first_block(100, main_line)
             elif name == "start":
-                beeldverwerkingNameSpace.finish_command(command["id"])
+                beeldverwerking_namespace.finish_command(command["id"])  # TODO: moet dit wel?
             else:
                 print "unsupported action!!!!!!!!!!!"
         else:
@@ -327,16 +329,25 @@ while True:
             location = t.get_middle()
             pxbackup[location[1]][location[0]] = 150
 
-
+        pxbackup = cv.cvtColor(pxbackup, cv.COLOR_GRAY2RGB)
 
         # pxres = cv.resize(pxbackup, (img_width, img_height), interpolation=cv.INTER_NEAREST)
+        img_width1 = pxbackup.shape[1]
+        img_height1 = pxbackup.shape[0]
+
+        width_ratio = (bw_width/4)/img_width1
+        height_ratio = (bw_height/4)/img_height1
 
         foto = cv.resize(pxbackup, (bw_width/4, bw_height/4), interpolation=cv.INTER_NEAREST)
 
-        for t in image.get_blocks():
-            if t in image.get_main_line().get_blocks():
-                index = image.get_main_line().index(t) + 1
-                cv.line(foto,t.get_middle(),image.get_main_line()[index], [0,0,255])
+        for t in image.get_main_line().get_blocks():
+            index = image.get_main_line().get_blocks().index(t)-1
+            print index
+            if index != -1:
+                cv.line(foto,(t.get_middle()[0]*width_ratio, t.get_middle()[1]* height_ratio),
+                        (image.get_main_line().get_blocks()[index].get_middle()[0]* width_ratio,
+                         image.get_main_line().get_blocks()[index].get_middle()[1] * height_ratio),
+                        [0,0,255])
 
         pxbackup = None
 

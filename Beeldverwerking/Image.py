@@ -12,7 +12,6 @@ class Image:
         self.img_height = img_height
         self.blocks = blocks
         self.block_restrictions = block_restrictions
-        self.line = self._get_main_line()
 
     def get_img_width(self):
         return self.img_width
@@ -27,9 +26,6 @@ class Image:
         self.blocks.append(block)
 
     def get_main_line(self):
-        return self.line
-
-    def _get_main_line(self):
         blocks = self.get_blocks()
         if len(blocks) == 0:
             return Line(Block(self.img_width/2,self.img_width/2,min(1,self.img_height),min(1,self.img_height),self),
@@ -39,8 +35,8 @@ class Image:
         else:
             blocks = []
             next_block = None
-            prev_block = Block(self.get_img_width(), self.get_img_width(), self.get_img_height(), self.get_img_height(),self)
-            for block in self.blocks:
+            prev_block = Block(self.get_img_width()/2, self.get_img_width()/2, self.get_img_height(), self.get_img_height(),self)
+            for block in self.get_blocks():
                 if block != prev_block and (next_block is None or
                                             (block.distance_from(prev_block) < next_block.distance_from(prev_block))):
                     next_block = block
@@ -48,7 +44,7 @@ class Image:
             while True:
                 prev_block = blocks[-1]
                 blocks_in_range = []
-                for block in self.blocks:
+                for block in self.get_blocks():
                     if block.distance_from(prev_block) < Image.dist_threshold and block not in blocks:  # TODO: lijn die terugkeert ondersteunen
                         blocks_in_range.append(block)
                 if len(blocks_in_range) == 0:
@@ -57,15 +53,13 @@ class Image:
                     rico = get_rico(blocks[-2],blocks[-1])
                 else:
                     rico = -10000
-                smallest_dif = 95 #we do not want anything behind us
+                smallest_dif = math.pi/1.9  #we do not want anything behind us
                 next_block = None
                 for block in blocks_in_range:
-                    current_diff = math.tan(get_rico(blocks[-1], block)) - math.tan(rico)
+                    current_diff = math.atan(get_rico(prev_block, block)) - math.atan(rico)
                     if current_diff < smallest_dif:
                         smallest_dif = current_diff
                         next_block = block
-                        if smallest_dif < Image.radians_threshold:
-                            break
                 if next_block is None:
                     break
                 else:

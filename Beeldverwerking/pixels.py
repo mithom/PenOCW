@@ -1,6 +1,9 @@
 # Importing needed modules
 import cv2 as cv
-import block
+import math
+
+from block import Block
+import line as lines
 import Image
 import copy
 import beeldverwerkingNameSpace
@@ -124,10 +127,13 @@ def go_first_block(power, line):
     #calibrate(power, power) ##nee, je zit niet in car.py!!!
     block = line.get_first_block()
     location = block.get_middle()
+    print "locatie eerste blok", location
     img_width = block.get_image().get_img_width()
     img_height = block.get_image().get_img_height()
+    print "img width, height", img_width, img_height
     car_width = 11.5
     mid_line = [(location[0] - img_width)/2, (img_height - location[1])/2]
+    print "mid line", mid_line
     try:
         rico = (img_height - location[1])/(location[0] - img_width)
         x = (-mid_line[1])*rico + mid_line[0]
@@ -141,7 +147,7 @@ def go_first_block(power, line):
     elif (abs(rico) < 0.5) and (rico <= 0):
         left_power = -int(power/4)
         right_power = int(power/4)
-    elif x >= 0:
+    elif rico >= 0:
         left_power = int(power * (radius + car_width)/( (radius - car_width)))
         right_power = int(power * (radius - car_width)/( (radius + car_width)))
     else:
@@ -149,13 +155,24 @@ def go_first_block(power, line):
         right_power = int(power * (radius + car_width)/((radius - car_width)))
     beeldverwerking_namespace.set_powers(left_power, right_power)
 
+
 def go_first_block_2(power, line):
     block = line.get_first_block()
     location = block.get_middle()
-    img_width = block.get_image().get_img_width()
-    left_power = int(power * (location[0]/(img_width - location[0])))
-    right_power = int(power * ((img_width - location[0])/location[0]))
-    beeldverwerking_namespace.set_powers(left_power, right_power)
+    width = block.get_image().get_img_width()
+    height = block.get_image().get_img_height()
+    mid_block = Block(width/2, width/2, height, height, block.get_image())
+    rico = lines.get_rico(block,mid_block)
+    radians = math.atan(rico)
+    if abs(radians)>math.pi/4:
+        if math.sin(radians) >= 1: #positief = naar links draaien
+            beeldverwerking_namespace.set_powers(0, 100)
+        else:
+            beeldverwerking_namespace.set_powers(100, 0)
+    else:
+        degrees = int(math.degrees(radians))
+        beeldverwerking_namespace.set_powers(100- degrees, 100 + degrees)
+
 
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
 byte = ''
@@ -255,7 +272,7 @@ while True:
                                 u = x + find_whites(y,x,'right')
                                 v = y + find_whites(y,x,'down')
                                 w = y - find_whites(y,x,'up')
-                                new_block = block.Block(t, u, v, w, image)
+                                new_block = Block(t, u, v, w, image)
                                 image.add_block(new_block)
                                 px = remove_whites(px, t, u, v, w)
         ###################
@@ -280,7 +297,7 @@ while True:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block(100, main_line)
+                    go_first_block_2(100, main_line)
 
             elif name == "left":
                 if len(image.blocks_left_of_line(main_line)) >= 2:  # TODO: liggen deze wel op een lijn
@@ -294,7 +311,7 @@ while True:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block(100, main_line)
+                    go_first_block_2(100, main_line)
 
             elif name == "stop":
                 if len(image.blocks_left_of_line(main_line)) >= 2 or len(image.blocks_right_of_line(main_line)) >= 2:
@@ -308,7 +325,7 @@ while True:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block(100, main_line)
+                    go_first_block_2(100, main_line)
             elif name == "start":
                 beeldverwerking_namespace.finish_command(command["id"])  # TODO: moet dit wel?
             else:
@@ -336,7 +353,7 @@ while True:
         try:
             for t in image.get_main_line().get_blocks():
                 index = image.get_main_line().get_blocks().index(t)-1
-                print index
+               # print index
                 if index != -1:
                     cv.line(foto,(t.get_middle()[0]*width_ratio, t.get_middle()[1]* height_ratio),
                             (image.get_main_line().get_blocks()[index].get_middle()[0]* width_ratio,

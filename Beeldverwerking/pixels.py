@@ -222,7 +222,7 @@ while True:
 
         frame = None
 
-        threshold = 256
+        threshold = 255
 
         # Threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
         hist = None

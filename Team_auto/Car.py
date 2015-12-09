@@ -23,7 +23,7 @@ O = math.pi * d  # circumference of the wheels
 
 isUpdated = False
 
-def     BrickPiUpdateValues():
+def BrickPiUpdateValues():
     global isUpdated
     update()
     isUpdated = True

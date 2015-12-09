@@ -123,51 +123,6 @@ def go_straight_distance(power, distance):
     results = pid_controller.get_results()
     # print str(results)
 
-def go_straight_duration(power, duration):
-    global offset_A, offset_B
-    calibrate()
-    main_power = 80
-    left_power = main_power
-    right_power = main_power
-    set_motors(left_power, right_power)
-    BrickPiUpdateValues()
-
-    power_increase = (power-main_power)/(duration/20)
-    step = 1
-
-    start_time = time.time()
-    update_interval = 0.01
-    # proportional_factor = 3
-    # derivative_factor = 0.3
-    # integral_factor = 4
-    proportional_factor = 0  # 12 # 100
-    #    derivative_factor = 7
-    derivative_factor = 0
-    integral_factor = 2000  # 20 # 300
-    pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
-                             1, offset_A, offset_B, update_interval)
-    last_update = time.time()
-    while (time.time() - start_time) < duration:
-        if (time.time()-start_time) > step and main_power < power:
-            left_power += power_increase
-            right_power += power_increase
-            main_power += power_increase
-            step += 1
-            # encoder_A = BrickPi.Encoder[PORT_A] - offset_A
-            # encoder_B = BrickPi.Encoder[PORT_B] - offset_B
-        #        ratio = encoder_A / float(encoder_B)
-        #        print 'Ratio: ', ratio
-        pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
-        #        print 'PID ratio: ', pid_ratio
-        if (time.time() - last_update) > update_interval:
-            last_update = time.time()
-            right_power = int((2*main_power)/(pid_ratio+1))
-            # right_power = int(main_power/(pid_ratio/2.0))
-            # left_power = int((pid_ratio/2.0)*right_power)
-            left_power = int(pid_ratio*right_power)
-        set_motors(left_power, int(0.9999*right_power))
-        BrickPiUpdateValues()
-
 
 def make_circle_left(power, radius, degree):  # radius in cm
     global O, car_width
@@ -271,17 +226,13 @@ def sleep(duration):
 
 
 def get_functions():
-    functions = {'go_straight_distance': go_straight_distance, 'go_straight_duration1': go_straight_duration,
+    functions = {'go_straight_distance': go_straight_distance,
                  'go_straight_manual': go_straight_manual, 'make_circle_left': make_circle_left,
                  'make_circle_right': make_circle_right, 'rotate_left_angle': rotate_left_angle,
                  'rotate_right_angle': rotate_right_angle, 'rotate_left_duration': rotate_left_duration,
                  'rotate_right_duration': rotate_right_duration, 'sleep': sleep,
                  'set_powers': go_straight_camera}
     return functions
-
-
-def get_encoder_values():
-    return BrickPi.Encoder[PORT_A] - offset_A, BrickPi.Encoder[PORT_B] - offset_B
 
 
 def get_power_values():

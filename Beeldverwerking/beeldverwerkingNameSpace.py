@@ -11,7 +11,7 @@ class BeeldverwekingNameSpace(BaseNamespace):
 
     def on_connect(self):
         super(BeeldverwekingNameSpace, self).on_connect()
-        print "yeay connected"
+        ## print "yeay connected"
 
     def on_update_route_description(self, params):
         global current_route_description,is_started

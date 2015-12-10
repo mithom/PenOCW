@@ -17,14 +17,8 @@ import time
 url = '192.168.137.173'
 port = 4848
 current_route_description = []
-print "1"
-time.sleep(1)
 socketIO = SocketIO(url, port, verify = False)
-print "2"
-time.sleep(1)
 beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
-print "3"
-time.sleep(1)
 #waiting = Thread(target=socketIO.wait, name="waiting")
 
 ## intitializing variebles needed for steering
@@ -152,13 +146,13 @@ def go_first_block(power, line):
     #calibrate(power, power) ##nee, je zit niet in car.py!!!
     block = line.get_first_block()
     location = block.get_middle()
-    print "locatie eerste blok", location
+    #######################print "locatie eerste blok", location
     img_width = block.get_image().get_img_width()
     img_height = block.get_image().get_img_height()
-    print "img width, height", img_width, img_height
+    #######################print "img width, height", img_width, img_height
     car_width = 11.5
     mid_line = [(location[0] - img_width)/2, (img_height - location[1])/2]
-    print "mid line", mid_line
+    #######################print "mid line", mid_line
     try:
         rico = (img_height - location[1])/(location[0] - img_width)
         x = (-mid_line[1])*rico + mid_line[0]
@@ -321,14 +315,14 @@ while True:
         ###################
         px = None
         main_line = image.get_main_line()
-        print image.get_blocks(), image.img_width,image.img_height
-        print main_line
-        print "mother"
-        time.sleep(1)
+        #######################print image.get_blocks(), image.img_width,image.img_height
+        #######################print main_line
+        #######################print "mother"
+        #######################time.sleep(1)
         socketIO.wait(0.001)
-        time.sleep(1)
-        print "fucker"
-        time.sleep(1)
+        #######################time.sleep(1)
+        #######################print "fucker"
+        #######################time.sleep(1)
         if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started:
             command = beeldverwerkingNameSpace.current_route_description[0]
             name = command["commandName"]
@@ -377,8 +371,8 @@ while True:
                 beeldverwerking_namespace.finish_command(command["id"])  # TODO: moet dit wel?
             else:
                 print "unsupported action!!!!!!!!!!!"
-        else:
-            print beeldverwerkingNameSpace.current_route_description
+        #########else:
+            ################print beeldverwerkingNameSpace.current_route_description
         ##############
         ## visual
         #############
@@ -393,8 +387,8 @@ while True:
         img_width1 = pxbackup.shape[1]
         img_height1 = pxbackup.shape[0]
 
-        width_ratio = (bw_width/4)/img_width1
-        height_ratio = (bw_height/4)/img_height1
+        width_ratio = (bw_width/4)/float(img_width1)
+        height_ratio = (bw_height/4)/float(img_height1)
 
         foto = cv.resize(pxbackup, (bw_width/4, bw_height/4), interpolation=cv.INTER_NEAREST)
         try:
@@ -402,9 +396,9 @@ while True:
                 index = image.get_main_line().get_blocks().index(t)-1
                # print index
                 if index != -1:
-                    cv.line(foto,(t.get_middle()[0]*width_ratio, t.get_middle()[1]* height_ratio),
-                            (image.get_main_line().get_blocks()[index].get_middle()[0]* width_ratio,
-                             image.get_main_line().get_blocks()[index].get_middle()[1] * height_ratio),
+                    cv.line(foto,(int(math.ceil(t.get_middle()[0]*width_ratio + width_ratio/2)), int(math.ceil(t.get_middle()[1]* height_ratio + height_ratio/2))),
+                            (int(math.ceil(image.get_main_line().get_blocks()[index].get_middle()[0] * width_ratio + width_ratio/2)),
+                             int(math.ceil(image.get_main_line().get_blocks()[index].get_middle()[1] * height_ratio + height_ratio/2))),
                             [0,0,255])
         except ValueError:
             pass

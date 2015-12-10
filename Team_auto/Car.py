@@ -57,6 +57,59 @@ def go_straight_manual(power, duration):
         BrickPiUpdateValues()
 
 
+def go_straight_camera1(left, right, duration):
+    # calibrate(main_power, main_power)
+    # right_power = int((2*main_power)/(ratio+1))
+    # left_power = int(ratio*right_power)
+    calibrate(left, right)
+    set_motors(left, right)
+    BrickPiUpdateValues()
+    start_time = time.time()
+    while time.time() - start_time < duration:
+        set_motors(left, right)
+        BrickPiUpdateValues()
+    left_power = main_power
+    right_power = main_power
+    set_motors(left_power, right_power)
+    BrickPiUpdateValues()
+
+    proportional_factor = 250 #250 -> 300 -> 190 # 93
+    derivative_factor = 0 # 10 / 0
+    integral_factor = 500 #500
+    update_interval = 0.0001
+    target_ratio = 1
+    pid_controller = PID.PID(proportional_factor, derivative_factor, integral_factor,
+                             target_ratio, offset_A, offset_B, update_interval)
+    start_time = time.time()
+    last_update = time.time()
+    while time.time() - start_time < duration: # encoders are in half degrees
+#        if (time.time()-start_time) > step and main_power < power:
+#            left_power += power_increase
+#            right_power += power_increase
+#            main_power += power_increase
+#            step += 1
+        pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
+        if (time.time() - last_update) > update_interval:
+            last_update = time.time()
+            right_power = int((2*main_power)/(pid_ratio+1))
+            left_power = int(pid_ratio*right_power)
+        #set_left(left_power)
+        #set_right(right_power)
+        set_motors(left_power, int(right_power))
+        BrickPiUpdateValues()
+        average = ((BrickPi.Encoder[PORT_A] - offset_A) + #-10000
+                   (BrickPi.Encoder[PORT_B] - offset_B)) / 2 #-10000
+    #encoder_difference = (BrickPi.Encoder[PORT_A] - offset_A) - (BrickPi.Encoder[PORT_B] - offset_B)
+    #if encoder_difference > 0:
+    #    motorRotateDegree([100],[int(encoder_difference/2)],[PORT_B])
+    #if encoder_difference < 0:
+    #    motorRotateDegree([100],[-int(encoder_difference/2)],[PORT_A])
+    set_motors(0,0)
+    BrickPiUpdateValues()
+    time.sleep(0.05)
+    results = pid_controller.get_results()
+    # print str(results)
+
 def go_straight_camera(left, right, duration):
     # calibrate(main_power, main_power)
     # right_power = int((2*main_power)/(ratio+1))

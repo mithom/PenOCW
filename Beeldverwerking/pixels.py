@@ -1,7 +1,6 @@
 # Importing needed modules
 import cv2 as cv
 import math
-
 from block import Block
 import line as lines
 import Image
@@ -185,12 +184,12 @@ def go_first_block_2(power, line):
     radians = math.atan(rico)
     if abs(radians)<math.pi/4:
         if radians >0: #positief = naar links draaien
-            beeldverwerking_namespace.set_powers(0, 100)
+            beeldverwerking_namespace.set_powers(0, 80)
         else:
-            beeldverwerking_namespace.set_powers(100, 0)
+            beeldverwerking_namespace.set_powers(80, 0)
     else:
         degrees = int(math.copysign(90,radians) -math.degrees(radians))
-        beeldverwerking_namespace.set_powers(100- degrees, 100+degrees)
+        beeldverwerking_namespace.set_powers(80- degrees/4, 80+degrees/4)
 
 
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
@@ -221,9 +220,9 @@ while True:
         # Threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
         hist = None
         hist = cv.calcHist([blur], [0], None, [32], [0, 256])
-        for x in xrange(31, 15, -1):
+        for x in xrange(31, 15, -1): # werkt goed, behalve grote schaduwvlekken
             if sum(hist[x] > 0):
-                threshold = (x - 7) * 8 + 4
+                threshold = (x - 6) * 8 + 4
                 hist = None
                 break
         hist = None
@@ -323,7 +322,12 @@ while True:
         #######################time.sleep(1)
         #######################print "fucker"
         #######################time.sleep(1)
-        if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started:
+        routing = False
+
+        if routing == False:
+            go_first_block_2(70, main_line)
+
+        if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started and routing == True:
             command = beeldverwerkingNameSpace.current_route_description[0]
             name = command["commandName"]
             if name == "right":
@@ -338,7 +342,7 @@ while True:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(100, main_line)
+                    go_first_block_2(70, main_line)
 
             elif name == "left":
                 if len(image.blocks_left_of_line(main_line)) >= 2:  # TODO: liggen deze wel op een lijn
@@ -352,7 +356,7 @@ while True:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(100, main_line)
+                    go_first_block_2(70, main_line)
 
             elif name == "stop":
                 if len(image.blocks_left_of_line(main_line)) >= 2 or len(image.blocks_right_of_line(main_line)) >= 2:
@@ -366,11 +370,12 @@ while True:
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(100, main_line)
+                    go_first_block_2(70, main_line)
             elif name == "start":
                 beeldverwerking_namespace.finish_command(command["id"])  # TODO: moet dit wel?
             else:
                 print "unsupported action!!!!!!!!!!!"
+
         #########else:
             ################print beeldverwerkingNameSpace.current_route_description
         ##############

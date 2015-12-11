@@ -340,9 +340,10 @@ while True:
             name = command["commandName"]
             if name == "right":
                 blocks_right = image.get_blocks_right_of_line(main_line)
-                if (not prev_foto_had_street) and is_crossing(main_line, blocks_right):
+                if is_crossing(main_line, blocks_right):
                     prev_foto_had_street = True
-                    street_counter += 1
+                    if not prev_foto_had_street:
+                        street_counter += 1
                 else:
                     prev_foto_had_street = False
 
@@ -354,9 +355,10 @@ while True:
 
             elif name == "left":
                 blocks_left = image.get_blocks_left_of_line(main_line)
-                if (not prev_foto_had_street) and is_crossing(main_line, blocks_left):
+                if is_crossing(main_line, blocks_left):
                     prev_foto_had_street = True
-                    street_counter += 1
+                    if not prev_foto_had_street:
+                        street_counter += 1
                 else:
                     prev_foto_had_street = False
 
@@ -369,9 +371,10 @@ while True:
             elif name == "stop":
                 blocks_left = image.get_blocks_left_of_line(main_line)
                 blocks_right = image.get_blocks_right_of_line(main_line)
-                if (not prev_foto_had_street) and (is_crossing(main_line, blocks_right) or is_crossing(main_line, blocks_left)):
+                if (is_crossing(main_line, blocks_right) or is_crossing(main_line, blocks_left)):
                     street_counter += 1
-                    prev_foto_had_street = True
+                    if not prev_foto_had_street:
+                        prev_foto_had_street = True
                 else:
                     prev_foto_had_street = False
 

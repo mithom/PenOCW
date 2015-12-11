@@ -24,6 +24,7 @@ class Image:
 
     def add_block(self, block):
         self.blocks.append(block)
+        block.set_image(self)
 
     def get_main_line(self):
         blocks = self.get_blocks()

@@ -22,7 +22,8 @@ class BeeldverwekingNameSpace(BaseNamespace):
                     is_started = True
                     break
 
-    def on_event_confirmation(self, params):
+    def on_event_confirmation(self, *args, **params):
+        print args, params
         if params['succes']:
             del self.awaiting_events[params['id']]
         else:

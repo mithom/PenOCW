@@ -180,14 +180,17 @@ def go_first_block_2(power, line):
     mid_block = Block(width / 2, width / 2, height, height)
     rico = lines.get_rico(block,mid_block)
     radians = math.atan(rico)
-    if abs(radians)<math.pi/4:
+    if abs(radians)<math.pi/4 and location[1] > height-7:
         if radians >0: #positief = naar links draaien
             beeldverwerking_namespace.set_powers(0, 80)
         else:
             beeldverwerking_namespace.set_powers(80, 0)
     else:
-        degrees = int(math.degrees(Image.Image.calculate_diff(math.pi, radians)))
-        beeldverwerking_namespace.set_powers(power- degrees/4, power+degrees/4)
+        radians = math.atan(line.get_rico())
+        compensation = int(math.degrees(Image.Image.calculate_diff(math.pi, radians)))
+        if not width/2 +5 > location[0] > width/2-5:
+            compensation += (location[0] - width/2)
+        beeldverwerking_namespace.set_powers(power- compensation/4, power+compensation/4)
 
 
 def is_crossing(main_line, blocks):

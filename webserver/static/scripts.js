@@ -67,9 +67,6 @@ $(document).ready(function () {
         return false;
     });
 
-    //here comes responses on socket calls
-    //TODO: antwoorden opvangen
-
     var keyDown = function (e) {
         if($("input[type='radio'][name='controlType']:checked").val() == 'manueel') {
             if (!(e.keyCode in heldKeys)) {
@@ -205,15 +202,11 @@ var startStream = function () {
         $("#video_button").text("start stream");
         /*$("#video_stream img").each(function(){
          this.remove()
-         });*///TODO: werkt onerstaande? anders gebruik bovenstaande
+         });*/
         $("#video_stream > img").each(function () {
             this.remove()
         })
     }
-};
-
-var getAllfunctionsInQueue = function () {
-    //TODO: implement this function
 };
 
 var cancelFunction = function (id) {

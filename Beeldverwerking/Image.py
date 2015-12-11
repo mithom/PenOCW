@@ -69,11 +69,11 @@ class Image:
             return Line(*blocks)
 
     @staticmethod
-    def calculate_diff(deg1, deg2):
-        if math.copysign(deg1,deg2) == deg1:
-            return abs(deg1 - deg2)
+    def calculate_diff(radians1, radians2):
+        if math.copysign(radians1, radians2) == radians1:
+            return abs(radians1 - radians2)
         else:
-            return math.pi - abs(deg1) - abs(deg2)
+            return math.pi - abs(radians1) - abs(radians2)
 
     def get_blocks_left_of_line(self, line):
         blocks_left = []

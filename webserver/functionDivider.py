@@ -113,7 +113,6 @@ class FunctionDivider:
                                      Function(functions.get("rotate_right_angle"), angle=90, power=100)]}
 
         self.currentCommandObject = None
-        self.currentThread = None
         if firstCommand is not None:
             self.executeCommand(firstCommand)
 

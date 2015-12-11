@@ -28,7 +28,7 @@ class Image:
         blocks = self.get_blocks()
         if len(blocks) == 0:
             return Line(Block(self.img_width/2,self.img_width/2,min(1,self.img_height),min(1,self.img_height),self),
-                        Block(self.img_width/2,self.img_width/2,self.img_height,self.img_height,self))
+                        Block(self.img_width/2,self.img_width/2,0,0,self))
         elif len(blocks) == 1:
             return Line(blocks[0])
         else:
@@ -66,7 +66,10 @@ class Image:
                     blocks.append(next_block)
             return Line(*blocks)
 
-    def blocks_left_of_line(self, line):
+    def calculate_diff(self):
+        pass  # TODO: implementeren
+
+    def get_blocks_left_of_line(self, line):
         blocks_left = []
         rico = line.get_rico()
         if rico == None:
@@ -77,7 +80,7 @@ class Image:
             rico_sign = 1
         for block1 in self.get_blocks():
             block_is_left = True
-            if not self.block_on_line(block1, line):
+            if not self.is_block_on_line(block1, line):
                 for block2 in line.get_blocks():
                     if not ((block1.get_middle()[0] < block2.get_middle()[0]) or (block1.get_middle()[1]*rico_sign > block2.get_middle()[1]*rico_sign)): #hoger als rico > 0, lager als rico < 0
                         block_is_left = False
@@ -87,7 +90,7 @@ class Image:
         return blocks_left
 
 
-    def blocks_right_of_line(self, line):
+    def get_blocks_right_of_line(self, line):
         blocks_right = []
         rico = line.get_rico()
         if rico == None:
@@ -98,7 +101,7 @@ class Image:
             rico_sign = 1
         for block1 in self.get_blocks():
             block_is_right = True
-            if not self.block_on_line(block1, line):
+            if not self.is_block_on_line(block1, line):
                 for block2 in line.get_blocks():
                     if not ((block1.get_middle()[0] > block2.get_middle()[0]) or (-(block1.get_middle()[1]*rico_sign) > -(block2.get_middle()[1]*rico_sign))): #hoger als rico < 0, lager als rico > 0
                         block_is_right = False
@@ -107,7 +110,7 @@ class Image:
                     blocks_right.append(block1)
         return blocks_right
 
-    def block_on_line(self, block, line):
+    def is_block_on_line(self, block, line):
         if block in line.get_blocks():
             return True
         return False

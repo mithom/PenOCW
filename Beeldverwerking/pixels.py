@@ -319,7 +319,7 @@ while True:
             command = beeldverwerkingNameSpace.current_route_description[0]
             name = command["commandName"]
             if name == "right":
-                if len(image.blocks_right_of_line(main_line)) >= 2:  # TODO: liggen deze wel op een lijn
+                if len(image.get_blocks_right_of_line(main_line)) >= 2:  # TODO: liggen deze wel op een lijn
                     if prev_foto_had_street is False:
                         street_counter += 1
                     prev_foto_had_street = True
@@ -333,7 +333,7 @@ while True:
                     go_first_block_2(100, main_line)
 
             elif name == "left":
-                if len(image.blocks_left_of_line(main_line)) >= 2:  # TODO: liggen deze wel op een lijn
+                if len(image.get_blocks_left_of_line(main_line)) >= 2:  # TODO: liggen deze wel op een lijn
                     if prev_foto_had_street is False:
                         street_counter += 1
                     prev_foto_had_street = True
@@ -347,7 +347,7 @@ while True:
                     go_first_block_2(100, main_line)
 
             elif name == "stop":
-                if len(image.blocks_left_of_line(main_line)) >= 2 or len(image.blocks_right_of_line(main_line)) >= 2:
+                if len(image.get_blocks_left_of_line(main_line)) >= 2 or len(image.get_blocks_right_of_line(main_line)) >= 2:
                     if prev_foto_had_street is False:
                         street_counter += 1
                     prev_foto_had_street = True

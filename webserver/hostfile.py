@@ -174,7 +174,7 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     #def recv_disconnect(self):
         #print 'disconnected beschrijving'
 
-    def updateRouteDesciption(self):
+    def update_route_desciption(self):
         if beeldverwerking is not None:
             beeldverwerking.update_route_description()
         else:
@@ -185,25 +185,25 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         func_id = FC.getIOStream().addCommandToQueue("start")
         params["id"] = func_id
         self.emit('alert', params)
-        self.updateRouteDesciption()
+        self.update_route_desciption()
 
     def on_stop(self, params):
         func_id = FC.getIOStream().addCommandToQueue("stop", **params)
         params["id"] = func_id
         self.emit('alert', params)
-        self.updateRouteDesciption()
+        self.update_route_desciption()
 
     def on_right(self, params):
         func_id = FC.getIOStream().addCommandToQueue("right", **params)
         params["id"] = func_id
         self.emit('alert', params)
-        self.updateRouteDesciption()
+        self.update_route_desciption()
 
     def on_left(self, params):
         func_id = FC.getIOStream().addCommandToQueue("left", **params)
         params["id"] = func_id
         self.emit('alert', params)
-        self.updateRouteDesciption()
+        self.update_route_desciption()
 
 
 class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):

@@ -186,8 +186,8 @@ def go_first_block_2(power, line):
         else:
             beeldverwerking_namespace.set_powers(80, 0)
     else:
-        degrees = int(math.copysign(90,radians) -math.degrees(radians))
-        beeldverwerking_namespace.set_powers(power- degrees/2, power+degrees/2)
+        degrees = int(math.degrees(Image.Image.calculate_diff(math.pi, radians)))
+        beeldverwerking_namespace.set_powers(power- degrees/4, power+degrees/4)
 
 
 def is_crossing(main_line, blocks):
@@ -350,7 +350,7 @@ while True and __name__ == "__main__":
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(100, main_line)
+                    go_first_block_2(80, main_line)
 
             elif name == "left":
                 blocks_left = image.get_blocks_left_of_line(main_line)
@@ -365,7 +365,7 @@ while True and __name__ == "__main__":
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(100, main_line)
+                    go_first_block_2(80, main_line)
 
             elif name == "stop":
                 blocks_left = image.get_blocks_left_of_line(main_line)
@@ -382,7 +382,7 @@ while True and __name__ == "__main__":
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(100, main_line)
+                    go_first_block_2(80, main_line)
             elif name == "start":
                 beeldverwerking_namespace.finish_command(command["id"])  # TODO: moet dit wel?
             else:

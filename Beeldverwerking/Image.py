@@ -4,13 +4,13 @@ import math
 
 
 class Image:
-    dist_threshold = 15
+    dist_threshold = 10
 
     def __init__(self, img_width, img_height, blocks, block_restrictions):
         self.img_width = img_width
         self.img_height = img_height
         self.blocks = blocks
-        self.block_restrictions = block_restrictions
+        self.block_restrictions = block_restrictions  # TODO: refactor this is gone (never used)
 
     def get_img_width(self):
         return self.img_width
@@ -56,7 +56,7 @@ class Image:
                 smallest_dif = math.pi/1.9  #we do not want anything behind us
                 next_block = None
                 for block in blocks_in_range:
-                    current_diff = math.atan(get_rico(prev_block, block)) - math.atan(rico)
+                    current_diff = Image.calculate_diff(math.atan(get_rico(prev_block, block)), math.atan(rico))
                     if current_diff < smallest_dif:
                         smallest_dif = current_diff
                         next_block = block
@@ -66,8 +66,12 @@ class Image:
                     blocks.append(next_block)
             return Line(*blocks)
 
-    def calculate_diff(self):
-        pass  # TODO: implementeren
+    @staticmethod
+    def calculate_diff(deg1, deg2):
+        if math.copysign(deg1,deg2) == deg1:
+            return abs(deg1 - deg2)
+        else:
+            return math.pi - abs(deg1) - abs(deg2)
 
     def get_blocks_left_of_line(self, line):
         blocks_left = []

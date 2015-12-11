@@ -302,7 +302,11 @@ var connectRoute = function(){
                 var newButton = document.createElement('button');
                 var newIdContent = document.createTextNode('id: ' + elem.id);
                 var newNameContent = document.createTextNode('command: ' + elem.commandName);
-                var newParamsContent = document.createTextNode('params: ' + elem.params);
+                var paramString = '';
+                $.each(elem.params, function(key,val) {
+                    paramString += key + ': ' + val + ', ';
+                });
+                var newParamsContent = document.createTextNode('params: ' + paramString);
                 var newButtonText = document.createTextNode('X');
                 newButton.onclick = function() {
                     $(this).parents('tr').remove();

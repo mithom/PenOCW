@@ -205,6 +205,11 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         self.emit('alert', params)
         self.update_route_description()
 
+    def on_cancel_id(self, params):
+        func_id = int(params["id"])
+        FC.getIOStream().removeCommandFromQueue(func_id)
+        self.update_route_description()
+
 
 class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     def __init__(self, *args, **kwargs):

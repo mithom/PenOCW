@@ -309,7 +309,8 @@ var connectRoute = function(){
                 var newParamsContent = document.createTextNode('params: ' + paramString);
                 var newButtonText = document.createTextNode('X');
                 newButton.onclick = function() {
-                    $(this).parents('tr').remove();
+                    //$(this).parents('tr').remove();
+                    beschrijving.emit("cancel_id", {"id": function(){return elem.id}()})
                 };
                 newName.appendChild(newNameContent);
                 newId.appendChild(newIdContent);

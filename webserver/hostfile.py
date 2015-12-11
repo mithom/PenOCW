@@ -149,10 +149,6 @@ class ComplexNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         data['id'] = func_id
         self.emit('alert', data)
 
-    def on_start(self, data):
-        # TODO: implementeren
-        pass
-
 
 class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     def __init__(self, *args, **kwargs):
@@ -237,7 +233,6 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             self.emit("event_confirmation", {'succes': True, 'id': command_id})
 
     def on_set_power(self, params):
-        #TODO: controleren
         func = FC.functionDivider.getFunctionDivider().currentCommand
         if func is not None and len(func) > 0:
             print params

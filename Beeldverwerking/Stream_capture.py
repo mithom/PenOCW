@@ -32,8 +32,6 @@ while True:
         # Gaussian blur
         blur = cv.GaussianBlur(frame, (5, 5), 0)
 
-        # TODO: threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
-
 
         threshold = 142
         #Determining threshold

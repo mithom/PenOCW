@@ -192,6 +192,17 @@ def go_first_block_2(power, line):
         beeldverwerking_namespace.set_powers(80- degrees/4, 80+degrees/4)
 
 
+def is_crossing(main_line, blocks):
+    if len(blocks) >= 2:
+        for i in len(blocks)-1:
+            for block2 in blocks[i+1:]:
+                difference = Image.Image.calculate_diff(
+                    math.atan(lines.get_rico(blocks[i], block2)),
+                    main_line.get_rico())
+                if math.radians(100) > difference > math.radians(80):
+                    return True
+    return False
+
 stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
 byte = ''
 while True:
@@ -247,15 +258,12 @@ while True:
         max_width = 9
         min_length = 1
         max_length = 9
-        # TODO: juiste width en height megeven, dus buitenste blokken van pixelated figuur,
-        #  niet van oorspronkelijke image
-
 
         # Pixelation
         px = cv.resize(bw, (bw_width / img_division, bw_height / img_division), interpolation=cv.INTER_NEAREST)
         img_width = px.shape[1]
         img_height = px.shape[0]
-        image = Image.Image(img_width, img_height, [])
+        image = Image.Image(img_width, img_height, [])  # TODO: is dit wel de juiste params van shape?
 
         bw = None
 
@@ -331,10 +339,10 @@ while True:
             command = beeldverwerkingNameSpace.current_route_description[0]
             name = command["commandName"]
             if name == "right":
-                if len(image.get_blocks_right_of_line(main_line)) >= 2:  # TODO: liggen deze wel op een lijn
-                    if prev_foto_had_street is False:
-                        street_counter += 1
+                blocks_right = image.get_blocks_right_of_line(main_line)
+                if (not prev_foto_had_street) and is_crossing(main_line, blocks_right):
                     prev_foto_had_street = True
+                    street_counter += 1
                 else:
                     prev_foto_had_street = False
 
@@ -345,10 +353,10 @@ while True:
                     go_first_block_2(70, main_line)
 
             elif name == "left":
-                if len(image.get_blocks_left_of_line(main_line)) >= 2:  # TODO: liggen deze wel op een lijn
-                    if prev_foto_had_street is False:
-                        street_counter += 1
+                blocks_left = image.get_blocks_left_of_line(main_line)
+                if (not prev_foto_had_street) and is_crossing(main_line, blocks_left):
                     prev_foto_had_street = True
+                    street_counter += 1
                 else:
                     prev_foto_had_street = False
 
@@ -359,9 +367,10 @@ while True:
                     go_first_block_2(70, main_line)
 
             elif name == "stop":
-                if len(image.get_blocks_left_of_line(main_line)) >= 2 or len(image.get_blocks_right_of_line(main_line)) >= 2:
-                    if prev_foto_had_street is False:
-                        street_counter += 1
+                blocks_left = image.get_blocks_left_of_line(main_line)
+                blocks_right = image.get_blocks_right_of_line(main_line)
+                if (not prev_foto_had_street) and (is_crossing(main_line, blocks_right) or is_crossing(main_line, blocks_left)):
+                    street_counter += 1
                     prev_foto_had_street = True
                 else:
                     prev_foto_had_street = False

@@ -2,7 +2,7 @@
  * Created by Thomas on 05/10/2015.
  */
 var manueel = null;
-var beschrijving = null;;
+var beschrijving = null;
 var complex = null;
 
 var heldKeys = {};
@@ -32,37 +32,37 @@ $(document).ready(function () {
 
     //here comes all the submit overrides
 
-    $('form#line').submit(function (event) {
+    $('form#line').submit(function () {
         complex.emit('line', {func: "line"});
         return false;
     });
 
-    $('form#square').submit(function (event) {
+    $('form#square').submit(function () {
         complex.emit('square', {func: "square"});
         return false;
     });
 
-    $('form#circle').submit(function (event) {
+    $('form#circle').submit(function () {
         complex.emit('circle', {func: "circle"});
         return false;
     });
 
-    $('form#rStart').submit(function (event) {
+    $('form#rStart').submit(function () {
         beschrijving.emit('start', {});
         return false;
     });
 
-    $('form#rLeft').submit(function (event) {
+    $('form#rLeft').submit(function () {
         beschrijving.emit('left', {nr: $("#NrLeft").val(), unit: $("#selectType").val()});
         return false;
     });
 
-    $('form#rRight').submit(function (event) {
+    $('form#rRight').submit(function () {
         beschrijving.emit('right', {nr: $("#NrRight").val(), unit: $("#selectType").val()});
         return false;
     });
 
-    $('form#rStop').submit(function (event) {
+    $('form#rStop').submit(function () {
         beschrijving.emit('stop', {nr: $("#NrStop").val(), unit: $("#selectType").val()});
         return false;
     });
@@ -182,7 +182,7 @@ var getId = function (response, status, xhr) {//find a way to save the id that i
 var post = function (dataToSend, doOnSuccess) {
     doOnSuccess = doOnSuccess || function () {
         };
-    var response = $.ajax({
+    return $.ajax({
         url: '/',
         type: "POST",
         dataType: "json",
@@ -190,7 +190,6 @@ var post = function (dataToSend, doOnSuccess) {
         data: JSON.stringify(dataToSend),
         success: doOnSuccess
     });
-    return response
 };
 
 var startStream = function () {
@@ -207,10 +206,6 @@ var startStream = function () {
             this.remove()
         })
     }
-};
-
-var cancelFunction = function (id) {
-    //TODO: implement this function
 };
 
 var activateManueel = function(){
@@ -298,7 +293,7 @@ var connectRoute = function(){
                 var newRow = document.createElement('tr');
                 var newName = document.createElement('td');
                 var newId = document.createElement('td');
-                var newParams = document.createElement('td')
+                var newParams = document.createElement('td');
                 var newButton = document.createElement('button');
                 var newIdContent = document.createTextNode('id: ' + elem.id);
                 var newNameContent = document.createTextNode('command: ' + elem.commandName);
@@ -310,11 +305,11 @@ var connectRoute = function(){
                 var newButtonText = document.createTextNode('X');
                 newButton.onclick = function() {
                     //$(this).parents('tr').remove();
-                    beschrijving.emit("cancel_id", {"id": function(){return elem.id}()})
+                    beschrijving.emit("cancel_id", {"id": function(){return elem.id;}()});
                 };
                 newName.appendChild(newNameContent);
                 newId.appendChild(newIdContent);
-                newParams.appendChild(newParamsContent)
+                newParams.appendChild(newParamsContent);
                 newButton.appendChild(newButtonText);
                 newRow.appendChild(newId);
                 newRow.appendChild(newName);

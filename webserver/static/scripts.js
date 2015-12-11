@@ -309,9 +309,11 @@ var connectRoute = function(){
                 };
                 newName.appendChild(newNameContent);
                 newId.appendChild(newIdContent);
-                newRow.appendChild(newName);
-                newRow.appendChild(newId);
+                newParams.appendChild(newParamsContent)
                 newButton.appendChild(newButtonText);
+                newRow.appendChild(newId);
+                newRow.appendChild(newName);
+                newRow.appendChid(newParams);
                 newRow.appendChild(newButton);
                 routeBody.append(newRow);
             });

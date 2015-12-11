@@ -312,7 +312,7 @@ var connectRoute = function(){
                 newRow.appendChild(newName);
                 newRow.appendChild(newId);
                 newButton.appendChild(newButtonText);
-                newRow.append(newButton);
+                newRow.appendChild(newButton);
                 routeBody.append(newRow);
             });
         });

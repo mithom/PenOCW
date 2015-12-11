@@ -313,7 +313,7 @@ var connectRoute = function(){
                 newButton.appendChild(newButtonText);
                 newRow.appendChild(newId);
                 newRow.appendChild(newName);
-                newRow.appendChid(newParams);
+                newRow.appendChild(newParams);
                 newRow.appendChild(newButton);
                 routeBody.append(newRow);
             });

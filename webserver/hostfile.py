@@ -226,7 +226,7 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             #succes = FC.getIOStream().removeCommandFromQueue(command_id)
             FC.functionDivider.getFunctionDivider().interuptCurrentFunction()
             succes = True
-            complex.update_route_description()
+            beschrijving.update_route_description()
         if not succes:
             self.emit("event_confirmation", {'succes': False, 'id': command_id})
         else:

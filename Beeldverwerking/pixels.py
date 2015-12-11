@@ -146,13 +146,10 @@ def go_first_block(power, line):
     #calibrate(power, power) ##nee, je zit niet in car.py!!!
     block = line.get_first_block()
     location = block.get_middle()
-    #######################print "locatie eerste blok", location
     img_width = block.get_image().get_img_width()
     img_height = block.get_image().get_img_height()
-    #######################print "img width, height", img_width, img_height
     car_width = 11.5
     mid_line = [(location[0] - img_width)/2, (img_height - location[1])/2]
-    #######################print "mid line", mid_line
     try:
         rico = (img_height - location[1])/(location[0] - img_width)
         x = (-mid_line[1])*rico + mid_line[0]
@@ -190,7 +187,7 @@ def go_first_block_2(power, line):
             beeldverwerking_namespace.set_powers(80, 0)
     else:
         degrees = int(math.copysign(90,radians) -math.degrees(radians))
-        beeldverwerking_namespace.set_powers(power- degrees, power+degrees)
+        beeldverwerking_namespace.set_powers(power- degrees/2, power+degrees/2)
 
 
 def is_crossing(main_line, blocks):
@@ -336,9 +333,8 @@ while True and __name__ == "__main__":
         if routing == False:
             go_first_block_2(70, main_line)
         if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started and routing == True:
-            print "yeay"
-            print street_counter
             print beeldverwerkingNameSpace.current_route_description
+            print main_line
             command = beeldverwerkingNameSpace.current_route_description[0]
             name = command["commandName"]
             if name == "right":

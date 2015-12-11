@@ -298,12 +298,21 @@ var connectRoute = function(){
                 var newRow = document.createElement('tr');
                 var newName = document.createElement('td');
                 var newId = document.createElement('td');
+                var newParams = document.createElement('td')
+                var newButton = document.createElement('button');
                 var newIdContent = document.createTextNode('id: ' + elem.id);
                 var newNameContent = document.createTextNode('command: ' + elem.commandName);
+                var newParamsContent = document.createTextNode('params: ' + elem.params);
+                var newButtonText = document.createTextNode('X');
+                newButton.onclick = function() {
+                    $(this).parents('tr').remove();
+                };
                 newName.appendChild(newNameContent);
                 newId.appendChild(newIdContent);
                 newRow.appendChild(newName);
                 newRow.appendChild(newId);
+                newButton.appendChild(newButtonText);
+                newRow.append(newButton);
                 routeBody.append(newRow);
             });
         });

@@ -179,7 +179,7 @@ def go_first_block_2(power, line):
     location = block.get_middle()
     width = block.get_image().get_img_width()
     height = block.get_image().get_img_height()
-    mid_block = Block(width/2, width/2, height, height, block.get_image())
+    mid_block = Block(width / 2, width / 2, height, height)
     rico = lines.get_rico(block,mid_block)
     radians = math.atan(rico)
     if abs(radians)<math.pi/4:
@@ -255,7 +255,7 @@ while True:
         px = cv.resize(bw, (bw_width / img_division, bw_height / img_division), interpolation=cv.INTER_NEAREST)
         img_width = px.shape[1]
         img_height = px.shape[0]
-        image = Image.Image(img_width, img_height, [], (min_width, max_width, min_length, max_length))
+        image = Image.Image(img_width, img_height, [])
 
         bw = None
 
@@ -302,7 +302,7 @@ while True:
                                 u = x + find_whites(y,x,'right')
                                 v = y + find_whites(y,x,'down')
                                 w = y - find_whites(y,x,'up')
-                                new_block = Block(t, u, v, w, image)
+                                new_block = Block(t, u, v, w)
                                 image.add_block(new_block)
                                 px = remove_whites(px, t, u, v, w)
                                 # foto = cv.resize(px, (bw_width/4, bw_height/4), interpolation=cv.INTER_NEAREST)

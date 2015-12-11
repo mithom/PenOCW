@@ -4,13 +4,14 @@ import math
 
 
 class Image:
-    dist_threshold = 10
+    dist_threshold = 15
 
-    def __init__(self, img_width, img_height, blocks, block_restrictions):
+    def __init__(self, img_width, img_height, blocks):
         self.img_width = img_width
         self.img_height = img_height
-        self.blocks = blocks
-        self.block_restrictions = block_restrictions  # TODO: refactor this is gone (never used)
+        self.blocks = []
+        for block in blocks:
+            self.add_block(block)
 
     def get_img_width(self):
         return self.img_width
@@ -27,14 +28,15 @@ class Image:
     def get_main_line(self):
         blocks = self.get_blocks()
         if len(blocks) == 0:
-            return Line(Block(self.img_width/2,self.img_width/2,min(1,self.img_height),min(1,self.img_height),self),
-                        Block(self.img_width/2,self.img_width/2,0,0,self))
+            return Line(Block(self.img_width / 2, self.img_width / 2, min(1, self.img_height), min(1, self.img_height)),
+                        Block(self.img_width / 2, self.img_width / 2, 0, 0))
         elif len(blocks) == 1:
             return Line(blocks[0])
         else:
             blocks = []
             next_block = None
-            prev_block = Block(self.get_img_width()/2, self.get_img_width()/2, self.get_img_height(), self.get_img_height(),self)
+            prev_block = Block(self.get_img_width() / 2, self.get_img_width() / 2, self.get_img_height(),
+                               self.get_img_height())
             for block in self.get_blocks():
                 if block != prev_block and (next_block is None or
                                             (block.distance_from(prev_block) < next_block.distance_from(prev_block))):

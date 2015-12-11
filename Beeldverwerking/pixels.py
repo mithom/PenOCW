@@ -12,14 +12,14 @@ import numpy as np
 from threading import Thread
 import time
 
+if __name__ == "__main__":
+    socketIO = SocketIO(url, port, verify = False)
+    beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
+    #waiting = Thread(target=socketIO.wait, name="waiting")
 
 url = '192.168.137.173'
 port = 4848
 current_route_description = []
-socketIO = SocketIO(url, port, verify = False)
-beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
-#waiting = Thread(target=socketIO.wait, name="waiting")
-
 ## intitializing variebles needed for steering
 street_counter = 0
 prev_foto_had_street = False
@@ -194,18 +194,18 @@ def go_first_block_2(power, line):
 
 def is_crossing(main_line, blocks):
     if len(blocks) >= 2:
-        for i in len(blocks)-1:
+        for i in xrange(len(blocks)-1):
             for block2 in blocks[i+1:]:
                 difference = Image.Image.calculate_diff(
                     math.atan(lines.get_rico(blocks[i], block2)),
-                    main_line.get_rico())
+                    math.atan(main_line.get_rico()))
                 if math.radians(100) > difference > math.radians(80):
                     return True
     return False
-
-stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
+if __name__ == "__main__":
+    stream = urllib.urlopen('http://%(url)s:%(port)i//video_feed.mjpg' % {'url': url, 'port': port})
 byte = ''
-while True:
+while True and __name__ == "__main__":
     a = -1
     b = -1
     while a == -1 or b == -1:

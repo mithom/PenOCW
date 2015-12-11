@@ -32,7 +32,7 @@ class Image:
             return Line(Block(self.img_width / 2, self.img_width / 2, min(1, self.img_height), min(1, self.img_height)),
                         Block(self.img_width / 2, self.img_width / 2, 0, 0))
         elif len(blocks) == 1:
-            return Line(blocks[0])
+            return Line(blocks[0], Block(blocks[0].get_middle()[0],blocks[0].get_middle()[0]),0,0)
         else:
             blocks = []
             next_block = None
@@ -67,6 +67,8 @@ class Image:
                     break
                 else:
                     blocks.append(next_block)
+            x = (-blocks[-1].get_middle()[1])/get_rico(*blocks[-2:])+blocks[-1].get_middle()[0]
+            blocks.append(Block(x,x,0,0))
             return Line(*blocks)
 
     @staticmethod
@@ -79,7 +81,7 @@ class Image:
     def get_blocks_left_of_line(self, line):
         blocks_left = []
         rico = line.get_rico()
-        if rico == None:
+        if rico is None:
             return None
         elif rico < 0:
             rico_sign = -1
@@ -100,7 +102,7 @@ class Image:
     def get_blocks_right_of_line(self, line):
         blocks_right = []
         rico = line.get_rico()
-        if rico == None:
+        if rico is None:
             return None
         elif rico < 0:
             rico_sign = -1

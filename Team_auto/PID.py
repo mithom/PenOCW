@@ -101,6 +101,8 @@ class PID:
     def get_results(self):
 	return self.PID_results
 
+    def set_setpoint(self, sp):
+        self.setpoint = sp
 
 # ---- PSEUDOCODE ----
 

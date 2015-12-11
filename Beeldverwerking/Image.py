@@ -115,6 +115,25 @@ class Image:
             return True
         return False
 
+    # def blocks_form_line_to_main(self, blocks, main_line):
+    #     rico_main = main_line.get_rico()
+    #     if len(blocks) < 2:
+    #         return False
+    #     else:
+    #         ricos_blocks = self.get_lines_through_blocks(blocks)
+    #         for rico_block in ricos_blocks:
+    #             if ((math.atan(rico_block) < (1/math.atan(rico_main)) + math.pi/3) and (math.atan(rico_block) > (1/math.atan(rico_main)) - math.pi/3)):
+    #                 return True
+    #         return False
+    #
+    # def get_lines_through_blocks(self, blocks):
+    #     ricos_blocks = []
+    #     for i in xrange(len(blocks)):
+    #         for j in xrange(i,len(blocks)):
+    #             ricos_blocks.append(get_rico(blocks[i], blocks[j]))
+    #     return ricos_blocks
+        
+
     def get_structure(self):
         if self.is_intersection():
             return 'intersection'

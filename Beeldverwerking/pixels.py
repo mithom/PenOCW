@@ -12,14 +12,15 @@ import numpy as np
 from threading import Thread
 import time
 
+
+url = '192.168.137.173'
+port = 4848
+current_route_description = []
 if __name__ == "__main__":
     socketIO = SocketIO(url, port, verify = False)
     beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
     #waiting = Thread(target=socketIO.wait, name="waiting")
 
-url = '192.168.137.173'
-port = 4848
-current_route_description = []
 ## intitializing variebles needed for steering
 street_counter = 0
 prev_foto_had_street = False
@@ -189,7 +190,7 @@ def go_first_block_2(power, line):
             beeldverwerking_namespace.set_powers(80, 0)
     else:
         degrees = int(math.copysign(90,radians) -math.degrees(radians))
-        beeldverwerking_namespace.set_powers(80- degrees/4, 80+degrees/4)
+        beeldverwerking_namespace.set_powers(power- degrees, power+degrees)
 
 
 def is_crossing(main_line, blocks):
@@ -330,59 +331,62 @@ while True and __name__ == "__main__":
         #######################time.sleep(1)
         #######################print "fucker"
         #######################time.sleep(1)
-        routing = False
+        routing = True
 
         if routing == False:
             go_first_block_2(70, main_line)
-
         if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started and routing == True:
+            print "yeay"
+            print street_counter
+            print beeldverwerkingNameSpace.current_route_description
             command = beeldverwerkingNameSpace.current_route_description[0]
             name = command["commandName"]
             if name == "right":
                 blocks_right = image.get_blocks_right_of_line(main_line)
                 if is_crossing(main_line, blocks_right):
-                    prev_foto_had_street = True
                     if not prev_foto_had_street:
                         street_counter += 1
+                    prev_foto_had_street = True
                 else:
                     prev_foto_had_street = False
 
-                if street_counter == command["params"]["nr"]:
+                if street_counter >= int(command["params"]["nr"]):
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(70, main_line)
+                    go_first_block_2(100, main_line)
 
             elif name == "left":
                 blocks_left = image.get_blocks_left_of_line(main_line)
                 if is_crossing(main_line, blocks_left):
-                    prev_foto_had_street = True
                     if not prev_foto_had_street:
                         street_counter += 1
+                    prev_foto_had_street = True
                 else:
                     prev_foto_had_street = False
 
-                if street_counter == command["params"]["nr"]:
+                if street_counter >= int(command["params"]["nr"]):
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(70, main_line)
+                    go_first_block_2(100, main_line)
 
             elif name == "stop":
                 blocks_left = image.get_blocks_left_of_line(main_line)
                 blocks_right = image.get_blocks_right_of_line(main_line)
                 if (is_crossing(main_line, blocks_right) or is_crossing(main_line, blocks_left)):
-                    street_counter += 1
                     if not prev_foto_had_street:
-                        prev_foto_had_street = True
+                        street_counter += 1
+                    prev_foto_had_street = True
                 else:
                     prev_foto_had_street = False
 
-                if street_counter == command["params"]["nr"]:
+                if street_counter >= int(command["params"]["nr"]):
+                    print "done----------------------------------------------------------------------------------\n--------------------------------------------------------"
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(70, main_line)
+                    go_first_block_2(100, main_line)
             elif name == "start":
                 beeldverwerking_namespace.finish_command(command["id"])  # TODO: moet dit wel?
             else:

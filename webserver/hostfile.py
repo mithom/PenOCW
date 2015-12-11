@@ -226,7 +226,7 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             #succes = FC.getIOStream().removeCommandFromQueue(command_id)
             FC.functionDivider.getFunctionDivider().interuptCurrentFunction()
             succes = True
-            self.update_route_description()
+            complex.update_route_description()
         if not succes:
             self.emit("event_confirmation", {'succes': False, 'id': command_id})
         else:
@@ -236,7 +236,8 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         func = FC.functionDivider.getFunctionDivider().currentCommand
         if func is not None and len(func) > 0:
             print params
-            func[0].set_params(**params)
+            if func[0].getParams().has_key("left"):
+                func[0].set_params(**params)
         else:
             print "could not set powers"
 

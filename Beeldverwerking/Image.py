@@ -29,10 +29,12 @@ class Image:
     def get_main_line(self):
         blocks = self.get_blocks()
         if len(blocks) == 0:
-            return Line(Block(self.img_width / 2, self.img_width / 2, min(1, self.img_height), min(1, self.img_height)),
+            block = Block(self.img_width / 2, self.img_width / 2, min(1, self.img_height), min(1, self.img_height))
+            self.add_block(block)
+            return Line(block,
                         Block(self.img_width / 2, self.img_width / 2, 0, 0))
         elif len(blocks) == 1:
-            return Line(blocks[0], Block(blocks[0].get_middle()[0],blocks[0].get_middle()[0]),0,0)
+            return Line(blocks[0], Block(blocks[0].get_middle()[0],blocks[0].get_middle()[0],0,0))
         else:
             blocks = []
             next_block = None
@@ -56,7 +58,7 @@ class Image:
                     rico = get_rico(blocks[-2],blocks[-1])
                 else:
                     rico = -10000
-                smallest_dif = math.pi/1.9  #we do not want anything behind us
+                smallest_dif = math.pi/2.2  #we do not want anything behind us
                 next_block = None
                 for block in blocks_in_range:
                     current_diff = Image.calculate_diff(math.atan(get_rico(prev_block, block)), math.atan(rico))
@@ -67,8 +69,13 @@ class Image:
                     break
                 else:
                     blocks.append(next_block)
-            x = (-blocks[-1].get_middle()[1])/get_rico(*blocks[-2:])+blocks[-1].get_middle()[0]
-            blocks.append(Block(x,x,0,0))
+            try:
+                x = (-blocks[-1].get_middle()[1])/get_rico(blocks[0],blocks[-1])+blocks[-1].get_middle()[0]
+                blocks.append(Block(x,x,0,0))
+            except ZeroDivisionError:
+                print get_rico(blocks[0],blocks[-1])
+                print blocks
+                print "-----------STOP---------------------------------------------------------------"
             return Line(*blocks)
 
     @staticmethod

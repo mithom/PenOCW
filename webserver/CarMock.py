@@ -2,7 +2,7 @@ import time
 import random
 import hostfile
 
-isUpdated = True
+isUpdated = time.time()
 
 
 def go_straight_distance(*args, **kwargs):
@@ -37,6 +37,7 @@ def turn_straight_right(*args, **kwargs):
     time.sleep(1)
 
 def set_motors(left, right,*args, **kwargs):
+    hostfile.sendPower(get_power_values())
     time.sleep(1)
 
 def go_straight_manual(*Args,**kwargs):

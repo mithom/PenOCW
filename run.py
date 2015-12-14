@@ -8,6 +8,7 @@ import threading
 import time
 # import Team_auto.Car as car
 import werkzeug.serving
+import sys
 
 from socketio.server import SocketIOServer
 from werkzeug.wsgi import SharedDataMiddleware
@@ -21,6 +22,8 @@ def proces_forever():
         print "running"
         try:
             FD.processTime(100)
+        except:
+            sys.exc_traceback.format_exc()
         finally:
             proces_forever()
 

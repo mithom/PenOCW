@@ -3,7 +3,7 @@ from BrickPi import BrickPiUpdateValues as update
 import time
 import math
 import PID
-import webserver.hostfile
+import webserver
 
 
 BrickPiSetup()  # setup the serial port for communication from BrickPi import *
@@ -22,13 +22,15 @@ BrickPiSetupSensors()  # Send the properties of sensors to BrickPi
 d = 5.6  # diameter of the wheels
 O = math.pi * d  # circumference of the wheels
 
-isUpdated = False
+isUpdated = time.time()
 
 def BrickPiUpdateValues():
     global isUpdated
+    if time.time() - isUpdated > 0.1:
+        print "sending powers"
+        webserver.hostfile.sendPower(get_power_values())
     update()
-    isUpdated = True
-    webserver.hostfile.sendPower(get_power_values())
+    isUpdated = time.time()
 
 def calibrate(power_left = 1, power_right = 1):
     global offset_A, offset_B

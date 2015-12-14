@@ -6,11 +6,10 @@ var beschrijving = null;
 var complex = null;
 
 var heldKeys = {};
-var last_update = 0;
+var last_update = new Date().getTime();
 var timer = null;
 var updateTime = function () {
-    last_update += 0.1;
-    $("#last_updated_power").text(Math.round10(last_update, -1));
+    $("#last_updated_power").text(Math.round10((new Date().getTime() - last_update)/1000, -1));
 };
 
 $(document).ready(function () {
@@ -244,7 +243,7 @@ var connectManueel = function(){
             $("#value_power").text(data);
             if (timer != null) {
                 clearInterval(timer);
-                last_update = 0;
+                last_update = new Date().getTime();
                 $("#last_updated_power").text(0);
             }
             timer = setInterval(updateTime, 100);

@@ -9,58 +9,55 @@ def go_straight_distance(*args, **kwargs):
 
 
 def go_straight_pid(*args, **kwargs):
-    time.sleep(0.1)
-    pass
+    time.sleep(1)
 
 
 def make_circle_left(*args, **kwargs):
-    pass
+    time.sleep(1)
 
 
 def make_circle_right(*args, **kwargs):
-    pass
+    time.sleep(1)
 
 
 def rotate_angle_left(*args, **kwargs):
-    pass
+    time.sleep(1)
 
 
 def rotate_angle_right(*args, **kwargs):
-    pass
+    time.sleep(1)
 
 
 def turn_straight_left(*args, **kwargs):
-    time.sleep(0.1)
-    pass
+    time.sleep(1)
 
 
 def turn_straight_right(*args, **kwargs):
-    time.sleep(0.1)
-    pass
+    time.sleep(1)
 
 def set_motors(left, right,*args, **kwargs):
-    pass
+    time.sleep(1)
 
 def go_straight_manual(*Args,**kwargs):
-    pass
+    time.sleep(1)
 
 def go_straight_duration(*Args,**kwargs):
-    pass
+    time.sleep(1)
 
 def rotate_left_angle(*Args,**kwargs):
-    pass
+    time.sleep(1)
 
 def rotate_right_angle(*Args,**kwargs):
-    pass
+    time.sleep(1)
 
 def rotate_left_duration(*Args,**kwargs):
-    pass
+    time.sleep(1)
 
 def sleep(*Args,**kwargs):
-    pass
+    time.sleep(1)
 
 def rotate_right_duration(*Args,**kwargs):
-    pass
+    time.sleep(1)
 
 
 

@@ -202,16 +202,20 @@ while True and __name__ == "__main__":
     if a != -1 and b != -1:
         jpg = byte[a:b + 2]
         byte = byte[b + 2:]
-        frame = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 0)
+        frame = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
         #frame = cv.resize(frame, (2592, 1944), interpolation=cv.INTER_AREA)
 
         # Image loading
         # frame = cv.imread('C:\\Users\\Gilles\\Dropbox\\Gilles\\Documenten\\School\\PenO_CW\\repo\\Beeldverwerking\\pi_photos\\cam4.jpg', 0)
 
-        # Gaussian blur
-        blur = cv.GaussianBlur(frame, (5, 5), 0)
+        gray = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
 
-        frame = None
+        # Gaussian blur
+        blur = cv.GaussianBlur(gray, (5, 5), 0)
+
+        gray = None
+
+        #frame = None
 
         threshold = 255
 
@@ -408,6 +412,7 @@ while True and __name__ == "__main__":
         pxbackup = None
 
         cv.imshow('Result', foto)
+        cv.imshow('oorspr', frame)
 
         #cv.imshow('Result', pxbackup)
 

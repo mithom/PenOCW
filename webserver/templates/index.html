@@ -20,11 +20,6 @@
         <h1>Robot Control</h1>
         <div id="direct-control" class="hidden">
             <table>
-                <!--<tr><td colspan="3"><form action="/echo" method="POST">
-                    <input type="text" name="text">
-                    <input type="submit" name="my-form" value="Send">
-                </form></td> </tr>-->
-                <!-- TODO: een messagebox maken (in jinja2) die meldingen doorgeeft  -->
                 <tr>
                     <td colspan="3" align="center">
                         <button type='button' id="up" class="passive" onmousedown="doUp()" onmouseup="stopUp()"></button>
@@ -40,16 +35,6 @@
                     <td>
                         <button type='button' id="right" class="passive" onmousedown="doRight()" onmouseup="stopRight()"></button>
                     </td>
-                </tr>
-            </table>
-            <table> <!-- TODO: dit in info div zetten en zorgen dat dit niet via manueel komt -->
-                <tr>
-                    <td>current power:</td>
-                    <td id="value_power">no value received yet</td>
-                </tr>
-                <tr>
-                    <td >last updated: </td>
-                    <td id="last_updated_power"></td>
                 </tr>
             </table>
         </div>
@@ -92,6 +77,16 @@
             </div>
         </div>
         <div class="info">
+            <table id="power_info" class="hidden">
+                <tr>
+                    <td>current power:</td>
+                    <td id="value_power">no value received yet</td>
+                </tr>
+                <tr>
+                    <td >last updated: </td>
+                    <td id="last_updated_power"></td>
+                </tr>
+            </table>
             <table>
                 <thead><tr><td>de fotostream</td></tr></thead>
                 <tbody>

@@ -9,7 +9,7 @@ var heldKeys = {};
 var last_update = new Date().getTime();
 var timer = null;
 var updateTime = function () {
-    $("#last_updated_power").text(Math.round10((new Date().getTime() - last_update)/1000, -1));
+    $("#last_updated_power").text(((new Date().getTime() - last_update)/1000).toFixed(1));
 };
 
 $(document).ready(function () {
@@ -211,6 +211,7 @@ var activateManueel = function(){
     $("#direct-control").removeClass('hidden');
     $("#commands").addClass('hidden');
     $("#route-input").addClass('hidden');
+    $("#power_info").removeClass('hidden');
     connectManueel()
 };
 
@@ -218,6 +219,7 @@ var activateComplex = function(){
     $("#direct-control").addClass('hidden');
     $("#commands").removeClass('hidden');
     $("#route-input").addClass('hidden');
+    $("#power_info").addClass('hidden');
     connectComplex()
 };
 
@@ -225,6 +227,7 @@ var activateRouteDescription = function(){
     $("#direct-control").addClass('hidden');
     $("#commands").addClass('hidden');
     $("#route-input").removeClass('hidden');
+    $("#power_info").removeClass('hidden');
     connectRoute()
 };
 
@@ -321,57 +324,10 @@ var connectRoute = function(){
         beschrijving.on('askDisconnect', function(data){
             disconnect(beschrijving);//TODO: switch page
         });
+
+        beschrijving.emit("ask_update")
     });
 };
-
-// Closure to expand the Math module, source form: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/round
-(function () {//TODO: vervang heel deze code door: http://stackoverflow.com/questions/4098685/rounding-numbers-to-2-digits-after-comma
-    /**
-     * Decimal adjustment of a number.
-     *
-     * @param {String}  type  The type of adjustment.
-     * @param {Number}  value The number.
-     * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
-     * @returns {Number} The adjusted value.
-     */
-    function decimalAdjust(type, value, exp) {
-        // If the exp is undefined or zero...
-        if (typeof exp === 'undefined' || +exp === 0) {
-            return Math[type](value);
-        }
-        value = +value;
-        exp = +exp;
-        // If the value is not a number or the exp is not an integer...
-        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
-            return NaN;
-        }
-        // Shift
-        value = value.toString().split('e');
-        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
-        // Shift back
-        value = value.toString().split('e');
-        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
-    }
-
-    // Decimal round
-    if (!Math.round10) {
-        Math.round10 = function (value, exp) {
-            return decimalAdjust('round', value, exp);
-        };
-    }
-    // Decimal floor
-    if (!Math.floor10) {
-        Math.floor10 = function (value, exp) {
-            return decimalAdjust('floor', value, exp);
-        };
-    }
-    // Decimal ceil
-    if (!Math.ceil10) {
-        Math.ceil10 = function (value, exp) {
-            return decimalAdjust('ceil', value, exp);
-        };
-    }
-})();
 
 
 /*document.addEventListener('mousedown',function(){

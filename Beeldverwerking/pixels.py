@@ -11,7 +11,7 @@ import urllib
 import numpy as np
 
 
-url = '192.168.137.173'
+url = '192.168.137.19'
 #url="127.0.0.1"
 port = 4848
 current_route_description = []
@@ -141,33 +141,21 @@ def long_enough(row, column):
 
 
 def go_first_block(power, line):
-    #calibrate(power, power) ##nee, je zit niet in car.py!!!
     block = line.get_first_block()
     location = block.get_middle()
-    img_width = block.get_image().get_img_width()
-    img_height = block.get_image().get_img_height()
-    car_width = 11.5
-    mid_line = [(location[0] - img_width)/2, (img_height - location[1])/2]
-    try:
-        rico = (img_height - location[1])/(location[0] - img_width)
-        x = (-mid_line[1])*rico + mid_line[0]
-    except ZeroDivisionError:
-        rico = 10000
-        x = 0
-    radius = abs(x)
-    if (rico < 0.5) and (rico >= 0):
-        left_power = int(power/4)
-        right_power = -int(power/4)
-    elif (abs(rico) < 0.5) and (rico <= 0):
-        left_power = -int(power/4)
-        right_power = int(power/4)
-    elif rico >= 0:
-        left_power = int(power * (radius + car_width)/( (radius - car_width)))
-        right_power = int(power * (radius - car_width)/( (radius + car_width)))
+    width = block.get_image().get_img_width()
+    height = block.get_image().get_img_height()
+    mid_block = Block(width/2, width/2, height, height)
+    rico = lines.get_rico(block,mid_block)
+    radians = math.atan(rico)
+    if abs(radians)<math.pi/4:
+        if radians >0: #positief = naar links draaien
+            beeldverwerking_namespace.set_powers(0, 80)
+        else:
+            beeldverwerking_namespace.set_powers(80, 0)
     else:
-        left_power = int(power * (radius - car_width)/( (radius + car_width)))
-        right_power = int(power * (radius + car_width)/((radius - car_width)))
-    beeldverwerking_namespace.set_powers(left_power, right_power)
+        degrees = int(math.copysign(90,radians) -math.degrees(radians))
+        beeldverwerking_namespace.set_powers(80- degrees/4, 80+degrees/4)
 
 
 def go_first_block_2(power, line):
@@ -178,7 +166,7 @@ def go_first_block_2(power, line):
     mid_block = Block(width / 2, width / 2, height, height)
     rico = lines.get_rico(block,mid_block)
     radians = math.atan(rico)
-    if abs(radians)<math.pi/4 and location[1] > height-7:
+    if abs(radians)<math.pi/4 and location[1] < height-7:
         if radians >0: #positief = naar links draaien
             beeldverwerking_namespace.set_powers(0, 80)
         else:
@@ -187,7 +175,7 @@ def go_first_block_2(power, line):
         radians = math.atan(line.get_rico())
         compensation = int(math.degrees(Image.Image.calculate_diff(math.pi, radians)))
         if not width/2 +5 > location[0] > width/2-5:
-            compensation += (location[0] - width/2)
+            compensation -= (location[0] - width/2)
         beeldverwerking_namespace.set_powers(power- compensation/4, power+compensation/4)
 
 
@@ -323,10 +311,10 @@ while True and __name__ == "__main__":
         main_line = image.get_main_line()
 
         socketIO.wait(0.001)
-        routing = True
+        routing = False
 
         if routing == False:
-            go_first_block_2(70, main_line)
+            go_first_block(100, main_line)
         if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started and routing == True:
             print beeldverwerkingNameSpace.current_route_description
             print main_line

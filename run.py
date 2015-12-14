@@ -42,9 +42,9 @@ def main():
     process.setDaemon(True)
     process.start()
 
-    process2 = threading.Thread(target=updateValues, name='processing')
-    process2.setDaemon(True)
-    process2.start()
+    #process2 = threading.Thread(target=updateValues, name='updatingValues')
+    #process2.setDaemon(True)
+    #process2.start()
 
     app.debug = True
     server = SocketIOServer(

@@ -1,5 +1,6 @@
 import time
 import random
+import hostfile
 
 isUpdated = True
 
@@ -39,6 +40,7 @@ def set_motors(left, right,*args, **kwargs):
     time.sleep(1)
 
 def go_straight_manual(*Args,**kwargs):
+    hostfile.sendPower(get_power_values())
     time.sleep(1)
 
 def go_straight_duration(*Args,**kwargs):

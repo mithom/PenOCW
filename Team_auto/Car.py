@@ -3,6 +3,7 @@ from BrickPi import BrickPiUpdateValues as update
 import time
 import math
 import PID
+import webserver.hostfile
 
 
 BrickPiSetup()  # setup the serial port for communication from BrickPi import *
@@ -27,6 +28,7 @@ def BrickPiUpdateValues():
     global isUpdated
     update()
     isUpdated = True
+    webserver.hostfile.sendPower(get_power_values())
 
 def calibrate(power_left = 1, power_right = 1):
     global offset_A, offset_B
@@ -68,8 +70,8 @@ def go_straight_camera1(left, right, duration):
     while time.time() - start_time < duration:
         set_motors(left, right)
         BrickPiUpdateValues()
-    left_power = main_power
-    right_power = main_power
+    left_power = left
+    right_power = right
     set_motors(left_power, right_power)
     BrickPiUpdateValues()
 

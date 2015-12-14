@@ -10,20 +10,21 @@ class BeeldverwekingNameSpace(BaseNamespace):
         self.awaiting_events = {}
 
     def on_connect(self):
-        super(BeeldverwekingNameSpace, self).on_connect()
-        ## print "yeay connected"
+        self.emit("ask_update")
 
-    def on_update_route_description(self, params):
+    def on_update_route_description(self, *params):
         global current_route_description,is_started
         current_route_description = params
+        print params,"?"
         if is_started is False:
             for command in current_route_description:
                 if command["commandName"] == "start":
                     is_started = True
                     break
 
-    def on_event_confirmation(self, *args, **params):
-        print args, params
+    def on_event_confirmation(self, params):
+        print params
+        print "--------------confirmed-------------------------------------------------------------------------------------------------------------------------------------"
         if params['succes']:
             del self.awaiting_events[params['id']]
         else:

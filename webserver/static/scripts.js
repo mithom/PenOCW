@@ -285,7 +285,7 @@ var connectRoute = function(){
     beschrijving.on('connect', function () {
         //beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
 
-        beschrijving.on('updateRouteDescription', function (route) {
+        beschrijving.on('updateRouteDescription', function (...route) {// we use the arguments variable here cus we don't know how many we will get
             var routeBody = $("#currentRoute table tbody");
             routeBody.empty();
 

@@ -9,17 +9,15 @@ import beeldverwerkingNameSpace
 from socketIO_client import SocketIO
 import urllib
 import numpy as np
-from threading import Thread
-import time
 
 
 url = '192.168.137.173'
+#url="127.0.0.1"
 port = 4848
 current_route_description = []
 if __name__ == "__main__":
     socketIO = SocketIO(url, port, verify = False)
     beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
-    #waiting = Thread(target=socketIO.wait, name="waiting")
 
 ## intitializing variebles needed for steering
 street_counter = 0
@@ -323,14 +321,8 @@ while True and __name__ == "__main__":
         ###################
         px = None
         main_line = image.get_main_line()
-        #######################print image.get_blocks(), image.img_width,image.img_height
-        #######################print main_line
-        #######################print "mother"
-        #######################time.sleep(1)
+
         socketIO.wait(0.001)
-        #######################time.sleep(1)
-        #######################print "fucker"
-        #######################time.sleep(1)
         routing = True
 
         if routing == False:
@@ -390,6 +382,9 @@ while True and __name__ == "__main__":
                 beeldverwerking_namespace.finish_command(command["id"])  # TODO: moet dit wel?
             else:
                 print "unsupported action!!!!!!!!!!!"
+        else:
+            prev_foto_had_street = False
+            street_counter = 0
 
         #########else:
             ################print beeldverwerkingNameSpace.current_route_description

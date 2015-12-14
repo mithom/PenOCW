@@ -179,7 +179,7 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
             beeldverwerking.update_route_description()
         else:
             print "beeldverwerking was None"
-        self.broadcast_event('updateRouteDescription', FC.getIOStream().getAllCommandOutputsInQueue())
+        self.broadcast_event('updateRouteDescription', *FC.getIOStream().getAllCommandOutputsInQueue())
 
     def on_start(self, params):
         func_id = FC.getIOStream().addCommandToQueue("start")
@@ -210,6 +210,9 @@ class BeschrijvingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         FC.getIOStream().removeCommandFromQueue(func_id)
         self.update_route_description()
 
+    def on_ask_update(self):
+        self.emit("updateRouteDescription", FC.getIOStream().getAllCommandOutputsInQueue())
+
 
 class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
     def __init__(self, *args, **kwargs):
@@ -217,12 +220,12 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
         super(BeeldverwerkingNamespace, self).__init__(*args, **kwargs)
         beeldverwerking = self
 
-    def emit(self, event, args):
-        self.socket.send_packet(dict(type="event", name=event,
-                                     args=args, endpoint=self.ns_name))
+    #def emit(self, event, args):
+        #self.socket.send_packet(dict(type="event", name=event,
+        #                             args=args, endpoint=self.ns_name))
 
     def update_route_description(self):
-        self.broadcast_event('update_route_description', FC.getIOStream().getAllCommandOutputsInQueue())
+        self.broadcast_event('update_route_description', *FC.getIOStream().getAllCommandOutputsInQueue())
 
     def on_command_finished(self, params):
         succes = False
@@ -245,6 +248,9 @@ class BeeldverwerkingNamespace(BaseNamespace, RoomsMixin, BroadcastMixin):
                 func[0].set_params(**params)
         else:
             print "could not set powers"
+
+    def on_ask_update(self):
+        self.emit("update_route_description", *FC.getIOStream().getAllCommandOutputsInQueue())
 
 
 @app.route("/socket.io/<path:rest>")

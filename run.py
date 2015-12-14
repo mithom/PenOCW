@@ -19,7 +19,10 @@ app = hostfile.app
 def proces_forever():
     while True:
         print "running"
-        FD.processTime(100)
+        try:
+            FD.processTime(100)
+        finally:
+            proces_forever()
 
 
 def updateValues():

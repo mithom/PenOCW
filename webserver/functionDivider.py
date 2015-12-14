@@ -125,6 +125,9 @@ class FunctionDivider:
                 self.currentCommand = command.get_functions()
         else:
             self.currentCommand = None
+        print "done executeCOmmand-------------------------------------------------------------------"
+        if functionCaller.hostfile.beschrijving is not None:
+            functionCaller.hostfile.beschrijving.update_route_description()
 
     def interuptCurrentCommand(self):
         """
@@ -178,6 +181,7 @@ class FunctionDivider:
                 car.last_right_power = 0
                 car.isUpdated = True
                 self.currentCommand = None
+                self.currentCommandObject = None
                 return dt
         return 0
 

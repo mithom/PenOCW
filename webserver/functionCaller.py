@@ -138,7 +138,7 @@ class __IOStream__:
                 self.queue.remove(function)
                 return True
         current = functionDivider.getFunctionDivider().currentCommandObject
-        if current.getId() == commandId:
+        if current is not None and current.getId() == commandId:
             functionDivider.getFunctionDivider().interuptCurrentCommand()
             return True
         return False

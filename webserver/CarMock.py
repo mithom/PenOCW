@@ -38,7 +38,7 @@ def turn_straight_right(*args, **kwargs):
     time.sleep(0.1)
     pass
 
-def set_motors(left, right):
+def set_motors(left, right,*args, **kwargs):
     pass
 
 def go_straight_manual(*Args,**kwargs):

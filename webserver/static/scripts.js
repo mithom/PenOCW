@@ -211,6 +211,7 @@ var activateManueel = function(){
     $("#direct-control").removeClass('hidden');
     $("#commands").addClass('hidden');
     $("#route-input").addClass('hidden');
+    $("#power_info").removeClass('hidden');
     connectManueel()
 };
 
@@ -218,6 +219,7 @@ var activateComplex = function(){
     $("#direct-control").addClass('hidden');
     $("#commands").removeClass('hidden');
     $("#route-input").addClass('hidden');
+    $("#power_info").addClass('hidden');
     connectComplex()
 };
 
@@ -225,6 +227,7 @@ var activateRouteDescription = function(){
     $("#direct-control").addClass('hidden');
     $("#commands").addClass('hidden');
     $("#route-input").removeClass('hidden');
+    $("#power_info").removeClass('hidden');
     connectRoute()
 };
 

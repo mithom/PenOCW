@@ -20,11 +20,6 @@
         <h1>Robot Control</h1>
         <div id="direct-control" class="hidden">
             <table>
-                <!--<tr><td colspan="3"><form action="/echo" method="POST">
-                    <input type="text" name="text">
-                    <input type="submit" name="my-form" value="Send">
-                </form></td> </tr>-->
-                <!-- TODO: een messagebox maken (in jinja2) die meldingen doorgeeft  -->
                 <tr>
                     <td colspan="3" align="center">
                         <button type='button' id="up" class="passive" onmousedown="doUp()" onmouseup="stopUp()"></button>
@@ -82,7 +77,7 @@
             </div>
         </div>
         <div class="info">
-            <table id="power_info" class="hidden"> <!-- TODO: dit in info div zetten en zorgen dat dit niet via manueel komt -->
+            <table id="power_info" class="hidden">
                 <tr>
                     <td>current power:</td>
                     <td id="value_power">no value received yet</td>

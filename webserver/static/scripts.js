@@ -321,6 +321,8 @@ var connectRoute = function(){
         beschrijving.on('askDisconnect', function(data){
             disconnect(beschrijving);//TODO: switch page
         });
+
+        beschrijving.emit("ask_update")
     });
 };
 

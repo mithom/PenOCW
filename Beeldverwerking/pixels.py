@@ -156,7 +156,7 @@ def go_first_block(power, line):
             beeldverwerking_namespace.set_powers(75, 0)
     else:
         degrees = int(math.copysign(90,radians) -math.degrees(radians))
-        beeldverwerking_namespace.set_powers(75- degrees/4, 75+degrees/4)
+        beeldverwerking_namespace.set_powers(60- degrees/4, 60+degrees/4)
 
 
 def go_first_block_2(power, line):

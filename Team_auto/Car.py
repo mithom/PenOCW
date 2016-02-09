@@ -29,8 +29,8 @@ def BrickPiUpdateValues():
     if time.time() - isUpdated > 0.1:
         print "sending powers"
         webserver.hostfile.sendPower(get_power_values())
+        isUpdated = time.time()
     update()
-    isUpdated = time.time()
 
 def calibrate(power_left = 1, power_right = 1):
     global offset_A, offset_B
@@ -95,7 +95,7 @@ def go_straight_camera1(left, right, duration):
         pid_ratio = pid_controller.update(BrickPi.Encoder[PORT_A], BrickPi.Encoder[PORT_B])
         if (time.time() - last_update) > update_interval:
             last_update = time.time()
-            right_power = int((2*main_power)/(pid_ratio+1))
+            right_power = int((2*right_power)/(pid_ratio+1))
             left_power = int(pid_ratio*right_power)
         #set_left(left_power)
         #set_right(right_power)
@@ -113,6 +113,7 @@ def go_straight_camera1(left, right, duration):
     time.sleep(0.05)
     results = pid_controller.get_results()
     # print str(results)
+
 
 def go_straight_camera(left, right, duration):
     # calibrate(main_power, main_power)

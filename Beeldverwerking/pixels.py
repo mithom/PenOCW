@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
 ## intitializing variebles needed for steering
 street_counter = 0
-prev_foto_had_street = False
+last_street = 10
 
 
 # Stream capturing code copied from
@@ -327,11 +327,11 @@ while True and __name__ == "__main__":
             if name == "right":
                 blocks_right = image.get_blocks_right_of_line(main_line)
                 if is_crossing(main_line, blocks_right):
-                    if not prev_foto_had_street:
+                    if last_street > 5:
                         street_counter += 1
-                    prev_foto_had_street = True
+                    last_street = 0
                 else:
-                    prev_foto_had_street = False
+                    last_street += 1
 
                 if street_counter >= int(command["params"]["nr"]):
                     street_counter = 0
@@ -342,11 +342,11 @@ while True and __name__ == "__main__":
             elif name == "left":
                 blocks_left = image.get_blocks_left_of_line(main_line)
                 if is_crossing(main_line, blocks_left):
-                    if not prev_foto_had_street:
+                    if not last_street > 5:
                         street_counter += 1
-                    prev_foto_had_street = True
+                    last_street = 0
                 else:
-                    prev_foto_had_street = False
+                    last_street += 1
 
                 if street_counter >= int(command["params"]["nr"]):
                     street_counter = 0
@@ -358,11 +358,11 @@ while True and __name__ == "__main__":
                 blocks_left = image.get_blocks_left_of_line(main_line)
                 blocks_right = image.get_blocks_right_of_line(main_line)
                 if (is_crossing(main_line, blocks_right) or is_crossing(main_line, blocks_left)):
-                    if not prev_foto_had_street:
+                    if last_street > 5:
                         street_counter += 1
-                    prev_foto_had_street = True
+                    last_street = 0
                 else:
-                    prev_foto_had_street = False
+                    last_street += 1
 
                 if street_counter >= int(command["params"]["nr"]):
                     print "done----------------------------------------------------------------------------------\n--------------------------------------------------------"
@@ -375,7 +375,7 @@ while True and __name__ == "__main__":
             else:
                 print "unsupported action!!!!!!!!!!!"
         else:
-            prev_foto_had_street = False
+            last_street += 1
             street_counter = 0
 
         #########else:

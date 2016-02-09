@@ -5,11 +5,14 @@
         <title>home</title>
         <script type="text/javascript" src="{{url_for('static', filename='jquery.js') }}"></script>
         {{ JSGlue.include() }}
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.14.0/vis.min.js"></script>
+        <link rel="stylesheet" type="text/css" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.14.0/vis.min.css"></link>
         <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.js"></script>-->
         <!--<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>-->
         <script type="text/javascript" src="{{url_for('static', filename='socket.io.js') }}"></script>
         <script type="text/javascript" src="{{url_for('static', filename='scripts.js') }}"></script>
         <link rel="stylesheet" type="text/css" href="../static/styles/globals.css">
+        <script type="text/javascript" src="{{url_for('static', filename='graphs.js') }}"
     </head>
     <body>
         <div id="header">
@@ -77,23 +80,30 @@
             </div>
         </div>
         <div class="info">
-            <table id="power_info" class="hidden">
-                <tr>
-                    <td>current power:</td>
-                    <td id="value_power">no value received yet</td>
-                </tr>
-                <tr>
-                    <td >last updated: </td>
-                    <td id="last_updated_power"></td>
-                </tr>
-            </table>
-            <table>
-                <thead><tr><td>de fotostream</td></tr></thead>
-                <tbody>
-                <tr><td><button type="submit" id="video_button" onmousedown="startStream()">start stream</button></td></tr>
-                <tr><td id="video_stream"></td></tr>
-                </tbody>
-            </table>
+            <div>
+                <table id="power_info" class="hidden">
+                    <tr>
+                        <td>current power:</td>
+                        <td id="value_power">no value received yet</td>
+                    </tr>
+                    <tr>
+                        <td >last updated: </td>
+                        <td id="last_updated_power"></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <table>
+                    <thead><tr><td>de fotostream</td></tr></thead>
+                    <tbody>
+                    <tr><td><button type="submit" id="video_button" onmousedown="startStream()">start stream</button></td></tr>
+                    <tr><td id="video_stream"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="mynetwork">
+
+            </div>
         </div>
     </body>
 </html>

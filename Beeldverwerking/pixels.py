@@ -9,9 +9,10 @@ import beeldverwerkingNameSpace
 from socketIO_client import SocketIO
 import urllib
 import numpy as np
+import time
 
 
-url = '192.168.137.19'
+url = '192.168.137.78'
 #url="127.0.0.1"
 port = 4848
 current_route_description = []
@@ -21,7 +22,7 @@ if __name__ == "__main__":
 
 ## intitializing variebles needed for steering
 street_counter = 0
-prev_foto_had_street = False
+last_street = 10
 
 
 # Stream capturing code copied from
@@ -150,12 +151,12 @@ def go_first_block(power, line):
     radians = math.atan(rico)
     if abs(radians)<math.pi/4:
         if radians >0: #positief = naar links draaien
-            beeldverwerking_namespace.set_powers(0, 80)
+            beeldverwerking_namespace.set_powers(0, 75)
         else:
-            beeldverwerking_namespace.set_powers(80, 0)
+            beeldverwerking_namespace.set_powers(75, 0)
     else:
         degrees = int(math.copysign(90,radians) -math.degrees(radians))
-        beeldverwerking_namespace.set_powers(80- degrees/4, 80+degrees/4)
+        beeldverwerking_namespace.set_powers(60- degrees/4, 60+degrees/4)
 
 
 def go_first_block_2(power, line):
@@ -168,9 +169,9 @@ def go_first_block_2(power, line):
     radians = math.atan(rico)
     if abs(radians)<math.pi/4 and location[1] < height-7:
         if radians >0: #positief = naar links draaien
-            beeldverwerking_namespace.set_powers(0, 80)
+            beeldverwerking_namespace.set_powers(0, 60)
         else:
-            beeldverwerking_namespace.set_powers(80, 0)
+            beeldverwerking_namespace.set_powers(60, 0)
     else:
         radians = math.atan(line.get_rico())
         compensation = int(math.degrees(Image.Image.calculate_diff(math.pi, radians)))
@@ -200,24 +201,24 @@ while True and __name__ == "__main__":
         a = byte.find('\xff\xd8')
         b = byte.find('\xff\xd9')
     if a != -1 and b != -1:
+        start = time.time()
         jpg = byte[a:b + 2]
         byte = byte[b + 2:]
         frame = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
         #frame = cv.resize(frame, (2592, 1944), interpolation=cv.INTER_AREA)
 
         # Image loading
-        # frame = cv.imread('C:\\Users\\Gilles\\Dropbox\\Gilles\\Documenten\\School\\PenO_CW\\repo\\Beeldverwerking\\pi_photos\\cam4.jpg', 0)
+        # frame = cv.imread('C:\\Users\\Gilles\\Dropbox\\Gilles\\Documenten\\School\\PenO_CW\\repo\\Beeldverwerking\\pi_photos\\cam0.jpg', 0)
 
         gray = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
 
         # Gaussian blur
         blur = cv.GaussianBlur(gray, (5, 5), 0)
 
-        gray = None
 
         #frame = None
 
-        threshold = 255
+        threshold = 256
 
         # Threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
         hist = None
@@ -227,6 +228,7 @@ while True and __name__ == "__main__":
                 threshold = (x - 6) * 8 + 4
                 hist = None
                 break
+
         hist = None
         x = None
 
@@ -235,7 +237,6 @@ while True and __name__ == "__main__":
         # Thresholding
         ret, bw = cv.threshold(blur, threshold, 255, cv.THRESH_BINARY)
 
-        blur = None
 
         # Cutting
         #cut1 = bw[bw.shape[0] / 3:bw.shape[0]]
@@ -249,17 +250,18 @@ while True and __name__ == "__main__":
         max_width = 9
         min_length = 1
         max_length = 9
+        number_blocks = 0
 
         # Pixelation
         px = cv.resize(bw, (bw_width / img_division, bw_height / img_division), interpolation=cv.INTER_NEAREST)
+
         img_width = px.shape[1]
         img_height = px.shape[0]
         image = Image.Image(img_width, img_height, [])  # TODO: is dit wel de juiste params van shape?
 
-        bw = None
-
         pxbackup = copy.deepcopy(px)
-
+        pxback2 = cv.resize(pxbackup, (bw_width/4, bw_height/4), interpolation=cv.INTER_NEAREST)
+        cv.imwrite('C:\\Users\\Gilles\\Desktop\\screens\\5_pxbackup.jpg', pxback2)
         #TODO: middelpunt naar links laten verschuiven indien nodig
 
         for r in xrange(img_height - 1, 0, -1):
@@ -308,6 +310,10 @@ while True and __name__ == "__main__":
                                 # cv.imshow('f', foto)
                                 # cv.waitKey(0)
                                 px[r, c] = 0
+        max_number_blocks = (image.get_img_height()/max_length)*(image.get_img_width()/max_width)
+        number_blocks = len(image.get_blocks())
+        if (number_blocks >= 0.8*max_number_blocks):
+            image.clear_blocks()
         ###################
         ## image is ready
         ###################
@@ -315,10 +321,12 @@ while True and __name__ == "__main__":
         main_line = image.get_main_line()
 
         socketIO.wait(0.001)
-        routing = False
+        routing = True
 
         if routing == False:
-            go_first_block(100, main_line)
+            go_first_block(70, main_line)
+        stop = time.time()
+        #print "Command verstuurd na ", stop - start, " seconden."
         if len(beeldverwerkingNameSpace.current_route_description) > 0 and beeldverwerkingNameSpace.is_started and routing == True:
             print beeldverwerkingNameSpace.current_route_description
             print main_line
@@ -327,55 +335,56 @@ while True and __name__ == "__main__":
             if name == "right":
                 blocks_right = image.get_blocks_right_of_line(main_line)
                 if is_crossing(main_line, blocks_right):
-                    if not prev_foto_had_street:
+                    if last_street > 5:
                         street_counter += 1
-                    prev_foto_had_street = True
+                    last_street = 0
                 else:
-                    prev_foto_had_street = False
+                    last_street += 1
 
                 if street_counter >= int(command["params"]["nr"]):
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(80, main_line)
+                    go_first_block(70, main_line)
 
             elif name == "left":
                 blocks_left = image.get_blocks_left_of_line(main_line)
                 if is_crossing(main_line, blocks_left):
-                    if not prev_foto_had_street:
+                    if not last_street > 5:
                         street_counter += 1
-                    prev_foto_had_street = True
+                    last_street = 0
                 else:
-                    prev_foto_had_street = False
+                    last_street += 1
 
                 if street_counter >= int(command["params"]["nr"]):
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(80, main_line)
+                    go_first_block(70, main_line)
 
             elif name == "stop":
                 blocks_left = image.get_blocks_left_of_line(main_line)
                 blocks_right = image.get_blocks_right_of_line(main_line)
                 if (is_crossing(main_line, blocks_right) or is_crossing(main_line, blocks_left)):
-                    if not prev_foto_had_street:
+                    if last_street > 5:
                         street_counter += 1
-                    prev_foto_had_street = True
+                    last_street = 0
                 else:
-                    prev_foto_had_street = False
+                    last_street += 1
 
                 if street_counter >= int(command["params"]["nr"]):
                     print "done----------------------------------------------------------------------------------\n--------------------------------------------------------"
                     street_counter = 0
                     beeldverwerking_namespace.finish_command(command["id"])
                 else:
-                    go_first_block_2(80, main_line)
+                    go_first_block(70, main_line)
             elif name == "start":
                 beeldverwerking_namespace.finish_command(command["id"])  # TODO: moet dit wel?
             else:
                 print "unsupported action!!!!!!!!!!!"
+            print street_counter
         else:
-            prev_foto_had_street = False
+            last_street += 1
             street_counter = 0
 
         #########else:
@@ -396,6 +405,8 @@ while True and __name__ == "__main__":
 
         width_ratio = (bw_width/4)/float(img_width1)
         height_ratio = (bw_height/4)/float(img_height1)
+
+
 
         foto = cv.resize(pxbackup, (bw_width/4, bw_height/4), interpolation=cv.INTER_NEAREST)
         try:

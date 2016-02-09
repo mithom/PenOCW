@@ -28,10 +28,6 @@ def register(team):
 @app.route('/robots/<team>/<secret_key>', methods=['DELETE'])
 def delete(team, secret_key):
     try:
-        print team, secret_key
-        print secret_keys
-        print secret_keys[team]
-        print int(secret_key, 16)
         if secret_keys[team] == int(secret_key, 16):
             del secret_keys[team]
             return "OK"

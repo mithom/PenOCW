@@ -26,6 +26,9 @@ class Image:
         self.blocks.append(block)
         block.set_image(self)
 
+    def clear_blocks(self):
+        self.blocks[:] = []
+
     def get_main_line(self):
         blocks = self.get_blocks()
         if len(blocks) == 0:

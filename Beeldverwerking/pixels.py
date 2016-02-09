@@ -218,7 +218,7 @@ while True and __name__ == "__main__":
 
         #frame = None
 
-        threshold = 255
+        threshold = 256
 
         # Threshold voor bw bepalen adh gemiddelde grijswaarde over de foto
         hist = None
@@ -228,6 +228,7 @@ while True and __name__ == "__main__":
                 threshold = (x - 6) * 8 + 4
                 hist = None
                 break
+
         hist = None
         x = None
 
@@ -249,9 +250,11 @@ while True and __name__ == "__main__":
         max_width = 9
         min_length = 1
         max_length = 9
+        number_blocks = 0
 
         # Pixelation
         px = cv.resize(bw, (bw_width / img_division, bw_height / img_division), interpolation=cv.INTER_NEAREST)
+
         img_width = px.shape[1]
         img_height = px.shape[0]
         image = Image.Image(img_width, img_height, [])  # TODO: is dit wel de juiste params van shape?
@@ -307,6 +310,10 @@ while True and __name__ == "__main__":
                                 # cv.imshow('f', foto)
                                 # cv.waitKey(0)
                                 px[r, c] = 0
+        max_number_blocks = (image.get_img_height()/max_length)*(image.get_img_width()/max_width)
+        number_blocks = len(image.get_blocks())
+        if (number_blocks >= 0.8*max_number_blocks):
+            image.clear_blocks()
         ###################
         ## image is ready
         ###################

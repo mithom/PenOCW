@@ -21,8 +21,13 @@ if __name__ == "__main__":
     beeldverwerking_namespace = socketIO.define(beeldverwerkingNameSpace.BeeldverwekingNameSpace, '/beeldverwerking')
 
 ## intitializing variebles needed for steering
-street_counter = 0
-last_street = 10
+street_counter_left = 0
+street_counter_right = 0
+# last time there was a street detected
+last_street_left = 10
+last_street_right = 10
+# last street detected (left or right)
+last_street = None
 
 
 # Stream capturing code copied from
@@ -310,6 +315,7 @@ while True and __name__ == "__main__":
                                 # cv.imshow('f', foto)
                                 # cv.waitKey(0)
                                 px[r, c] = 0
+        # if more than 80% of image is white, delete all blocks
         max_number_blocks = (image.get_img_height()/max_length)*(image.get_img_width()/max_width)
         number_blocks = len(image.get_blocks())
         if (number_blocks >= 0.8*max_number_blocks):
@@ -332,60 +338,107 @@ while True and __name__ == "__main__":
             print main_line
             command = beeldverwerkingNameSpace.current_route_description[0]
             name = command["commandName"]
-            if name == "right":
-                blocks_right = image.get_blocks_right_of_line(main_line)
-                if is_crossing(main_line, blocks_right):
-                    if last_street > 5:
-                        street_counter += 1
-                    last_street = 0
-                else:
-                    last_street += 1
 
-                if street_counter >= int(command["params"]["nr"]):
-                    street_counter = 0
-                    beeldverwerking_namespace.finish_command(command["id"])
-                else:
-                    go_first_block(70, main_line)
+            blocks_right = image.get_blocks_right_of_line(main_line)
+            blocks_left = image.get_blocks_left_of_line(main_line)
 
-            elif name == "left":
-                blocks_left = image.get_blocks_left_of_line(main_line)
-                if is_crossing(main_line, blocks_left):
-                    if not last_street > 5:
-                        street_counter += 1
-                    last_street = 0
-                else:
-                    last_street += 1
-
-                if street_counter >= int(command["params"]["nr"]):
-                    street_counter = 0
-                    beeldverwerking_namespace.finish_command(command["id"])
-                else:
-                    go_first_block(70, main_line)
-
-            elif name == "stop":
-                blocks_left = image.get_blocks_left_of_line(main_line)
-                blocks_right = image.get_blocks_right_of_line(main_line)
-                if (is_crossing(main_line, blocks_right) or is_crossing(main_line, blocks_left)):
-                    if last_street > 5:
-                        street_counter += 1
-                    last_street = 0
-                else:
-                    last_street += 1
-
-                if street_counter >= int(command["params"]["nr"]):
-                    print "done----------------------------------------------------------------------------------\n--------------------------------------------------------"
-                    street_counter = 0
-                    beeldverwerking_namespace.finish_command(command["id"])
-                else:
-                    go_first_block(70, main_line)
-            elif name == "start":
-                beeldverwerking_namespace.finish_command(command["id"])  # TODO: moet dit wel?
+            if is_crossing(main_line, blocks_right):
+                last_street = "right"
+                if last_street_right > 5:
+                    street_counter_right += 1
+                    if name == "right":
+                        if street_counter_right >= int(command["params"]["nr"]):
+                         street_counter_right = 0
+                         beeldverwerking_namespace.finish_command(command["id"])
+                    if name == "stop":
+                        if street_counter_right + street_counter_left >= int(command["params"]["nr"]):
+                         print "done----------------------------------------------------------------------------------\n--------------------------------------------------------"
+                         street_counter_left = 0
+                         street_counter_right = 0
+                         beeldverwerking_namespace.finish_command(command["id"])
             else:
-                print "unsupported action!!!!!!!!!!!"
-            print street_counter
-        else:
-            last_street += 1
-            street_counter = 0
+                last_street_right += 1
+            if is_crossing(main_line, blocks_left):
+                last_street = "left"
+                if last_street_left > 5:
+                    street_counter_left += 1
+                    if name == "left":
+                        if street_counter_left >= int(command["params"]["nr"]):
+                         street_counter_left = 0
+                         beeldverwerking_namespace.finish_command(command["id"])
+                    if name == "stop":
+                        if street_counter_right + street_counter_left >= int(command["params"]["nr"]):
+                         print "done----------------------------------------------------------------------------------\n--------------------------------------------------------"
+                         street_counter_left = 0
+                         street_counter_right = 0
+                         beeldverwerking_namespace.finish_command(command["id"])
+            else:
+                last_street_left += 1
+            if len(main_line.get_blocks()) <= 1:
+                if last_street == "right":
+                    street_counter_right -= 1
+                    # TURN RIGHT
+                    beeldverwerking_namespace.set_powers(75, 0)
+                if last_street == "left":
+                    street_counter_left -= 1
+                    # TURN LEFT
+                    beeldverwerking_namespace.set_powers(0, 75)
+            go_first_block(70, main_line)
+
+        #     if name == "right":
+        #         blocks_right = image.get_blocks_right_of_line(main_line)
+        #         if is_crossing(main_line, blocks_right):
+        #             if last_street > 5:
+        #                 street_counter += 1
+        #             last_street = 0
+        #         else:
+        #             last_street += 1
+        #
+        #         if street_counter >= int(command["params"]["nr"]):
+        #             street_counter = 0
+        #             beeldverwerking_namespace.finish_command(command["id"])
+        #         else:
+        #             go_first_block(70, main_line)
+        #
+        #     elif name == "left":
+        #         blocks_left = image.get_blocks_left_of_line(main_line)
+        #         if is_crossing(main_line, blocks_left):
+        #             if not last_street > 5:
+        #                 street_counter += 1
+        #             last_street = 0
+        #         else:
+        #             last_street += 1
+        #
+        #         if street_counter >= int(command["params"]["nr"]):
+        #             street_counter = 0
+        #             beeldverwerking_namespace.finish_command(command["id"])
+        #         else:
+        #             go_first_block(70, main_line)
+        #
+        #     elif name == "stop":
+        #         blocks_left = image.get_blocks_left_of_line(main_line)
+        #         blocks_right = image.get_blocks_right_of_line(main_line)
+        #         if (is_crossing(main_line, blocks_right) or is_crossing(main_line, blocks_left)):
+        #             if last_street > 5:
+        #                 street_counter += 1
+        #             last_street = 0
+        #         else:
+        #             last_street += 1
+        #
+        #         if street_counter >= int(command["params"]["nr"]):
+        #             print "done----------------------------------------------------------------------------------\n--------------------------------------------------------"
+        #             street_counter = 0
+        #             beeldverwerking_namespace.finish_command(command["id"])
+        #         else:
+        #             go_first_block(70, main_line)
+        #     elif name == "start":
+        #         beeldverwerking_namespace.finish_command(command["id"])  # TODO: moet dit wel?
+        #     else:
+        #         print "unsupported action!!!!!!!!!!!"
+        #     print street_counter
+        # else:
+        #     last_street += 1
+        #     street_counter = 0
 
         #########else:
             ################print beeldverwerkingNameSpace.current_route_description

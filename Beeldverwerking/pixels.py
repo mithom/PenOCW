@@ -10,7 +10,7 @@ from socketIO_client import SocketIO
 import urllib
 import numpy as np
 import time
-
+import logging; logging.basicConfig(level=logging.DEBUG)
 
 url = '192.168.137.78'
 #url="127.0.0.1"

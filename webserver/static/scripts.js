@@ -178,19 +178,6 @@ var getId = function (response, status, xhr) {//find a way to save the id that i
     }
 };
 
-var post = function (dataToSend, doOnSuccess) {
-    doOnSuccess = doOnSuccess || function () {
-        };
-    return $.ajax({
-        url: '/',
-        type: "POST",
-        dataType: "json",
-        contentType: 'application/json; charset-utf-8',
-        data: JSON.stringify(dataToSend),
-        success: doOnSuccess
-    });
-};
-
 var startStream = function () {
     if ($("#video_button").text() == "start stream") {
         $("#video_button").text("stop stream");

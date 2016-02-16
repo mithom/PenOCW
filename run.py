@@ -6,8 +6,6 @@ import webserver.functionDivider
 import webserver.functionCaller
 import threading
 import time
-# import Team_auto.Car as car
-import werkzeug.serving
 import sys
 
 from socketio.server import SocketIOServer

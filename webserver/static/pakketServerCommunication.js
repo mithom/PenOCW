@@ -4,7 +4,7 @@
 var pakketUrl = "http://127.0.0.1:5000";
 var teamName = "zilver";
 
-var post = function (dataToSend, doOnSuccess, url) {
+var call = function (dataToSend, doOnSuccess, url, method) {
     doOnSuccess = doOnSuccess || function () {
         };
     /*return $.ajax({
@@ -26,13 +26,18 @@ var post = function (dataToSend, doOnSuccess, url) {
         }
     });
 
-    xhr.open("POST", url);
-    xhr.send(data);
+    xhr.open(method, url, true);
+    xhr.send(dataToSend);
 };
 
 var register = function(secret_key){
-    var response = post(secret_key, function(data){
+    call(secret_key, function(data){
         window.alert(data);
-    }, pakketUrl + "/robots/" + teamName);
+    }, pakketUrl + "/robots/" + teamName, 'POST');
 };
 
+var unregister = function(secret_key){
+    call(null, function(data){
+        window.alert(data);
+    }, pakketUrl + "/robots/" + teamName +"/"+secret_key, 'DELETE');
+};

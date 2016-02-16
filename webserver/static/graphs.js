@@ -7,6 +7,7 @@ var nodes
 var edges
 $(document).ready(function(){
     register(123456789);
+    unregister(123456789);
     // create an array with nodes
     nodes = new vis.DataSet([
         {id: 1, label: 'Node 1'},

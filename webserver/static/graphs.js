@@ -38,81 +38,40 @@ $(document).ready(function(){
 
 
 //functions to manipulate the graph (should only use update for the labels
-function addNode() {
-    try {
-        nodes.add({
-            id: document.getElementById('node-id').value,
-            label: document.getElementById('node-label').value
-        });
-    }
-    catch (err) {
-        alert(err);
-    }
-}
 
-function updateNode() {
-    try {
+function updateNode(id, label) {
+    //try {
         nodes.update({
-            id: document.getElementById('node-id').value,
-            label: document.getElementById('node-label').value
+            id: id,
+            label: label, //TODO: multiline wagen + knoopnaam
+            font: {background: label}
         });
-    }
-    catch (err) {
+    //}
+    /*catch (err) {
         alert(err);
-    }
-}
-function removeNode() {
-    try {
-        nodes.remove({id: document.getElementById('node-id').value});
-    }
-    catch (err) {
-        alert(err);
-    }
+    }*/
 }
 
-function addEdge() {
-    try {
-        edges.add({
-            id: document.getElementById('edge-id').value,
-            from: document.getElementById('edge-from').value,
-            to: document.getElementById('edge-to').value
-        });
-    }
-    catch (err) {
-        alert(err);
-    }
-}
-function updateEdge() {
-    try {
+function updateEdge(id, label) {
+    //try {
         edges.update({
-            id: document.getElementById('edge-id').value,
-            from: document.getElementById('edge-from').value,
-            to: document.getElementById('edge-to').value
+            id: id,
+            label: label,
+            font: {background: label}
         });
-    }
-    catch (err) {
+    //}
+    /*catch (err) {
         alert(err);
-    }
-}
-function removeEdge() {
-    try {
-        edges.remove({id: document.getElementById('edge-id').value});
-    }
-    catch (err) {
-        alert(err);
-    }
+    }*/
 }
 
 var drawData = function(){
     console.log(road_map.verticles);
     for(node in road_map.verticles){
-        console.log("adding a node: "+ road_map.verticles[node][0]);
-        console.log(road_map.verticles[node]);
         nodes.add({id: road_map.verticles[node][0], label: road_map.verticles[node][0]});
     }
     var i = 0;
     for(edge in road_map.edges){
-        console.log("adding an adge: " + i);
         edges.add({
             id: i++,
             from: road_map.edges[edge][0],
@@ -144,5 +103,25 @@ var drawMap = function(){
 };
 
 var drawLabels = function(){
-    //TODO: teken de nieuwe labels
+    //TODO: error oplossen en echt tekenen
+    for(pos in positions){
+        var team = positions[pos][0];
+        var from = positions[pos][1];
+        var to = positions[pos][2];
+        if(from != to){
+            var id = findNode(from, to);
+            updateEdge(id,team);
+        }else {
+            updateNode(from, team)
+        }
+    }
+};
+
+var findNode = function(from, to){
+    var node;
+    for(node in nodes){
+        if(nodes[node]["from"] == from && nodes[node]["to"] == to){
+            return nodes[node]["id"];
+        }
+    }
 };

@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify, make_response
 from functools import wraps
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+CORS(app)
 
 secret_keys = {}
 available_parcels = {142: [1, 2],
@@ -22,26 +24,29 @@ def APICall(f):
         ans = make_response(f(*args, **kwargs))
         h = ans.headers
         h["Access-Control-Allow-Origin"] = 'http://127.0.0.1:4848'
-        h["Access-Control-Allow-Methods"] = 'POST, GET, OPTIONS, PUT, DELETE'
-        h["Access-Control-Allow-Credentials"] = 'true'
+        h["Access-Control-Allow-Methods"] = "GET, POST, PUT, OPTIONS"
+        h["Access-Control-Request-Headers"] = "Content-Type, Origin, Cache-Control"
+        #h["Access-Control-Allow-Credentials"] = 'true'
         return ans
     return cross_origin_headers
 
 
 @app.route('/robots/<team>', methods=['POST'])
-@APICall
+@cross_origin()
 def register(team):
     try:
+        print request.data
         if secret_keys.get(team) is not None:
             return "SORRY"
         secret_keys[team] = int(request.data, 16)
+        print secret_keys
         return "OK"
     except ValueError:
         return "SORRY"
 
 
 @app.route('/robots/<team>/<secret_key>', methods=['DELETE'])
-@APICall
+@cross_origin()
 def delete(team, secret_key):
     try:
         if secret_keys[team] == int(secret_key, 16):
@@ -53,7 +58,7 @@ def delete(team, secret_key):
 
 
 @app.route('/map', methods=['GET'])
-@APICall
+@cross_origin()
 def get_map():
     route_map = {"verticles": [
                     [1, {"origin": 3, "straight": 2}],
@@ -76,7 +81,7 @@ def get_map():
 
 
 @app.route('/parcels', methods=['GET'])
-@APICall
+@cross_origin()
 def get_parcels():
     return jsonify({"available-parcels": [[nb] + available_parcels[nb] for nb in available_parcels.keys()],
                     "on-the-road-parcels": [[nb] + on_the_road_parcels[nb] for nb in on_the_road_parcels.keys()],
@@ -84,7 +89,7 @@ def get_parcels():
 
 
 @app.route('/robots/<team>/claim/<parcel_nb>', methods=['PUT'])
-@APICall
+@cross_origin()
 def claim(team, parcel_nb):
     try:
         parcel_nb = int(parcel_nb)
@@ -100,7 +105,7 @@ def claim(team, parcel_nb):
 
 
 @app.route('/robots/<team>/delivered/<parcel_nb>', methods=['PUT'])
-@APICall
+@cross_origin()
 def deliver(team, parcel_nb):
     try:
         parcel_nb = int(parcel_nb)
@@ -115,7 +120,7 @@ def deliver(team, parcel_nb):
 
 
 @app.route('/positions/<team>/<from_node>/<to_node>', methods=['PUT'])
-@APICall
+@cross_origin()
 def set_position(team, from_node, to_node):
     try:
         if int(request.data, 16) == secret_keys[team]:
@@ -127,7 +132,7 @@ def set_position(team, from_node, to_node):
 
 
 @app.route('/positions', methods=['GET'])
-@APICall
+@cross_origin()
 def get_position():
     return jsonify({"positions": [[team] + positions[team] for team in positions.keys()]})
 

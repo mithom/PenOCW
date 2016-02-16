@@ -1,0 +1,8 @@
+https://jlmedina123.wordpress.com/2014/05/17/dijkstras-algorithm-in-python/
+
+https://en.wikipedia.org/wiki/Shortest_path_problem
+
+https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+
+http://code.activestate.com/recipes/119466-dijkstras-algorithm-for-shortest-paths/
+

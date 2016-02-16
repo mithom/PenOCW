@@ -341,6 +341,16 @@ while True and __name__ == "__main__":
 
             blocks_right = image.get_blocks_right_of_line(main_line)
             blocks_left = image.get_blocks_left_of_line(main_line)
+            
+            if len(main_line.get_blocks()) <= 2:
+                if last_street == "right":
+                    street_counter_right -= 1
+                    # TURN RIGHT
+                    beeldverwerking_namespace.set_powers(75, -75)
+                if last_street == "left":
+                    street_counter_left -= 1
+                    # TURN LEFT
+                    beeldverwerking_namespace.set_powers(-75, 75)
 
             if is_crossing(main_line, blocks_right):
                 last_street = "right"
@@ -374,15 +384,6 @@ while True and __name__ == "__main__":
                          beeldverwerking_namespace.finish_command(command["id"])
             else:
                 last_street_left += 1
-            if len(main_line.get_blocks()) <= 1:
-                if last_street == "right":
-                    street_counter_right -= 1
-                    # TURN RIGHT
-                    beeldverwerking_namespace.set_powers(75, 0)
-                if last_street == "left":
-                    street_counter_left -= 1
-                    # TURN LEFT
-                    beeldverwerking_namespace.set_powers(0, 75)
             go_first_block(70, main_line)
 
         #     if name == "right":

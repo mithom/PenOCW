@@ -48,9 +48,10 @@ def print_solution(visit, paths, source_node):
     print paths, "                   (x: y means follow the edge from y to x)"
 
 
+start_node = 1
+number_of_nodes = 4
 if __name__ == "__main__":
-    start_node = 1
-    test = random_graph(4)
+    test = random_graph(number_of_nodes)
     print_graph(test)
     (visited, path) = dijkstra.dijsktra(test, start_node)
     print_solution(visited, path, start_node)

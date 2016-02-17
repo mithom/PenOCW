@@ -48,7 +48,7 @@ var unregister = function(secret_key){
 var get_map = function(){
     call(null, function(data){
         road_map = data;
-        console.log(road_map);
+        //console.log(road_map);
         drawData()
     }, pakketUrl + "/map", 'GET');
 };
@@ -73,7 +73,7 @@ var set_position = function(from_node, to_node, secret_key){
 
 var get_positions = function(){
     call(null, function(data){
-        positions = data;
+        positions = data.positions;
         drawLabels();
     }, pakketUrl + "/positions", 'GET');
 };

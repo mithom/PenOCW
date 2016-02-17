@@ -6,6 +6,8 @@
 var nodes = new vis.DataSet();
 var edges = new vis.DataSet();
 var secret_key;
+var adjusted = {nodes : new Set(), edges: new Set()};
+
 $(document).ready(function(){
     secret_key = make_secret_key();
     register(secret_key);
@@ -66,9 +68,9 @@ function updateEdge(id, label) {
 }
 
 var drawData = function(){
-    console.log(road_map.verticles);
-    for(node in road_map.verticles){
-        nodes.add({id: road_map.verticles[node][0], label: road_map.verticles[node][0]});
+    //console.log(road_map.verticles);
+    for(edge in road_map.verticles){
+        nodes.add({id: road_map.verticles[edge][0], label: road_map.verticles[edge][0]});
     }
     var i = 0;
     for(edge in road_map.edges){
@@ -103,25 +105,27 @@ var drawMap = function(){
 };
 
 var drawLabels = function(){
-    //TODO: error oplossen en echt tekenen
+    //TODO: oude labels clearen + multiline
     for(pos in positions){
         var team = positions[pos][0];
         var from = positions[pos][1];
         var to = positions[pos][2];
         if(from != to){
-            var id = findNode(from, to);
+            var id = findEdge(from, to);
+            adjusted.edges.add(id);
             updateEdge(id,team);
         }else {
-            updateNode(from, team)
+            updateNode(from, team);
+            adjusted.nodes.add(from);
         }
     }
 };
 
-var findNode = function(from, to){
-    var node;
-    for(node in nodes){
-        if(nodes[node]["from"] == from && nodes[node]["to"] == to){
-            return nodes[node]["id"];
+var findEdge = function(from, to){
+    console.log(edges);
+    for(var i =0; i< edges.length;i++){
+        if(edges.get(i)["from"] == from && edges.get(i)["to"] == to){
+            return edges.get(i)["id"];
         }
     }
 };

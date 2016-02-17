@@ -12,7 +12,7 @@ import numpy as np
 import time
 import logging; logging.basicConfig(level=logging.DEBUG)
 
-url = '192.168.137.78'
+url = '192.168.137.96'
 #url="127.0.0.1"
 port = 4848
 current_route_description = []

@@ -28,7 +28,7 @@ var call = function (dataToSend, doOnSuccess, url, method) {
     };
 
     $.ajax(settings).done(function (response) {
-        console.log(response);
+        //console.log(response);
         doOnSuccess(response);
     });
 };
@@ -50,6 +50,7 @@ var get_map = function(){
         road_map = data;
         //console.log(road_map);
         drawData()
+        setInterval(get_positions, 3000)
     }, pakketUrl + "/map", 'GET');
 };
 

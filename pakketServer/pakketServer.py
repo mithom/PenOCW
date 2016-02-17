@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from functools import wraps
 from flask_cors import CORS, cross_origin
+from random import randint
 
 app = Flask(__name__)
 CORS(app)
@@ -9,11 +10,11 @@ secret_keys = {}
 available_parcels = {142: [1, 2],
                      145: [2, 3],
                      147: [2, 1]}
-on_the_road_parcels = {140: [2, 4, "A-Team"]}
-delivered_parcels = {141: [1, 3, "B-Team"],
-                     143: [3, 1, "B-Team"]}
-positions = {"A-Team": [1, 2],
-             "B-Team": [3, 3]}
+on_the_road_parcels = {140: [2, 4, "goud"]}
+delivered_parcels = {141: [1, 3, "paars"],
+                     143: [3, 1, "paars"]}
+positions = {"goud": [1, 2],
+             "paars": [3, 3]}
 
 # TODO: ghost robots laten bewegen
 
@@ -134,6 +135,7 @@ def set_position(team, from_node, to_node):
 @app.route('/positions', methods=['GET'])
 @cross_origin()
 def get_position():
+    positions['paars'][1] = randint(1, 4)
     return jsonify({"positions": [[team] + positions[team] for team in positions.keys()]})
 
 

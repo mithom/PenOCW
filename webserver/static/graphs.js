@@ -6,7 +6,7 @@
 var nodes = new vis.DataSet();
 var edges = new vis.DataSet();
 var secret_key;
-var adjusted = {nodes : new Set(), edges: new Set()};
+var adjusted = {nodes : {}, edges: {}};
 
 $(document).ready(function(){
     secret_key = make_secret_key();
@@ -15,7 +15,7 @@ $(document).ready(function(){
     register(secret_key);
     get_map();
     get_parcels();
-    get_positions();
+    //get_positions();
 
     //window.alert(JSON.parse(road_map));
     // create an array with nodes
@@ -45,7 +45,7 @@ function updateNode(id, label) {
     //try {
         nodes.update({
             id: id,
-            label: label, //TODO: multiline wagen + knoopnaam
+            label: nodes.get(id)['label'] + '\n' +label, //TODO: multiline wagen + knoopnaam
             font: {background: label}
         });
     //}
@@ -56,9 +56,13 @@ function updateNode(id, label) {
 
 function updateEdge(id, label) {
     //try {
+    odlLabel = edges.get(id)['label'] || '';
+    if(odlLabel != ""){
+        odlLabel += "\n"
+    }
         edges.update({
             id: id,
-            label: label,
+            label: odlLabel + label,
             font: {background: label}
         });
     //}
@@ -104,25 +108,41 @@ var drawMap = function(){
     var network = new vis.Network(container, data, options);
 };
 
+var clearLabels = function(){
+    //console.log(adjusted);
+    for(idnb in adjusted.nodes){
+        nodes.update({
+            id: idnb,
+            label : idnb
+        })
+    }
+    for(idnb in adjusted.edges){
+        edges.update({
+            id: idnb,
+            label: ""
+        })
+    }
+    adjusted = {nodes : {}, edges: {}};
+};
+
 var drawLabels = function(){
-    //TODO: oude labels clearen + multiline
+    clearLabels();
     for(pos in positions){
         var team = positions[pos][0];
         var from = positions[pos][1];
         var to = positions[pos][2];
         if(from != to){
             var id = findEdge(from, to);
-            adjusted.edges.add(id);
+            adjusted.edges[id]= true;
             updateEdge(id,team);
         }else {
             updateNode(from, team);
-            adjusted.nodes.add(from);
+            adjusted.nodes[from]= true;
         }
     }
 };
 
 var findEdge = function(from, to){
-    console.log(edges);
     for(var i =0; i< edges.length;i++){
         if(edges.get(i)["from"] == from && edges.get(i)["to"] == to){
             return edges.get(i)["id"];

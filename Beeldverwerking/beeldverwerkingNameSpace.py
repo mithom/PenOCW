@@ -25,7 +25,7 @@ class BeeldverwekingNameSpace(BaseNamespace):
     def on_event_confirmation(self, params):
         print params
         print "--------------confirmed-------------------------------------------------------------------------------------------------------------------------------------"
-        if params['succes']:
+        if params['succes'] and params['id'] in self.awaiting_events:
             del self.awaiting_events[params['id']]
         else:
             if params.get('id', False):

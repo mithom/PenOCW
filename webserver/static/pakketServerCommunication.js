@@ -9,7 +9,12 @@ var parcels;
 var positions;
 var call_succes;
 
-var call = function (dataToSend, doOnSuccess, url, method) {
+/*
+makes an ajax call
+var method: one of: 'GET', 'POST', 'PUT', 'DELETE', ...
+dataToSend: json
+ */
+var make_ajax_call = function (dataToSend, doOnSuccess, url, method) {
     doOnSuccess = doOnSuccess || function () {
         };
 
@@ -24,7 +29,8 @@ var call = function (dataToSend, doOnSuccess, url, method) {
             "cache-control": "no-cache"
         },
         "processData": false,
-        "data": dataToSend
+        "data": dataToSend,
+        "dataType":"json" //TODO: check if still works
     };
 
     $.ajax(settings).done(function (response) {
@@ -34,46 +40,46 @@ var call = function (dataToSend, doOnSuccess, url, method) {
 };
 
 var register = function(secret_key){
-    call(secret_key, function(data){
+    make_ajax_call(secret_key, function(data){
         //window.alert(data);
     }, pakketUrl + "/robots/" + teamName, 'POST');
 };
 
 var unregister = function(secret_key){
-    call(null, function(data){
+    make_ajax_call(null, function(data){
         //window.alert(data);
     }, pakketUrl + "/robots/" + teamName +"/"+secret_key, 'DELETE');
 };
 
-var get_map = function(){
-    call(null, function(data){
+var get_and_update_map = function(){
+    make_ajax_call(null, function(data){
         road_map = data;
         //console.log(road_map);
-        drawData()
-        setInterval(get_positions, 3000)
+        drawMapData();
+        setInterval(get_positions, 3000);
     }, pakketUrl + "/map", 'GET');
 };
 
 var get_parcels = function(){
-    call(null, function(data){
+    make_ajax_call(null, function(data){
         parcels = data
     }, pakketUrl + "/parcels", 'GET');
 };
 
 var claim = function(nb, secret_key){
-  call(secret_key, function(data){}, pakketUrl + "/robots/" + teamName + "/claim/"+ nb, 'PUT');
+  make_ajax_call(secret_key, function(data){}, pakketUrl + "/robots/" + teamName + "/claim/"+ nb, 'PUT');
 };
 
 var deliver = function(nb, secret_key){
-    call(secret_key, function(data){}, pakketUrl + "/robots/" + teamName + "/delivered/"+ nb, 'PUT');
+    make_ajax_call(secret_key, function(data){}, pakketUrl + "/robots/" + teamName + "/delivered/"+ nb, 'PUT');
 };
 
 var set_position = function(from_node, to_node, secret_key){
-    call(secret_key, function(data){}, pakketUrl + "/positions/" + teamName + "/" +from_node +"/"+ to_node, 'PUT');
+    make_ajax_call(secret_key, function(data){}, pakketUrl + "/positions/" + teamName + "/" +from_node +"/"+ to_node, 'PUT');
 };
 
 var get_positions = function(){
-    call(null, function(data){
+    make_ajax_call(null, function(data){
         positions = data.positions;
         drawLabels();
     }, pakketUrl + "/positions", 'GET');

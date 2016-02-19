@@ -11,68 +11,39 @@ var adjusted = {nodes : {}, edges: {}};
 $(document).ready(function(){
     secret_key = make_secret_key();
     register(secret_key);
-    unregister(secret_key);
+    unregister(secret_key);//to test the functionality
     register(secret_key);
-    get_map();
+    get_and_update_map();
     get_parcels();
-    //get_positions();
-
-    //window.alert(JSON.parse(road_map));
-    // create an array with nodes
-    /*nodes = new vis.DataSet([
-        {id: 1, label: 'Node 1'},
-        {id: 2, label: 'Node 2'},
-        {id: 3, label: 'Node 3'},
-        {id: 4, label: 'Node 4'},
-        {id: 5, label: 'Node 5'}
-    ]);
-
-    // create an array with edges
-    edges = new vis.DataSet([
-        {id: 1, from: 1, to: 3, arrows:"to"},
-        {id: 2, from: 1, to: 2, arrows:"to"},
-        {id: 3, from: 2, to: 4, arrows:"to"},
-        {id: 4, from: 2, to: 5, arrows:"to"},
-        {id: 5, from: 5, to: 2, arrows:"to"}
-    ]);*/
-
 });
 
 
 //functions to manipulate the graph (should only use update for the labels
 
 function updateNode(id, label) {
-    //try {
-        nodes.update({
-            id: id,
-            label: nodes.get(id)['label'] + '\n' +label, //TODO: multiline wagen + knoopnaam
-            font: {background: label}
-        });
-    //}
-    /*catch (err) {
-        alert(err);
-    }*/
+    nodes.update({
+        id: id,
+        label: nodes.get(id)['label'] + '\n' +label, //TODO: multiline wagen + knoopnaam
+        font: {background: label}
+    });
 }
 
 function updateEdge(id, label) {
-    //try {
     odlLabel = edges.get(id)['label'] || '';
     if(odlLabel != ""){
         odlLabel += "\n"
     }
-        edges.update({
-            id: id,
-            label: odlLabel + label,
-            font: {background: label}
-        });
-    //}
-    /*catch (err) {
-        alert(err);
-    }*/
+    edges.update({
+        id: id,
+        label: odlLabel + label,
+        font: {background: label}
+    });
 }
 
-var drawData = function(){
-    //console.log(road_map.verticles);
+/*
+this function will first convert the server data to vis.js data and afterward call a function to draw the converted data
+ */
+var drawMapData = function(){
     for(edge in road_map.verticles){
         nodes.add({id: road_map.verticles[edge][0], label: road_map.verticles[edge][0]});
     }
@@ -108,6 +79,9 @@ var drawMap = function(){
     var network = new vis.Network(container, data, options);
 };
 
+/*
+clears labels based on the labels that are adjust in the previous call (optimisation)
+ */
 var clearLabels = function(){
     //console.log(adjusted);
     for(idnb in adjusted.nodes){
@@ -125,6 +99,9 @@ var clearLabels = function(){
     adjusted = {nodes : {}, edges: {}};
 };
 
+/*
+removes the old labels and draws the new labels
+ */
 var drawLabels = function(){
     clearLabels();
     for(pos in positions){

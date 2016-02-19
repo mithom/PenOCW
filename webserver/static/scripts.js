@@ -274,7 +274,8 @@ var connectRoute = function(){
     beschrijving.on('connect', function () {
         //beschrijving.on('alert', function(msg){window.alert("beschrijving meldt: " + JSON.stringify(msg));});
 
-        beschrijving.on('updateRouteDescription', function (...route) {// we use the arguments variable here cus we don't know how many we will get
+        beschrijving.on('updateRouteDescription', function () {// we use the arguments variable here cus we don't know how many we will get
+            var route = [].slice.call(arguments); //...route is not compatible with safari and IE and fireforx < 15.0
             var routeBody = $("#currentRoute table tbody");
             routeBody.empty();
 
